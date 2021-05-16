@@ -52,93 +52,102 @@ def rounded(num, digits_after_decimal = 2):
 
         return str(tmp)
 
-# def convert_to_md():
+def read_md_problem(filepath):
+    """Reads a MystMarkdown problem file and returns a dictionary of the header and body
 
-#     mdtext = pathlib.Path(path).read_text()
+    Args:
+        filepath (str): Path of file to read.
 
-#     # Deal with YAML header
-#     header_text = mdtext.rsplit('---\n')[1]
-#     header = yaml.safe_load('---\n' + header_text)
+    Returns:
+        dict: In this dictionary there are two keys, `header` and `body_parts`. Each key has a nested dictionaries containing various useful portions of the parsed md file.
+    """
 
-#     # Deal with Markdown Body
-#     body = mdtext.rsplit('---\n')[2]
+    mdtext = pathlib.Path(filepath).read_text()
+
+    # Deal with YAML header
+    header_text = mdtext.rsplit('---\n')[1]
+    header = yaml.safe_load('---\n' + header_text)
+
+    # Deal with Markdown Body
+    body = mdtext.rsplit('---\n')[2]
     
-#     # Set up the markdown parser
-#     # to be honest, not fully sure what's going on here, see this issue: https://github.com/executablebooks/markdown-it-py/issues/164
+    # Set up the markdown parser
+    # to be honest, not fully sure what's going on here, see this issue: https://github.com/executablebooks/markdown-it-py/issues/164
 
-#     mdit = MarkdownIt()
-#     env = {}
+    mdit = MarkdownIt()
+    env = {}
 
-#     # Set up tokens by parsing the md file
-#     tokens = mdit.parse(body, env)
+    # Set up tokens by parsing the md file
+    tokens = mdit.parse(body, env)
 
-#     blocks = {}
+    blocks = {}
 
-#     block_count = 0
+    block_count = 0
 
-#     num_titles = 0
+    num_titles = 0
 
-#     for x,t in enumerate(tokens):
+    for x,t in enumerate(tokens):
 
-#         if t.tag == 'h1' and t.nesting == 1: # title
-#             blocks['title'] = [x,]
-#             num_titles += 1
+        if t.tag == 'h1' and t.nesting == 1: # title
+            blocks['title'] = [x,]
+            num_titles += 1
 
-#         elif t.tag == 'h2' and t.nesting == 1:
-#             block_count += 1
+        elif t.tag == 'h2' and t.nesting == 1:
+            block_count += 1
 
-#             if block_count == 1:
-#                 blocks['block{0}'.format(block_count)] = [x,]
-#             else:
-#                 blocks['block{0}'.format(block_count-1)].append(x)
-#                 blocks['block{0}'.format(block_count)] = [x,]
+            if block_count == 1:
+                blocks['block{0}'.format(block_count)] = [x,]
+            else:
+                blocks['block{0}'.format(block_count-1)].append(x)
+                blocks['block{0}'.format(block_count)] = [x,]
 
-#         #print(t,'\n')
+    # Add -1 to the end of the last block
+    blocks['block{0}'.format(block_count)].append(len(tokens))
 
-#     # Add -1 to the end of the last block
-#     blocks['block{0}'.format(block_count)].append(len(tokens))
+    # Assert statements (turn into tests!)
+    assert num_titles == 1, "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(num_titles)
+    assert block_count > 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(block_count -1)
 
-#     # Assert statements (turn into tests!)
-#     assert num_titles == 1, "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(num_titles)
-#     assert block_count > 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(block_count -1)
+    # Add the end of the title block; # small hack
+    blocks['title'].append(blocks['block1'][0])
 
-#     # Add the end of the title block; # small hack
-#     blocks['title'].append(blocks['block1'][0])
+    ## Process the blocks into markdown
 
-#     ## Process the blocks into markdown
+    body_parts = {}
 
-#     body_parts = {}
+    part_counter = 0
 
-#     part_counter = 0
+    for k,v in blocks.items():
 
-#     for k,v in blocks.items():
+        rendered_part = MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env)
 
-#         rendered_part = MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env)
+        if k == 'title':
+            body_parts['title'] = rendered_part
 
-#         if k == 'title':
-#             body_parts['title'] = rendered_part
+        elif 'Rubric' in rendered_part:
+            body_parts['Rubric'] = rendered_part
 
-#         elif 'Rubric' in rendered_part:
-#             body_parts['Rubric'] = rendered_part
+        elif 'Solution' in rendered_part:
+            body_parts['Solution'] = rendered_part
 
-#         elif 'Solution' in rendered_part:
-#             body_parts['Solution'] = rendered_part
+        elif 'Comments' in rendered_part:
+            body_parts['Comments'] = rendered_part
 
-#         elif 'Comments' in rendered_part:
-#             body_parts['Comments'] = rendered_part
-
-#         else:
-#             part_counter +=1
-#             body_parts['part{0}'.format(part_counter)] = rendered_part
-
-
+        else:
+            part_counter +=1
+            body_parts['part{0}'.format(part_counter)] = rendered_part
+    
+    return {'header': header,
+            'body_parts': body_parts}
 
 def dict_to_md(md_dict, remove_keys = [None,]):
+    """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
+    Args:
+        md_dict (dict): A nested dictionary, for e.g. the output of `read_md_problem()`
+        remove_keys (list, optional): Any keys to remove from the dictionary, for instance solutions. Defaults to [None,].
 
-    """
-    Takes a dictionary, and turns it into an md file
-
-    # TODO: flesh out this doc string, you should be ashamed Firas.
+    Returns:
+        str: A multi-line string that can be written to a file.
     """
 
     md_string = ""
