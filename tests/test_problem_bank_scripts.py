@@ -1,0 +1,2 @@
+from problem_bank_scripts import __version__
+from problem_bank_scripts import problem_bank_scripts
