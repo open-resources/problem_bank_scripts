@@ -10,7 +10,13 @@ homepage = "https://github.com/firasm/problem_bank_scripts"
 repository = "https://github.com/firasm/problem_bank_scripts"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
+pandas = "^1.2.4"
+PyYAML = "^5.4.1"
+docopt = "^0.6.2"
+numpy = "^1.20.3"
+markdown-it-py = "^1.1.0"
+mdformat = "^0.7.6"
 
 [tool.poetry.dev-dependencies]
 
