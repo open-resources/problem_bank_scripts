@@ -20,16 +20,20 @@ from mdformat.renderer import MDRenderer # pip install mdformat
 import yaml
 
 def rounded(num, digits_after_decimal = 2):
+    """Rounds numbers properly to specified digits after decimal place
+
+    Args:
+        num (float): Number that is to be rounded
+        digits_after_decimal (int, optional): Number of digits to round to. Defaults to 2.
+
+    Returns:
+        str: A string that is correctly rounded (you know why it's not a float!)
+    """
+
 
     """
-    Rounding as expected by normal sensible people.
-
     This needs to be heavily tested!!
-
     WARNING: This does not do sig figs yet!
-
-    # TODO: flesh out this doc string, you should be ashamed Firas.
-
     """
 
     # Solution attributed to: https://stackoverflow.com/a/53329223
