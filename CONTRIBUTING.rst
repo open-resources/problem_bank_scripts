@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/firasm/problem_bank_scripts/issues.
+Report bugs at https://github.com/open-resources/problem_bank_scripts/issues.
 
 If you are reporting a bug, please include:
 
