@@ -19,8 +19,6 @@ from mdformat.renderer import MDRenderer # pip install mdformat
 # Dealing with YAML
 import yaml
 
-
-
 def rounded(num, digits_after_decimal = 2):
 
     """
