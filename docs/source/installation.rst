@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/firasm/problem_bank_scripts
+    $ git clone git://github.com/open-resources/problem_bank_scripts
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/firasm/problem_bank_scripts/tarball/main
+    $ curl  -OL https://github.com/open-resources/problem_bank_scripts/tarball/main
 
 Once you have a copy of the source, you can install it. The method of installation will depend on the packaging library being used.
 
@@ -55,5 +55,5 @@ If `poetry` is being used (poetry.lock and pyproject.toml files are present), in
     $ poetry install
 
 
-.. _Github repo: https://github.com/firasm/problem_bank_scripts
-.. _tarball: https://github.com/firasm/problem_bank_scripts/tarball/master
+.. _Github repo: https://github.com/open-resources/problem_bank_scripts
+.. _tarball: https://github.com/open-resources/problem_bank_scripts/tarball/master

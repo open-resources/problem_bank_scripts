@@ -1,7 +1,7 @@
 # Problem Bank Scripts 
 
 [![Python](https://img.shields.io/badge/python-3.9-blue)]()
-[![codecov](https://codecov.io/gh/firasm/problem_bank_scripts/branch/main/graph/badge.svg)](https://codecov.io/gh/firasm/problem_bank_scripts)
+[![codecov](https://codecov.io/gh/open-resources/problem_bank_scripts/branch/main/graph/badge.svg)](https://codecov.io/gh/open-resources/problem_bank_scripts)
 [![Documentation Status](https://readthedocs.org/projects/problem_bank_scripts/badge/?version=latest)](https://problem_bank_scripts.readthedocs.io/en/latest/?badge=latest)
 
 
@@ -29,7 +29,7 @@ The official documentation is hosted on Read the Docs: https://problem_bank_scri
 
 ## Contributors
 
-We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/firasm/problem_bank_scripts/graphs/contributors).
+We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/open-resources/problem_bank_scripts/graphs/contributors).
 
 ### Credits
 

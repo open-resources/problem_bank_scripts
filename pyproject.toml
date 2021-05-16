@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "problem_bank_scripts"
-version = "0.0.1"
+version = "0.0.2"
 description = "A packagee with useful functions to convert between different problem bank formats."
 authors = ["Open Problem Bank Team"]
 license = "MIT"
 readme = "README.md"
 documentation = "https://problem_bank_scripts.readthedocs.io/en/latest/"
-homepage = "https://github.com/firasm/problem_bank_scripts"
-repository = "https://github.com/firasm/problem_bank_scripts"
+homepage = "https://github.com/open-resources/problem_bank_scripts"
+repository = "https://github.com/open-resources/problem_bank_scripts"
 
 [tool.poetry.dependencies]
 python = "^3.8"
