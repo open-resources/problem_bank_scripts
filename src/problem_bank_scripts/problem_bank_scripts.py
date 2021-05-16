@@ -59,7 +59,10 @@ def read_md_problem(filepath):
         filepath (str): Path of file to read.
 
     Returns:
-        dict: In this dictionary there are two keys, `header` and `body_parts`. Each key has a nested dictionaries containing various useful portions of the parsed md file.
+        dict: In this dictionary there are three keys containing useful portions of the parsed md file: 
+            - `header` - Header of the problem file (nested dictionary).
+            - `body_parts` - Body text of the problem file (nested dictionary).
+            - `num_parts` - Number of parts in the problem (integer).
     """
 
     mdtext = pathlib.Path(filepath).read_text()
@@ -138,7 +141,8 @@ def read_md_problem(filepath):
             body_parts['part{0}'.format(part_counter)] = rendered_part
     
     return {'header': header,
-            'body_parts': body_parts}
+            'body_parts': body_parts,
+            'num_parts': part_counter}
 
 def dict_to_md(md_dict, remove_keys = [None,]):
     """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
