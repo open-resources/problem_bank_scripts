@@ -19,6 +19,12 @@ markdown-it-py = "^1.1.0"
 mdformat = "^0.7.6"
 
 [tool.poetry.dev-dependencies]
+Sphinx = "^4.0.1"
+nbsphinx = "^0.8.5"
+ipykernel = "^5.5.5"
+sphinx-autoapi = "^1.8.1"
+sphinx-rtd-theme = "^0.5.2"
+sphinxcontrib-napoleon = "^0.7"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
