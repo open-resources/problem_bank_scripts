@@ -11,6 +11,7 @@ import pathlib
 import sys
 import numpy as np
 import os
+from collections import defaultdict
 
 # Parse Markdown
 from markdown_it import MarkdownIt # pip install markdown-it-py 
@@ -51,6 +52,39 @@ def rounded(num, digits_after_decimal = 2):
         tmp = Decimal(num).quantize(Decimal('1.'+'0'*digits_after_decimal))
 
         return str(tmp)
+
+def split_body_parts(num_parts,body_parts):
+    """Parses individual question parts and splits out titles, and content
+
+    Args:
+        num_parts (int): An integer corresponding to the number of question parts (from `read_md_problem()`).
+        body_parts (dict): A dictionary from `read_md_problem()`.
+
+    Returns:
+        body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
+    """
+    mdit = MarkdownIt()
+    env = {}
+    nested_dict = lambda: defaultdict(nested_dict)
+
+    parts_dict = nested_dict()
+
+    for pnum in range(num_parts):
+
+        part = 'part'+f'{pnum}'
+        # Set up tokens by parsing the md file
+        tokens = mdit.parse(body_parts[part], env)
+
+        ptt = [i for i,j in enumerate(tokens) if j.tag=='h2']
+        parts_dict[part]['title'] = MDRenderer().render(tokens[ptt[0]+1:ptt[1]], mdit.options, env).strip('\n')
+
+        pa = [i for i,j in enumerate(tokens) if j.tag=='h3']
+        parts_dict[part]['answer']['title'] = MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env)
+
+        parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
+        parts_dict[part]['answer']['content'] = MDRenderer().render(tokens[pa[1]+1:], mdit.options, env)
+
+    return parts_dict
 
 def read_md_problem(filepath):
     """Reads a MystMarkdown problem file and returns a dictionary of the header and body
@@ -142,7 +176,8 @@ def read_md_problem(filepath):
     
     return {'header': header,
             'body_parts': body_parts,
-            'num_parts': part_counter}
+            'num_parts': part_counter,
+            'body_parts_split': split_body_parts(part_counter,body_parts) }
 
 def dict_to_md(md_dict, remove_keys = [None,]):
     """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
