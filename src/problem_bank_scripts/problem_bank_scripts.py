@@ -29,8 +29,6 @@ def rounded(num, digits_after_decimal = 2):
     Returns:
         str: A string that is correctly rounded (you know why it's not a float!)
     """
-
-
     """
     This needs to be heavily tested!!
     WARNING: This does not do sig figs yet!
