@@ -161,7 +161,7 @@ def read_md_problem(filepath):
 
     # Assert statements (turn into tests!)
     assert num_titles == 1, "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(num_titles)
-    assert block_count > 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(block_count -1)
+    assert block_count >= 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(block_count -1)
 
     # Add the end of the title block; # small hack
     #blocks['title'].append(blocks['block1'][0])
