@@ -20,25 +20,6 @@ from mdformat.renderer import MDRenderer # pip install mdformat
 # Dealing with YAML
 import yaml
 
-def defdict_to_dict(defdict, finaldict):
-    """Convert a defaultdict (nested) to a regular dictionary.
-        - Answer copied from: https://stackoverflow.com/a/61133504/2217577
-    Args:
-        defdict (dict): defaultdict
-        finaldict (dict): regular dictionary
-
-    Returns:
-        dict: Convert to regular dictionary
-    """
-    # pass in an empty dict for finaldict
-    for k, v in defdict.items():
-        if isinstance(v, defaultdict):
-            # new level created and that is the new value
-            finaldict[k] = defdict_to_dict(v, {})
-        else:
-            finaldict[k] = v
-    return finaldict
-
 def rounded(num, digits_after_decimal = 2):
     """Rounds numbers properly to specified digits after decimal place
 
@@ -88,7 +69,7 @@ def split_body_parts(num_parts,body_parts):
 
     parts_dict = nested_dict()
 
-    for pnum in range(1,num_parts+1):
+    for pnum in range(num_parts):
 
         part = 'part'+f'{pnum}'
         # Set up tokens by parsing the md file
@@ -103,7 +84,7 @@ def split_body_parts(num_parts,body_parts):
         parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
         parts_dict[part]['answer']['content'] = MDRenderer().render(tokens[pa[1]+1:], mdit.options, env)
 
-    return defdict_to_dict(parts_dict,{})
+    return parts_dict
 
 def read_md_problem(filepath):
     """Reads a MystMarkdown problem file and returns a dictionary of the header and body
@@ -145,8 +126,7 @@ def read_md_problem(filepath):
     for x,t in enumerate(tokens):
 
         if t.tag == 'h1' and t.nesting == 1: # title
-            # oh boy. this is going to break and it will be your fault firas.
-            blocks['title'] = [x,x+3]
+            blocks['title'] = [x,]
             num_titles += 1
 
         elif t.tag == 'h2' and t.nesting == 1:
@@ -166,10 +146,7 @@ def read_md_problem(filepath):
     assert block_count > 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(block_count -1)
 
     # Add the end of the title block; # small hack
-    #blocks['title'].append(blocks['block1'][0])
-
-    # Get the preamble before the parts start
-    blocks['preamble'] = [blocks['title'][1],blocks['block1'][0]]
+    blocks['title'].append(blocks['block1'][0])
 
     ## Process the blocks into markdown
 
@@ -183,9 +160,6 @@ def read_md_problem(filepath):
 
         if k == 'title':
             body_parts['title'] = rendered_part
-        
-        elif k == 'preamble':
-            body_parts['preamble'] = rendered_part
 
         elif 'Rubric' in rendered_part:
             body_parts['Rubric'] = rendered_part
@@ -200,10 +174,10 @@ def read_md_problem(filepath):
             part_counter +=1
             body_parts['part{0}'.format(part_counter)] = rendered_part
     
-    return defdict_to_dict({'header': header,
+    return {'header': header,
             'body_parts': body_parts,
             'num_parts': part_counter,
-            'body_parts_split': split_body_parts(part_counter,body_parts) },{})
+            'body_parts_split': split_body_parts(part_counter,body_parts) }
 
 def dict_to_md(md_dict, remove_keys = [None,]):
     """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
