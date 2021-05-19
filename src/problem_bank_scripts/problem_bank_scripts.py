@@ -8,7 +8,7 @@ from docopt import docopt
 ## Loading and Saving files & others
 import uuid
 import json
-from src.problem_bank_scripts import prairielearn as pl
+from . import prairielearn as pl
 import pathlib
 import sys
 import numpy as np
