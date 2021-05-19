@@ -385,7 +385,11 @@ def process_question(input_file, output_path):
 
     ############### Start Sketchiest Part
     # Run the python code
-    exec(parsed_q['header']['server'].split('# Update the data object with a new dict')[0],globals())
+    try:
+        exec(parsed_q['header']['server'].split('# Update the data object with a new dict')[0],globals())
+    except ModuleNotFoundError:
+        # AWFUL AWFUL hack because of the prairielearn.py file
+        exec(parsed_q['header']['server'].replace('import prairielearn as pl','from . import prairielearn as pl').split('# Update the data object with a new dict')[0],globals())
     ############### End Sketchiest Part
 
     # Write info.json file
