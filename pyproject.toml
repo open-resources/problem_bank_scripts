@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "problem_bank_scripts"
-version = "0.0.2"
+version = "0.0.3"
 description = "A packagee with useful functions to convert between different problem bank formats."
 authors = ["Open Problem Bank Team"]
 license = "MIT"
@@ -17,6 +17,7 @@ docopt = "^0.6.2"
 numpy = "^1.20.3"
 markdown-it-py = "^1.1.0"
 mdformat = "^0.7.6"
+sympy = "^1.8"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^4.0.1"
