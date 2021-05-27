@@ -43,37 +43,6 @@ def defdict_to_dict(defdict, finaldict):
             finaldict[k] = v
     return finaldict
 
-def rounded(num, digits_after_decimal = 2):
-    """Rounds numbers properly to specified digits after decimal place
-
-    Args:
-        num (float): Number that is to be rounded
-        digits_after_decimal (int, optional): Number of digits to round to. Defaults to 2.
-
-    Returns:
-        str: A string that is correctly rounded (you know why it's not a float!)
-    """
-    """
-    This needs to be heavily tested!!
-    WARNING: This does not do sig figs yet!
-    """
-
-    # Solution attributed to: https://stackoverflow.com/a/53329223
-
-    if type(num) == str:
-        return num
-    elif type(num) == dict:
-        return num
-    else:
-        from decimal import Decimal, getcontext, ROUND_HALF_UP
-
-        round_context = getcontext()
-        round_context.rounding = ROUND_HALF_UP
-
-        tmp = Decimal(num).quantize(Decimal('1.'+'0'*digits_after_decimal))
-
-        return str(tmp)
-
 def split_body_parts(num_parts,body_parts):
     """Parses individual question parts and splits out titles, and content
 
@@ -218,6 +187,8 @@ def dict_to_md(md_dict, remove_keys = [None,]):
     """
 
     md_string = ""
+
+    md_dict = defdict_to_dict(md_dict,{})
 
     for k,v in md_dict.items():
         if k in remove_keys:
