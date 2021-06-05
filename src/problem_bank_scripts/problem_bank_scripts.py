@@ -346,7 +346,7 @@ def process_question(input_file, output_path):
         print("File does not exist.")
         raise
 
-    output_path = pathlib.Path(output_path) / input_file.parts[-2]
+    output_path = pathlib.Path(output_path)
 
     # Parse the MD file
     parsed_q = read_md_problem(input_file)
