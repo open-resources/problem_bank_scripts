@@ -3,13 +3,13 @@ from src.problem_bank_scripts import problem_bank_scripts as pbs
 import pandas as pd
 
 def test_version():
-    assert __version__ == '0.0.5'
+    assert __version__ == '0.0.6'
 
-def test_rounded():
+# def test_rounded():
 
-    value = 100 / 3
+#     value = 100 / 3
 
-    rounded_value = pbs.rounded(value, digits_after_decimal = 3)
+#     rounded_value = pbs.rounded(value, digits_after_decimal = 3)
 
-    assert rounded_value == str(33.333)
+#     assert rounded_value == str(33.333)
 
