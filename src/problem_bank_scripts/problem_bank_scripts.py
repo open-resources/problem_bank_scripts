@@ -69,7 +69,13 @@ def split_body_parts(num_parts,body_parts):
         parts_dict[part]['title'] = MDRenderer().render(tokens[ptt[0]+1:ptt[1]], mdit.options, env).strip('\n')
 
         pa = [i for i,j in enumerate(tokens) if j.tag=='h3']
-        parts_dict[part]['answer']['title'] = MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env)
+
+        try:
+            parts_dict[part]['answer']['title'] = MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env)
+        except IndexError:
+            print("Check the heading level of 'Answer Section', it should be ### Answer Section.")
+            raise
+
 
         parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
         parts_dict[part]['answer']['content'] = MDRenderer().render(tokens[pa[1]+1:], mdit.options, env)
