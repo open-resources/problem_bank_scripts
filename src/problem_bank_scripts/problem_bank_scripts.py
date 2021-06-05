@@ -253,8 +253,9 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
     else:
         units = ''
 
-    for ans in data_dict['params'][f'{part_name}'].keys():
-        html += f"\t<pl-answer correct= |@ params.{part_name}.{ans}.correct @| > |@ params.{part_name}.{ans}.value @| {units} </pl-answer>\n"
+    for a in data_dict['params'][f'{part_name}'].keys():
+        if 'ans' in a:
+            html += f"\t<pl-answer correct= |@ params.{part_name}.{a}.correct @| > |@ params.{part_name}.{a}.value @| {units} </pl-answer>\n"
 
     html += '</pl-multiple-choice>\n' 
 
