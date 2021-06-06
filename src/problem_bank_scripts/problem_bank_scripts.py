@@ -76,7 +76,6 @@ def split_body_parts(num_parts,body_parts):
             print("Check the heading level of 'Answer Section', it should be ### Answer Section.")
             raise
 
-
         parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
         parts_dict[part]['answer']['content'] = MDRenderer().render(tokens[pa[1]+1:], mdit.options, env)
 
@@ -249,7 +248,7 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
         str: Multiple choice question is returned as a string with PL-compliant syntax.
     """
 
-    html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
     
     pl_customizations = " ".join([f'{k} = "{v}"' for k,v in parsed_question['header'][part_name]['pl-customizations'].items()]) # PL-customizations
     html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
