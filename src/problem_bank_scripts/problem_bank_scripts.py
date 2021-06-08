@@ -277,9 +277,9 @@ def process_dropdown(part_name,parsed_question, data_dict):
     Returns:
         html: A string of HTML that is part of the final PL question.html file.
     """
-
-    raise NotImplementedError
-
+    html = process_multiple_choice(part_name,parsed_question, data_dict).replace('-multiple-choice','-dropdown')
+    return html
+    
 def process_number_input(part_name,parsed_question, data_dict):
     """Processes markdown format number-input questions and returns PL HTML
 
