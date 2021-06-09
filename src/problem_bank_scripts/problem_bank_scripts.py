@@ -354,16 +354,16 @@ def process_attribution(source):
         string (str): returns the html of the attribution
     """
 
-    if source == 'openstax-physics-vol1':
+    if 'openstax-physics-vol1' in source:
         attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://i.creativecommons.org/l/by/4.0/88x31.png) Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
 
-    elif source == 'openstax-physics-vol2':
+    elif 'openstax-physics-vol2' in source:
         attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://i.creativecommons.org/l/by/4.0/88x31.png) Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
 
-    elif source == 'ubc-mech2':
+    elif 'ubc-mech2' in source:
         raise NotImplementedError
 
-    elif source is None or source =='standard':
+    elif 'standard' in source:
         attribution_text = "![Image representing the Creative Commons 4.0 BY-NC-SA license.](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png) Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/)."
 
     return attribution_text
@@ -421,12 +421,12 @@ def process_question(input_file, output_path):
             q_type = parsed_q['header'][part]['type']
 
             question_html += f"""
-                <div class="card my-2">
-                \t<div class="card-header">
-                \t{parsed_q['body_parts_split'][part]['title']}
-                </div>\n
-                <div class="card-body">\n\n\n
-                """
+<div class="card my-2">
+<div class="card-header">
+{parsed_q['body_parts_split'][part]['title']}
+</div>\n
+<div class="card-body">\n\n\n"""
+
             if 'multiple-choice' in q_type:                
                 question_html += f"{process_multiple_choice(part,parsed_q,data2)}"  
             elif 'number-input' in q_type:
@@ -436,14 +436,14 @@ def process_question(input_file, output_path):
             elif 'symbolic-input' in q_type:
                 question_html += process_symbolic_input(part,parsed_q,data2)
             elif 'dropdown' in q_type:
-                question_html = process_dropdown(part,parsed_q,data2)
+                question_html += process_dropdown(part,parsed_q,data2)
             else:
                 raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
-            question_html += "</div>\n</div>\n\n"
+            question_html += "</div>\n\n"
 
     # Add Attribution
-    question_html += f"\n\n---<markdown>\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
+    question_html += f"\n\n---\n<markdown>\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
 
     # Write question.html file
     (output_path / "question.html").write_text(question_html)
