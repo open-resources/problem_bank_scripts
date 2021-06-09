@@ -443,7 +443,11 @@ def process_question(input_file, output_path):
     question_html += f"\n\n---\n<markdown>\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
 
     # Write question.html file
-    (output_path / "question.html").write_text(question_html,encoding='raw_unicode_escape')
+    #(output_path / "question.html").write_text(question_html,encoding='raw_unicode_escape')
+
+    ### TODO solve the issue with the latex escape sequences, this is a workaround
+    with open((output_path / "question.html"), "w") as file:
+        print(f"{question_html}", file=file)
 
     # Write server.py file
     write_server_py(output_path,parsed_q)
