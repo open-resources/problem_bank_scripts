@@ -408,6 +408,8 @@ def process_question(input_file, output_path):
             question_html = process_checkbox('part1',parsed_q,data2)
         elif 'symbolic-input' in q_type:
             question_html = process_symbolic_input('part1',parsed_q,data2)
+        elif 'dropdown' in q_type:
+            question_html = process_dropdown('part1',parsed_q,data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
@@ -433,6 +435,8 @@ def process_question(input_file, output_path):
                 question_html += process_checkbox(part,parsed_q,data2)
             elif 'symbolic-input' in q_type:
                 question_html += process_symbolic_input(part,parsed_q,data2)
+            elif 'dropdown' in q_type:
+                question_html = process_dropdown(part,parsed_q,data2)
             else:
                 raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
