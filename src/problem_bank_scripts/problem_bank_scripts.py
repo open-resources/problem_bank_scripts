@@ -14,6 +14,7 @@ import sys
 import numpy as np
 import os
 from collections import defaultdict
+from shutil import copy2
 
 ## Parse Markdown
 from markdown_it import MarkdownIt # pip install markdown-it-py 
@@ -453,4 +454,7 @@ def process_question(input_file, output_path):
     # Write server.py file
     write_server_py(output_path,parsed_q)
 
-    # TODO: Find and move any image assets 
+    # Move image assets
+    files_to_copy = parsed_q['header'].get('assets')
+    if files_to_copy:
+        [copy2(input_file.parent / fl, output_path) for fl in files_to_copy]
