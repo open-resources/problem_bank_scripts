@@ -354,20 +354,23 @@ def process_attribution(source):
     Returns:
         string (str): returns the html of the attribution
     """
+    try:
+        if 'openstax-physics-vol1' in source:
+            attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://i.creativecommons.org/l/by/4.0/88x31.png) Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
 
-    if 'openstax-physics-vol1' in source:
-        attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://i.creativecommons.org/l/by/4.0/88x31.png) Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
+        elif 'openstax-physics-vol2' in source:
+            attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://i.creativecommons.org/l/by/4.0/88x31.png) Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
 
-    elif 'openstax-physics-vol2' in source:
-        attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://i.creativecommons.org/l/by/4.0/88x31.png) Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
+        elif 'ubc-mech2' in source:
+            raise NotImplementedError
 
-    elif 'ubc-mech2' in source:
-        raise NotImplementedError
-
-    elif 'standard' in source:
-        attribution_text = "![Image representing the Creative Commons 4.0 BY-NC-SA license.](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png) Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/)."
-
-    return attribution_text
+        elif 'standard' in source:
+            attribution_text = "![Image representing the Creative Commons 4.0 BY-NC-SA license.](https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png) Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/)."
+    
+        return attribution_text
+    
+    except TypeError:
+        print("You probably need to update the template, the 'attribution' key seems to be missing.")
 
 def process_question(input_file, output_path):
 
