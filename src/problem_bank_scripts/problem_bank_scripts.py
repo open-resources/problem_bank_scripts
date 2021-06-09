@@ -437,17 +437,18 @@ def process_question(input_file, output_path):
             else:
                 raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
+
             question_html += "</div>\n</div>\n\n\n"
 
     # Add Attribution
-    question_html += f"\n\n---\n<markdown>\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
+    question_html += f"\n\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
 
     # Write question.html file
     #(output_path / "question.html").write_text(question_html,encoding='raw_unicode_escape')
 
     ### TODO solve the issue with the latex escape sequences, this is a workaround
-    with open((output_path / "question.html"), "w") as file:
-        print(f"{question_html}", file=file)
+    with open((output_path / "question.html"), "w") as qfile:
+        print(f"{question_html}", file=qfile)
 
     # Write server.py file
     write_server_py(output_path,parsed_q)
