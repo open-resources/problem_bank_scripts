@@ -420,12 +420,9 @@ def process_question(input_file, output_path):
             part = 'part'+f'{pnum}'
             q_type = parsed_q['header'][part]['type']
 
-            question_html += f"""
-<div class="card my-2">
-<div class="card-header">
-{parsed_q['body_parts_split'][part]['title']}
-</div>\n
-<div class="card-body">\n\n\n"""
+            question_html += f"""<div class="card my-2">
+<div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
+<div class="card-body">\n\n"""
 
             if 'multiple-choice' in q_type:                
                 question_html += f"{process_multiple_choice(part,parsed_q,data2)}"  
