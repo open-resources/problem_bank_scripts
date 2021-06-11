@@ -8,7 +8,7 @@ from docopt import docopt
 ## Loading and Saving files & others
 import uuid
 import json
-from . import prairielearn as pl
+#from . import prairielearn as pl
 import pathlib
 import sys
 import numpy as np
@@ -228,13 +228,29 @@ def write_server_py(output_path,parsed_question):
         parsed_question ([type]): [description]
     """
     
+    server_dict = parsed_question['header']['server']
+    
+    server_file = f""""""
+    
+    server_file += server_dict.pop('imports',None) + '\n'
+    
     try:
-        imp, func = parsed_question['header']['server'].split('# Start problem code')
+        for function, code in server_dict.items():
+            indented_code = code.replace('\n','\n    ')
+            if code:
+                server_file += f"def {function}(data):\n    {indented_code}\n"
     except:
         raise
+        
+    return server_file
+    
+#     try:
+#         imp, func = parsed_question['header']['server'].split('# Start problem code')
+#     except:
+#         raise
 
-    func = func.replace('read_csv("','read_csv(data["options"]["client_files_course_path"]+"/')
-    func = func.replace('\n','\n    ')
+#     func = func.replace('read_csv("','read_csv(data["options"]["client_files_course_path"]+"/')
+#     func = func.replace('\n','\n    ')
 
     (output_path / "server.py").write_text(imp+'def generate(data):'+func)
 
@@ -345,6 +361,34 @@ def replace_tags(string):
     """
     return string.replace('|@','{{').replace('@|','}}')
 
+def remove_correct_answers(data2_dict):
+    """Magical recursive function that removes particular keys from a nested dictionary: https://stackoverflow.com/a/29652561/2217577
+
+    Args:
+        data2_dict (dict): Dictionary (nested) from which to remove key:value
+
+    Returns:
+        data2_dict (dict): Dictionary with the offending keys removed
+    """
+
+    # This was adapted from this SO: https://stackoverflow.com/a/29652561/2217577
+    def gen_dict_extract(key_to_remove, dict_object):
+        if hasattr(dict_object,'items'):
+            for k, v in list(dict_object.items()):
+                if key_to_remove in k:
+                    dict_object.pop(k,None)
+                if isinstance(v, dict):
+                    for result in gen_dict_extract(key_to_remove, v):
+                        yield result
+                elif isinstance(v, list):
+                    for d in v:
+                        for result in gen_dict_extract(key_to_remove, d):
+                            yield result
+
+    list(gen_dict_extract('correct',data2_dict))
+
+    return data2_dict
+
 def process_attribution(source):
     """Takes in a string and returns the HTML for the attribution
 
@@ -371,30 +415,113 @@ def process_attribution(source):
     
     except TypeError:
         print("You probably need to update the template, the 'attribution' key seems to be missing.")
+        
+def process_question_md(source_filepath, output_path = None, instructor = False):
+    
+    try:
+        source_filepath = pathlib.Path(source_filepath)
+    except:
+        print(f"{source_filepath} - File does not exist.")
+        raise
+        
+    if output_path is None:
+        if instructor: 
+            # Set the output path (hard-coded)
+            output_path = pathlib.Path(source_filepath.replace('source','output/instructor'))
+        else:
+            # Set the output path (hard-coded)
+            output_path = pathlib.Path(source_filepath.replace('source','output/public'))
+    else:
+        ## TODO: Make this a bit more robust
+        print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
+    
+    # deal with multi-line strings in YAML Dump
+    ## Code copied from here: https://stackoverflow.com/a/33300001/2217577
 
-def process_question(input_file, output_path):
+    def str_presenter(dumper, data2):
+        if len(data2.splitlines()) > 1:  # check for multiline string
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data2, style='|')
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data2)
+
+    yaml.add_representer(str, str_presenter)
+
+    read_q = pbs.read_md_problem(source_filepath)
+
+    header = read_q['header']
+    body_parts = read_q['body_parts']
+    
+    # Run the python code
+    ## TODO: Is there a better way to do this?
+    exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
+    exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
+
+    # Remove the solutions from the server section
+    if instructor is True:
+        header.pop('server',None)
+
+        # Remove python solution from the public view
+        header.pop('server',None)
+
+        # Remove correct answers from the data2 dict 
+        data2_sanitized = pbs.defdict_to_dict(data2,{})
+        data2_sanitized = remove_correct_answers(data2_sanitized)
+
+        # Update the YAML header to add substitutions 
+        header.update({'substitutions': data2_sanitized})
+
+        # Update the YAML header to add substitutions, unsort it, and process for file
+        header = yaml.dump(header,sort_keys=False,default_flow_style=False)
+        
+        # Write the YAML to a file
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text('---\n' + instructor_header + '---\n' + pbs.dict_to_md(body_parts) +
+                        '\n## Attribution\n\n' + pbs.process_attribution(header.get('attribution')) )
+        
+    else:
+        # Update the YAML header to add substitutions 
+        header.update({'substitutions': pbs.defdict_to_dict(data2,{})})
+
+        # Update the YAML header to add substitutions, unsort it, and process for file
+        header = yaml.dump(header,sort_keys=False,default_flow_style=False)
+
+        # Write the YAML to a file
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text('---\n' + header + '---\n' + pbs.dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments']) +
+                        '\n## Attribution\n\n' + pbs.process_attribution(header.get('attribution')) )
+
+    # Move image assets
+    files_to_copy = header.get('assets')
+    if files_to_copy:
+        [copy2(output_path.parent / fl, output_path.parent) for fl in files_to_copy]
+
+def process_question_pl(source_filepath, output_path = None):
 
     try:
-        input_file = pathlib.Path(input_file)
+        source_filepath = pathlib.Path(source_filepath)
     except:
-        print("File does not exist.")
+        print(f"{source_filepath} - File does not exist.")
         raise
-
-    output_path = pathlib.Path(output_path)
+        
+    if output_path is None:
+        output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
+    else:
+        ## TODO: Make this a bit more robust
+        print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
 
     # Parse the MD file
-    parsed_q = read_md_problem(input_file)
+    parsed_q = read_md_problem(source_filepath)
 
     # Create output dir if it doesn't exist
-    pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
+    output_path.mkdir(parents=True, exist_ok=True)
 
     ############### Start Sketchiest Part
     # Run the python code
     try:
-        exec(parsed_q['header']['server'].split('# Update the data object with a new dict')[0],globals())
+        exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )
     except ModuleNotFoundError:
         # AWFUL AWFUL hack because of the prairielearn.py file
-        exec(parsed_q['header']['server'].replace('import prairielearn as pl','from . import prairielearn as pl').split('# Update the data object with a new dict')[0],globals())
+        exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
+        exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
     ############### End Sketchiest Part
 
     # Write info.json file
@@ -459,4 +586,4 @@ def process_question(input_file, output_path):
     # Move image assets
     files_to_copy = parsed_q['header'].get('assets')
     if files_to_copy:
-        [copy2(input_file.parent / fl, output_path) for fl in files_to_copy]
+        [copy2(source_filepath.parent / fl, output_path) for fl in files_to_copy]
