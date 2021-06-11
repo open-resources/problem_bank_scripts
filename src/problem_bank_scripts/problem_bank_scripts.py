@@ -8,7 +8,7 @@ from docopt import docopt
 ## Loading and Saving files & others
 import uuid
 import json
-#from . import prairielearn as pl
+from . import prairielearn as pl
 import pathlib
 import sys
 import numpy as np
@@ -419,7 +419,7 @@ def process_attribution(source):
 def process_question_md(source_filepath, output_path = None, instructor = False):
     
     try:
-        source_filepath = pathlib.Path(source_filepath)
+        pathlib.Path(source_filepath)
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
@@ -445,10 +445,10 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
     yaml.add_representer(str, str_presenter)
 
-    read_q = pbs.read_md_problem(source_filepath)
+    parsed_q = read_md_problem(source_filepath)
 
-    header = read_q['header']
-    body_parts = read_q['body_parts']
+    header = parsed_q['header']
+    body_parts = parsed_q['body_parts']
     
     # Run the python code
     ## TODO: Is there a better way to do this?
@@ -463,45 +463,45 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         header.pop('server',None)
 
         # Remove correct answers from the data2 dict 
-        data2_sanitized = pbs.defdict_to_dict(data2,{})
+        data2_sanitized = defdict_to_dict(data2,{})
         data2_sanitized = remove_correct_answers(data2_sanitized)
 
         # Update the YAML header to add substitutions 
         header.update({'substitutions': data2_sanitized})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
-        header = yaml.dump(header,sort_keys=False,default_flow_style=False)
+        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
         
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + instructor_header + '---\n' + pbs.dict_to_md(body_parts) +
-                        '\n## Attribution\n\n' + pbs.process_attribution(header.get('attribution')) )
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts) +
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
         
     else:
         # Update the YAML header to add substitutions 
-        header.update({'substitutions': pbs.defdict_to_dict(data2,{})})
+        header.update({'substitutions': defdict_to_dict(data2,{})})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
-        header = yaml.dump(header,sort_keys=False,default_flow_style=False)
+        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header + '---\n' + pbs.dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments']) +
-                        '\n## Attribution\n\n' + pbs.process_attribution(header.get('attribution')) )
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments']) +
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
 
     # Move image assets
     files_to_copy = header.get('assets')
     if files_to_copy:
-        [copy2(output_path.parent / fl, output_path.parent) for fl in files_to_copy]
+        [copy2(pathlib.Path(source_filepath).parent / fl, output_path.parent) for fl in files_to_copy]
 
 def process_question_pl(source_filepath, output_path = None):
 
     try:
-        source_filepath = pathlib.Path(source_filepath)
+        pathlib.Path(source_filepath)
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
-        
+
     if output_path is None:
         output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
     else:
@@ -586,4 +586,4 @@ def process_question_pl(source_filepath, output_path = None):
     # Move image assets
     files_to_copy = parsed_q['header'].get('assets')
     if files_to_copy:
-        [copy2(source_filepath.parent / fl, output_path) for fl in files_to_copy]
+        [copy2(pathlib.Path(source_filepath).parent / fl, output_path) for fl in files_to_copy]
