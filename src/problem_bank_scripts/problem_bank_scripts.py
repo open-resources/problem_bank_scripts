@@ -74,7 +74,7 @@ def split_body_parts(num_parts,body_parts):
         try:
             parts_dict[part]['answer']['title'] = MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env)
         except IndexError:
-            print("Check the heading level of 'Answer Section', it should be ### Answer Section.")
+            print("Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is).")
             raise
 
         parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
@@ -95,7 +95,7 @@ def read_md_problem(filepath):
             - `num_parts` - Number of parts in the problem (integer).
     """
 
-    mdtext = pathlib.Path(filepath).read_text(encoding='raw_unicode_escape')
+    mdtext = pathlib.Path(filepath).read_text()
 
     # Deal with YAML header
     header_text = mdtext.rsplit('---\n')[1]
@@ -440,7 +440,6 @@ def process_question(input_file, output_path):
                 question_html += process_dropdown(part,parsed_q,data2)
             else:
                 raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
-
 
             question_html += "</div>\n</div>\n\n\n"
 
