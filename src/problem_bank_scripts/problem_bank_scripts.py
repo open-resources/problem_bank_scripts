@@ -453,6 +453,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
             output_path = pathlib.Path(source_filepath.replace('source','output/public'))
     else:
         ## TODO: Make this a bit more robust
+        output_path = pathlib.Path(output_path)
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
     
     # deal with multi-line strings in YAML Dump
@@ -525,6 +526,8 @@ def process_question_pl(source_filepath, output_path = None):
     if output_path is None:
         output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
     else:
+        output_path = pathlib.Path(output_path)
+
         ## TODO: Make this a bit more robust
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
 
