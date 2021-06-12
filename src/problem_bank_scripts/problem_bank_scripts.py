@@ -475,7 +475,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts) +
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['pl-submission-panel','pl-answer-panel']) +
                         '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
         
     else:
@@ -487,7 +487,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments']) +
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments','pl-submission-panel','pl-answer-panel']) +
                         '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
 
     # Move image assets
