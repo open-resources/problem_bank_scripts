@@ -261,7 +261,11 @@ def write_server_py(output_path,parsed_question):
                 server_file += f"def {function}(data):\n    {indented_code}\n"
     except:
         raise
-        
+
+    # Deal with path differences when using PL
+    server_file = server_file.replace('read_csv("','read_csv(data["options"]["client_files_course_path"]+"/')
+
+    # Write server.py
     (output_path / "server.py").write_text(server_file)
 
 def process_multiple_choice(part_name,parsed_question, data_dict):
@@ -516,7 +520,7 @@ def process_question_pl(source_filepath, output_path = None):
     if output_path is None:
         output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
     else:
-        output_path = pathlib.Path(output_path)
+        output_path = pathlib.Path(output_path).parent
 
         ## TODO: Make this a bit more robust
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
