@@ -81,6 +81,19 @@ def split_body_parts(num_parts,body_parts):
         parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
         parts_dict[part]['answer']['content'] = MDRenderer().render(tokens[pa[1]+1:], mdit.options, env)
 
+        # Remove parts from body_parts
+        body_parts.pop(part)
+
+    # Deal with other headings: pl-submission-panel and pl-answer-panel
+
+    for key in body_parts.keys():
+        if key in ['pl-submission-panel','pl-answer-panel']:
+            # Set up tokens by parsing the md file
+            tokens = mdit.parse(body_parts[key], env)
+
+            ptt = [i for i,j in enumerate(tokens) if j.tag=='h2']
+            parts_dict[key] = MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env)  
+
     return defdict_to_dict(parts_dict,{})
 
 def read_md_problem(filepath):
@@ -173,6 +186,12 @@ def read_md_problem(filepath):
 
         elif 'Comments' in rendered_part:
             body_parts['Comments'] = rendered_part
+
+        elif 'pl-submission-panel' in rendered_part:
+            body_parts['pl-submission-panel'] = rendered_part
+
+        elif 'pl-answer-panel' in rendered_part:
+            body_parts['pl-answer-panel'] = rendered_part
 
         else:
             part_counter +=1
@@ -518,6 +537,7 @@ def process_question_pl(source_filepath, output_path = None):
     ############### Start Sketchiest Part
     # Run the python code
     try:
+        exec(parsed_q['header']['server']['imports'],globals() )
         exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )
     except ModuleNotFoundError:
         # AWFUL AWFUL hack because of the prairielearn.py file
@@ -575,8 +595,16 @@ def process_question_pl(source_filepath, output_path = None):
 
             question_html += "</div>\n</div>\n\n\n"
 
+    # Add pl-submission-panel and pl-answer-panel
+
+    if parsed_q['body_parts_split']['pl-submission-panel']:
+        question_html += f"<pl-submission-panel>{ parsed_q['body_parts_split']['pl-submission-panel'] } </pl-submission-panel>\n"
+
+    if parsed_q['body_parts_split']['pl-answer-panel']:
+        question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
+
     # Add Attribution
-    question_html += f"<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
+    question_html += f"\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
