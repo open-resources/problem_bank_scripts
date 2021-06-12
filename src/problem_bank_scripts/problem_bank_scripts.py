@@ -476,9 +476,9 @@ def pl_image_path(html):
     res = re.subn("\((.*\.png)\)",'(clientFilesQuestion/\\1)',html)
 
     # If image files are included as html format, add clientFilesQuestion
-    res = re.subn(r"\"(.*\.png)",
-              "\"clientFilesQuestion/\\1",html) # works
+    res = re.subn(r"src=\"(.*\.png)",
+              "src=\"clientFilesQuestion/\\1",html) # works
 
-    return html
+    return res[0]
 
 
