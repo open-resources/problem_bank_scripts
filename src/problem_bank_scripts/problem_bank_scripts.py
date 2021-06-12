@@ -15,6 +15,7 @@ import numpy as np
 import os
 from collections import defaultdict
 from shutil import copy2
+import re
 
 ## Parse Markdown
 from markdown_it import MarkdownIt # pip install markdown-it-py 
@@ -573,6 +574,9 @@ def process_question_pl(source_filepath, output_path = None):
     # Add Attribution
     question_html += f"\n\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
 
+    # Final pre-processing
+    question_html = pl_image_path(question_html)
+
     # Write question.html file
     (output_path / "question.html").write_text(question_html) #,encoding='raw_unicode_escape')
 
@@ -585,7 +589,22 @@ def process_question_pl(source_filepath, output_path = None):
 
     # Move image assets
     files_to_copy = parsed_q['header'].get('assets')
-    pl_path =  output_path / "clientFilesQuestion"
-    pl_path.parent.mkdir(parents=True, exist_ok=True)
     if files_to_copy:
-        [copy2(pathlib.Path(source_filepath).parent / fl, pl_path) for fl in files_to_copy]
+        pl_path =  output_path / "clientFilesQuestion"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
+
+def pl_image_path(html):
+
+    """Adds `clientFilesQuestion` directory before the path automatically
+    """
+
+    # If image files are included as markdown format, add clientFilesQuestion
+    res = re.subn("\((.*\.png)\)",'(clientFilesQuestion/\\1)',html)
+
+    # If image files are included as html format, add clientFilesQuestion
+    res = re.subn(r"src=\"(.*\.png)",
+              "src=\"clientFilesQuestion/\\1",res[0]) # works
+
+
+    return res[0]
