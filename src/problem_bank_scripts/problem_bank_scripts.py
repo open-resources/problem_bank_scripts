@@ -401,26 +401,30 @@ def process_question(input_file, output_path):
     # Write info.json file
     write_info_json(output_path, parsed_q)
 
-    ## Single part questions
+    # Question Preamble
+    if parsed_q['body_parts']['preamble']:
+        question_html = f"{parsed_q['body_parts']['preamble']}\n\n"
+    else:
+        question_html = f""
 
+    ## Single part questions
     if parsed_q['num_parts'] == 1:
         q_type = parsed_q['header']['part1']['type']
         if 'multiple-choice' in q_type:
-            question_html = process_multiple_choice('part1',parsed_q,data2)
+            question_html += process_multiple_choice('part1',parsed_q,data2)
         elif 'number-input' in q_type:
-            question_html = process_number_input('part1',parsed_q,data2)
+            question_html += process_number_input('part1',parsed_q,data2)
         elif 'checkbox' in q_type:
-            question_html = process_checkbox('part1',parsed_q,data2)
+            question_html += process_checkbox('part1',parsed_q,data2)
         elif 'symbolic-input' in q_type:
-            question_html = process_symbolic_input('part1',parsed_q,data2)
+            question_html += process_symbolic_input('part1',parsed_q,data2)
         elif 'dropdown' in q_type:
-            question_html = process_dropdown('part1',parsed_q,data2)
+            question_html += process_dropdown('part1',parsed_q,data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
     ##### Multi part
     else:
-        question_html = ""
         for pnum in range(1, parsed_q['num_parts'] + 1):
             part = 'part'+f'{pnum}'
             q_type = parsed_q['header'][part]['type']
