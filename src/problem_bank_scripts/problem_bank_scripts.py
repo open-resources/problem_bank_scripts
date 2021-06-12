@@ -262,7 +262,7 @@ def write_server_py(output_path,parsed_question):
     except:
         raise
         
-    return server_file
+    (output_path / "server.py").write_text(server_file)
     
 #     try:
 #         imp, func = parsed_question['header']['server'].split('# Start problem code')
