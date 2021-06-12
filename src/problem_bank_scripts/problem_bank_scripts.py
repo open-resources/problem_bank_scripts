@@ -576,7 +576,7 @@ def process_question_pl(source_filepath, output_path = None):
             question_html += "</div>\n</div>\n\n\n"
 
     # Add Attribution
-    question_html += f"\n\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
+    question_html += f"<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
