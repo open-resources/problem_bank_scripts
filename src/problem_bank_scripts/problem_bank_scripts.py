@@ -263,16 +263,6 @@ def write_server_py(output_path,parsed_question):
         raise
         
     (output_path / "server.py").write_text(server_file)
-    
-#     try:
-#         imp, func = parsed_question['header']['server'].split('# Start problem code')
-#     except:
-#         raise
-
-#     func = func.replace('read_csv("','read_csv(data["options"]["client_files_course_path"]+"/')
-#     func = func.replace('\n','\n    ')
-
-    (output_path / "server.py").write_text(imp+'def generate(data):'+func)
 
 def process_multiple_choice(part_name,parsed_question, data_dict):
     """Processes markdown format multiple-choice questions and returns PL HTML
