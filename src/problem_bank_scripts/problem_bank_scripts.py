@@ -458,5 +458,7 @@ def process_question(input_file, output_path):
 
     # Move image assets
     files_to_copy = parsed_q['header'].get('assets')
+    pl_path =  output_path / "clientFilesQuestion"
+    pl_path.parent.mkdir(parents=True, exist_ok=True)
     if files_to_copy:
-        [copy2(input_file.parent / fl, output_path) for fl in files_to_copy]
+        [copy2(pathlib.Path(source_filepath).parent / fl, pl_path) for fl in files_to_copy]
