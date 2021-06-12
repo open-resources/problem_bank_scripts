@@ -619,21 +619,20 @@ def process_question_pl(source_filepath, output_path = None):
     # Move image assets
     files_to_copy = parsed_q['header'].get('assets')
     if files_to_copy:
-        pl_path =  output_path / "clientFilesQuestion"
+        pl_path =  output_path / "{{options.client_files_question_url}}"
         pl_path.mkdir(parents=True, exist_ok=True)
         [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
 
 def pl_image_path(html):
 
-    """Adds `clientFilesQuestion` directory before the path automatically
+    """Adds `{{options.client_files_question_url}}` directory before the path automatically
     """
 
-    # If image files are included as markdown format, add clientFilesQuestion
-    res = re.subn("\((.*\.png)\)",'(clientFilesQuestion/\\1)',html)
+    # If image files are included as markdown format, add {{options.client_files_question_url}}
+    res = re.subn("\((.*\.png)\)",'({{options.client_files_question_url}}/\\1)',html)
 
-    # If image files are included as html format, add clientFilesQuestion
+    # If image files are included as html format, add {{options.client_files_question_url}}
     res = re.subn(r"src=\"(?!http)(.*\.png)",
-              "src=\"clientFilesQuestion/\\1",res[0]) # works
-
+              "src=\"{{options.client_files_question_url}}/\\1",res[0]) # works
 
     return res[0]
