@@ -16,6 +16,7 @@ import os
 from collections import defaultdict
 from shutil import copy2
 import re
+import codecs
 
 ## Parse Markdown
 from markdown_it import MarkdownIt # pip install markdown-it-py 
@@ -73,13 +74,13 @@ def split_body_parts(num_parts,body_parts):
         pa = [i for i,j in enumerate(tokens) if j.tag=='h3']
 
         try:
-            parts_dict[part]['answer']['title'] = MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env)
+            parts_dict[part]['answer']['title'] = codecs.unicode_escape_decode(MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env))[0]
         except IndexError:
             print("Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is).")
             raise
 
-        parts_dict[part]['content'] = MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env)
-        parts_dict[part]['answer']['content'] = MDRenderer().render(tokens[pa[1]+1:], mdit.options, env)
+        parts_dict[part]['content'] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env))[0]
+        parts_dict[part]['answer']['content'] = codecs.unicode_escape_decode(MDRenderer().render(tokens[pa[1]+1:], mdit.options, env))[0]
 
     return defdict_to_dict(parts_dict,{})
 
@@ -96,7 +97,7 @@ def read_md_problem(filepath):
             - `num_parts` - Number of parts in the problem (integer).
     """
 
-    mdtext = pathlib.Path(filepath).read_text()
+    mdtext = pathlib.Path(filepath).read_text(encoding='utf8')
 
     # Deal with YAML header
     header_text = mdtext.rsplit('---\n')[1]
@@ -157,7 +158,7 @@ def read_md_problem(filepath):
 
     for k,v in blocks.items():
 
-        rendered_part = MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env)
+        rendered_part = codecs.unicode_escape_decode(MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env))[0]
 
         if k == 'title':
             body_parts['title'] = rendered_part
@@ -220,7 +221,7 @@ def write_info_json(output_path, parsed_question):
             "topic": \"""" + parsed_question['header']['topic'] + """",
             "tags":  """ + json.dumps(parsed_question['header']['tags']) + """,
             "type": "v3"
-        }""")
+        }""",encoding='utf8')
 
 def write_server_py(output_path,parsed_question):
     """
@@ -237,7 +238,7 @@ def write_server_py(output_path,parsed_question):
     func = func.replace('read_csv("','read_csv(data["options"]["client_files_course_path"]+"/')
     func = func.replace('\n','\n    ')
 
-    (output_path / "server.py").write_text(imp+'def generate(data):'+func)
+    (output_path / "server.py").write_text(imp+'def generate(data):'+func,encoding='utf8')
 
 def process_multiple_choice(part_name,parsed_question, data_dict):
     """Processes markdown format multiple-choice questions and returns PL HTML
@@ -455,7 +456,7 @@ def process_question(input_file, output_path):
     question_html = pl_image_path(question_html)
 
     # Write question.html file
-    (output_path / "question.html").write_text(question_html) #,encoding='raw_unicode_escape')
+    (output_path / "question.html").write_text(question_html,encoding='utf8') #,encoding='raw_unicode_escape')
 
     ### TODO solve the issue with the latex escape sequences, this is a workaround
     # with open((output_path / "question.html"), "w") as qfile:
