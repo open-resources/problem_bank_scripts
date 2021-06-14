@@ -3,7 +3,7 @@ from src.problem_bank_scripts import problem_bank_scripts as pbs
 import pandas as pd
 
 def test_version():
-    assert __version__ == '0.0.12'
+    assert __version__ == '0.1.0'
 
 # def test_rounded():
 
