@@ -171,7 +171,7 @@ def read_md_problem(filepath):
 
     for k,v in blocks.items():
 
-        rendered_part = MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env)
+        rendered_part = codecs.unicode_escape_decode(MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env))[0]
 
         if k == 'title':
             body_parts['title'] = rendered_part
