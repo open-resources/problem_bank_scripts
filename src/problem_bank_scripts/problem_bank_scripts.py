@@ -424,7 +424,7 @@ def process_attribution(source):
             raise NotImplementedError
 
         elif 'standard' in source:
-            attribution_text = "![The Creative Commons 4.0 license requiring attribution (BY), non-commercial (NC), and share-alike (SA) license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png) Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/)."
+            attribution_text = "![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png) Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/)."
     
         return attribution_text
     
@@ -548,7 +548,7 @@ def process_question_pl(source_filepath, output_path = None):
 
     # Question Preamble
     if parsed_q['body_parts']['preamble']:
-        question_html = f"{parsed_q['body_parts']['preamble']}\n\n"
+        question_html = f"<markdown>\n{ codecs.unicode_escape_decode(parsed_q['body_parts']['preamble'])[0] }\n</markdown>\n\n"
     else:
         question_html = f""
 
@@ -620,7 +620,7 @@ def process_question_pl(source_filepath, output_path = None):
     # Move image assets
     files_to_copy = parsed_q['header'].get('assets')
     if files_to_copy:
-        pl_path =  output_path / "{{options.client_files_question_url}}"
+        pl_path =  output_path / "clientFilesQuestion"
         pl_path.mkdir(parents=True, exist_ok=True)
         [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
 
@@ -630,7 +630,7 @@ def pl_image_path(html):
     """
 
     # If image files are included as markdown format, add {{options.client_files_question_url}}
-    res = re.subn("\((.*\.png)\)",'({{options.client_files_question_url}}/\\1)',html)
+    res = re.subn(r"\(((?!http).*\.png)\)",'({{options.client_files_question_url}}/\\1)',html)
 
     # If image files are included as html format, add {{options.client_files_question_url}}
     res = re.subn(r"src=\"(?!http)(.*\.png)",
