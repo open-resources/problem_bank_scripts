@@ -593,12 +593,14 @@ def process_question_pl(source_filepath, output_path = None):
 
             question_html += "</div>\n</div>\n\n\n"
 
-    # Add pl-submission-panel and pl-answer-panel
+    # Add pl-submission-panel and pl-answer-panel (if they exist)
+    subm_panel = parsed_q['body_parts_split'].get('pl-submission-panel', None)
+    q_panel = parsed_q['body_parts_split'].get('pl-answer-panel', None)
 
-    if parsed_q['body_parts_split']['pl-submission-panel']:
+    if subm_panel:
         question_html += f"<pl-submission-panel>{ parsed_q['body_parts_split']['pl-submission-panel'] } </pl-submission-panel>\n"
 
-    if parsed_q['body_parts_split']['pl-answer-panel']:
+    if q_panel:
         question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
 
     # Add Attribution
