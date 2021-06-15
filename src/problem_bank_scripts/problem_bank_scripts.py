@@ -556,7 +556,7 @@ def process_question_pl(source_filepath, output_path = None):
 
     # Question Preamble
     if parsed_q['body_parts']['preamble']:
-        question_html = f"<pl-question-panel>\n<markdown>\n{ codecs.unicode_escape_decode(parsed_q['body_parts']['preamble'])[0] }\n</markdown>\n</pl-question-panel>\n\n"
+        question_html = f"<pl-question-panel>\n<markdown>\n{ parsed_q['body_parts']['preamble'] }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
 
@@ -619,7 +619,7 @@ def process_question_pl(source_filepath, output_path = None):
     question_html = pl_image_path(question_html)
 
     # Write question.html file
-    (output_path / "question.html").write_text(question_html,encoding='utf8') #,encoding='raw_unicode_escape')
+    (output_path / "question.html").write_text(question_html,encoding='utf8')
 
     ### TODO solve the issue with the latex escape sequences, this is a workaround
     # with open((output_path / "question.html"), "w") as qfile:
