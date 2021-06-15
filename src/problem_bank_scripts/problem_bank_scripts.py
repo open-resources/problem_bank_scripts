@@ -449,13 +449,10 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         else:
             # Set the output path (hard-coded)
             output_path = pathlib.Path(source_filepath.replace('source','output/public'))
-            
-        print(type(output_path))
     else:
         ## TODO: Make this a bit more robust
         output_path = pathlib.Path(output_path)
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
-        print(type(output_path))
 
     # deal with multi-line strings in YAML Dump
     ## Code copied from here: https://stackoverflow.com/a/33300001/2217577
@@ -526,10 +523,8 @@ def process_question_pl(source_filepath, output_path = None):
 
     if output_path is None:
         output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
-        print(type(output_path))
     else:
         output_path = pathlib.Path(output_path).parent
-        print(type(output_path))
 
         ## TODO: Make this a bit more robust
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
@@ -613,7 +608,7 @@ def process_question_pl(source_filepath, output_path = None):
         question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
 
     # Add Attribution
-    question_html += f"\n<pl-answer-panel>\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-answer-panel>\n"
+    question_html += f"\n<pl-question-panel>\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
