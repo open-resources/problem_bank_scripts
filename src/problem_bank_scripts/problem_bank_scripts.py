@@ -415,16 +415,16 @@ def process_attribution(source):
     """
     try:
         if 'openstax-physics-vol1' in source:
-            attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png) Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
+            attribution_text = "Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).\n![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
 
         elif 'openstax-physics-vol2' in source:
-            attribution_text = "![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png) Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/)."
+            attribution_text = "Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).\n![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
 
         elif 'ubc-mech2' in source:
             raise NotImplementedError
 
         elif 'standard' in source:
-            attribution_text = "![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png) Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/)."
+            attribution_text = "Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).\n![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
     
         return attribution_text
     
@@ -604,7 +604,7 @@ def process_question_pl(source_filepath, output_path = None):
         question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
 
     # Add Attribution
-    question_html += f"\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>"
+    question_html += f"\n<pl-answer-panel>\n<markdown>---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-answer-panel>\n"
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
