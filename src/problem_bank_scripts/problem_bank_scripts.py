@@ -249,6 +249,8 @@ def write_server_py(output_path,parsed_question):
         parsed_question ([type]): [description]
     """
     
+    output_path = pathlib.Path(output_path)
+    
     server_dict = parsed_question['header']['server']
     
     server_file = f""""""
@@ -264,7 +266,8 @@ def write_server_py(output_path,parsed_question):
         raise
 
     # Deal with path differences when using PL
-    server_file = server_file.replace('read_csv("','read_csv(data["options"]["client_files_course_path"]+"/')
+    server_file = server_file.replace('read_csv("',
+                                      'read_csv(data["options"]["client_files_course_path"]+"/')
 
     # Write server.py
     (output_path / "server.py").write_text(server_file,encoding='utf8')
@@ -446,11 +449,14 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         else:
             # Set the output path (hard-coded)
             output_path = pathlib.Path(source_filepath.replace('source','output/public'))
+            
+        print(type(output_path))
     else:
         ## TODO: Make this a bit more robust
         output_path = pathlib.Path(output_path)
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
-    
+        print(type(output_path))
+
     # deal with multi-line strings in YAML Dump
     ## Code copied from here: https://stackoverflow.com/a/33300001/2217577
 
@@ -520,8 +526,10 @@ def process_question_pl(source_filepath, output_path = None):
 
     if output_path is None:
         output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
+        print(type(output_path))
     else:
         output_path = pathlib.Path(output_path).parent
+        print(type(output_path))
 
         ## TODO: Make this a bit more robust
         print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
@@ -548,9 +556,10 @@ def process_question_pl(source_filepath, output_path = None):
 
     # Question Preamble
     if parsed_q['body_parts']['preamble']:
-        question_html = f"<markdown>\n{ codecs.unicode_escape_decode(parsed_q['body_parts']['preamble'])[0] }\n</markdown>\n\n"
+        question_html = f"<pl-question-panel>\n<markdown>\n{ codecs.unicode_escape_decode(parsed_q['body_parts']['preamble'])[0] }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
+
 
     ## Single part questions
     if parsed_q['num_parts'] == 1:
