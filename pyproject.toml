@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "problem_bank_scripts"
-version = "0.1.0"
+version = "0.1.1"
 description = "A packagee with useful functions to convert between different problem bank formats."
 authors = ["Open Problem Bank Team"]
 license = "MIT"
