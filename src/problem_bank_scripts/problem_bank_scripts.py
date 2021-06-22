@@ -172,7 +172,7 @@ def read_md_problem(filepath):
     for k,v in blocks.items():
 
         rendered_part = codecs.unicode_escape_decode(MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env))[0]
-
+        
         if k == 'title':
             body_parts['title'] = rendered_part
         
@@ -196,12 +196,14 @@ def read_md_problem(filepath):
 
         else:
             part_counter +=1
-            body_parts['part{0}'.format(part_counter)] = rendered_part
-    
-    return defdict_to_dict({'header': header,
+            body_parts[f'part{part_counter}'] = rendered_part
+
+    return_dict = {'header': header,
             'body_parts': body_parts,
             'num_parts': part_counter,
-            'body_parts_split': split_body_parts(part_counter,body_parts) },{})
+            'body_parts_split': split_body_parts(part_counter,body_parts.copy()) 
+            }
+    return defdict_to_dict(return_dict,{})
 
 def dict_to_md(md_dict, remove_keys = [None,]):
     """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
@@ -484,7 +486,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         data2_sanitized = remove_correct_answers(data2_sanitized)
 
         # Update the YAML header to add substitutions 
-        header.update({'substitutions': data2_sanitized})
+        header.update({'substitutions': defdict_to_dict(data2_sanitized,{})})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
@@ -552,7 +554,6 @@ def process_question_pl(source_filepath, output_path = None):
         question_html = f"<pl-question-panel>\n<markdown>\n{ parsed_q['body_parts']['preamble'] }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
-
 
     ## Single part questions
     if parsed_q['num_parts'] == 1:
