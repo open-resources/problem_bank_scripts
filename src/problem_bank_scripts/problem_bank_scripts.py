@@ -219,6 +219,10 @@ def dict_to_md(md_dict, remove_keys = [None,]):
 
     md_dict = defdict_to_dict(md_dict,{})
 
+    # Question Title and Preamble
+    md_string += md_dict.pop('title',None)
+    md_string += md_dict.pop('preamble',None)
+
     for k,v in md_dict.items():
         if k in remove_keys:
             continue
