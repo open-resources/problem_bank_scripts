@@ -475,9 +475,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
     exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
 
     # Remove the solutions from the server section
-    if instructor is True:
-        header.pop('server',None)
-
+    if instructor is False:
         # Remove python solution from the public view
         header.pop('server',None)
 
