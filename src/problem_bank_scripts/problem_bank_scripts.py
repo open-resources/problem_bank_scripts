@@ -488,11 +488,11 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
-        
+
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['pl-submission-panel','pl-answer-panel']) +
-                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) ,encoding='utf8')
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments','pl-submission-panel','pl-answer-panel']) +
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
         
     else:
         # Update the YAML header to add substitutions 
@@ -503,8 +503,8 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments','pl-submission-panel','pl-answer-panel']) +
-                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['pl-submission-panel','pl-answer-panel']) +
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) ,encoding='utf8')
 
     # Move image assets
     files_to_copy = header.get('assets')
