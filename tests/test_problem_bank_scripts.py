@@ -3,9 +3,10 @@ from src.problem_bank_scripts import problem_bank_scripts as pbs
 import pandas as pd
 import pathlib  
 import filecmp
+import os
 
 def test_version():
-    assert __version__ == '0.0.7'
+    assert __version__ == '0.1.1'
 
 # def test_rounded():
 
@@ -16,8 +17,23 @@ def test_version():
 #     assert rounded_value == str(33.333)
 
 def test_prairie():
-    inputDest = pathlib.Path('tests/test_question_templates/question_inputs/q01_multiple-choice/q01_multiple-choice.md')
-    outputDest = pathlib.Path('tests/test_question_templates/question_generated_outputs/q01_multiple-choice/q01_multiple-choice.md')
-    pbs.process_question_pl(inputDest, outputDest)
-    compareDest = pathlib.Path('tests/test_question_templates/question_expected_outputs/q01_multiple-choice/question.html')
-    assert filecmp.cmp(outputDest.parent / 'question.html', compareDest, shallow = False)
+    inputDest = pathlib.Path('tests/test_question_templates/question_inputs/')
+    outputDest = pathlib.Path('tests/test_question_templates/question_generated_outputs/')
+    compareDest = pathlib.Path('tests/test_question_templates/question_expected_outputs/')
+
+    for file in inputDest.glob('**/*'):
+      if os.path.isfile(file):
+          if file.name.endswith('.md'):
+            folder = file.parent.name
+            outputFolder = outputDest.joinpath(folder)
+            pbs.process_question_pl(file, outputFolder.joinpath(file.name))
+
+    for file in compareDest.glob('**/*'):
+        isFile = os.path.isfile(file) 
+        notHiddenFile = not file.name.startswith('.')
+        notImageFile = not file.name.endswith('.png') 
+        notJsonFile = not file.name.endswith('.json')
+        if isFile and notHiddenFile and notImageFile and notJsonFile:
+            folder = file.parent.name
+            outputFolder = outputDest.joinpath(folder)
+            assert filecmp.cmp(file, outputFolder.joinpath(file.name), shallow = False)

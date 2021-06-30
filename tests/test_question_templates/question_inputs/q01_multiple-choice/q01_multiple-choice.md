@@ -3,7 +3,7 @@ title: Distance travelled
 topic: Template
 author: Firas Moosvi
 source: 5.45
-template_version: 1.0
+template_version: 1.1
 attribution: openstax-physics-vol2
 outcomes:
 - 6.1.1.0
@@ -24,12 +24,8 @@ server:
         import random
         import pandas as pd
         import problem_bank_helpers as pbh
-        from collections import defaultdict
-        nested_dict = lambda: defaultdict(nested_dict)
     generate: |
-        # Start problem code
-
-        data2 = nested_dict()
+        data2 = pbh.create_data2()
 
         # define or load names/items/objects from server files
         names = pd.read_csv("data/names.csv")["Names"].tolist()

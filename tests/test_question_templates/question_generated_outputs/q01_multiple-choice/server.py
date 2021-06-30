@@ -1,13 +1,9 @@
 import random
 import pandas as pd
 import problem_bank_helpers as pbh
-from collections import defaultdict
-nested_dict = lambda: defaultdict(nested_dict)
 
 def generate(data):
-    # Start problem code
-    
-    data2 = nested_dict()
+    data2 = pbh.create_data2()
     
     # define or load names/items/objects from server files
     names = pd.read_csv(data["options"]["client_files_course_path"]+"/data/names.csv")["Names"].tolist()
