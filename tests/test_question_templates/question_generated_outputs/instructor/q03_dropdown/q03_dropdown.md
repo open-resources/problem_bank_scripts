@@ -25,25 +25,25 @@ part1:
 substitutions:
   params:
     vars:
-      name: Emilia
-      vehicle: a skateboard
+      name: Maya
+      vehicle: a unicycle
       title: Distance travelled
       units: m/s
-    v: 6
+    v: 5
     t: 6
     part1:
       ans1:
         value: 42
       ans2:
-        value: 36
+        value: 30
       ans3:
-        value: 12
+        value: 11
       ans4:
-        value: 1.0
+        value: 0.8333333333333334
       ans5:
-        value: 0
+        value: -1
       ans6:
-        value: 0.0
+        value: -1.3
 ---
 # {{ params.vars.title }}
 ## Rubric

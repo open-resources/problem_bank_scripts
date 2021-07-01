@@ -30,7 +30,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -107,8 +107,8 @@ part1:
 substitutions:
   params:
     n: '15'
-    r: '2.20'
-    v: '1.30'
+    r: '2.00'
+    v: '2.50'
     p: '4'
   correct_answers:
     part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
@@ -127,8 +127,8 @@ substitutions:
       - -1
       - 0
     - !!binary |
-      VN4Rq3s+XT8=
-    part1_ans_str: '1.78e-03'
+      ZVy1Q2Xubj8=
+    part1_ans_str: '3.78e-03'
 ---
 # {{ params.vars.title }}
 

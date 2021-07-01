@@ -30,7 +30,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -106,10 +106,10 @@ part1:
     atol: 0
 substitutions:
   params:
-    n: '35'
-    r: '2.90'
-    v: '1.90'
-    p: '5'
+    n: '15'
+    r: '2.00'
+    v: '2.50'
+    p: '4'
   correct_answers:
     part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
     - !!python/object/apply:numpy.dtype
@@ -127,8 +127,8 @@ substitutions:
       - -1
       - 0
     - !!binary |
-      GBOcochegT8=
-    part1_ans_str: '8.48e-03'
+      ZVy1Q2Xubj8=
+    part1_ans_str: '3.78e-03'
 ---
 # {{ params.vars.title }}
 

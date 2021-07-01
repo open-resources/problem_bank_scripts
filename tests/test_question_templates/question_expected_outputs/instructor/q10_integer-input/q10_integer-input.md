@@ -26,11 +26,11 @@ part1:
 substitutions:
   params:
     vars:
-      name: Savannah
+      name: Maya
       vehicle: a unicycle
       title: Integer Math
       units: m/s
-    n: 64
+    n: 65
 ---
 # {{ params.vars.title }}
 ## Rubric

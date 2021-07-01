@@ -19,7 +19,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -81,30 +81,30 @@ part1:
 substitutions:
   params:
     vars:
-      name: Ximena
-      vehicle: a tricycle
+      name: Maya
+      vehicle: a unicycle
       title: Distance travelled
       units: m/s
-    v: 7
-    t: 9
+    v: 5
+    t: 6
     part1:
       ans1:
         value: 42
         correct: false
       ans2:
-        value: 63
+        value: 30
         correct: true
       ans3:
-        value: 16
+        value: 11
         correct: false
       ans4:
-        value: 0.7777777777777778
+        value: 0.8333333333333334
         correct: false
       ans5:
-        value: -2
+        value: -1
         correct: false
       ans6:
-        value: -2.6
+        value: -1.3
         correct: false
 ---
 # {{ params.vars.title }}

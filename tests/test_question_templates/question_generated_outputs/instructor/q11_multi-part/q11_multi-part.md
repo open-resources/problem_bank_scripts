@@ -32,25 +32,25 @@ part2:
 substitutions:
   params:
     vars:
-      name: Santiago
+      name: Maya
       vehicle: a unicycle
       title: Distance travelled
       units: m/s
-    v: 2
-    t: 8
+    v: 5
+    t: 6
     part2:
       ans1:
         value: 42
       ans2:
-        value: 16
+        value: 30
       ans3:
-        value: 10
+        value: 11
       ans4:
-        value: 0.25
+        value: 0.8333333333333334
       ans5:
-        value: -6
+        value: -1
       ans6:
-        value: -7.800000000000001
+        value: -1.3
 ---
 # {{ params.vars.title }}
 ## Rubric

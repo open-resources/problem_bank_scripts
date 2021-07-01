@@ -42,9 +42,9 @@ part1:
 substitutions:
   params:
     n: '15'
-    r: '2.70'
-    v: '2.70'
-    p: '5'
+    r: '2.00'
+    v: '2.50'
+    p: '4'
 ---
 # {{ params.vars.title }}
 ## Rubric

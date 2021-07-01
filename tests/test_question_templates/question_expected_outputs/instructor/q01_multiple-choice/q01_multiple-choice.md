@@ -27,24 +27,24 @@ substitutions:
   params:
     vars:
       title: Kinematics
-      name: Santiago
-      vehicle: a bicycle
+      name: Maya
+      vehicle: a unicycle
       units: m/s
-    v: 4
-    t: 9
+    v: 5
+    t: 6
     part1:
       ans1:
         value: 42
       ans2:
-        value: 36
+        value: 30
       ans3:
-        value: 13
+        value: 11
       ans4:
-        value: 0.4444444444444444
+        value: 0.8333333333333334
       ans5:
-        value: -5
+        value: -1
       ans6:
-        value: -6.5
+        value: -1.3
 ---
 # {{ params.vars.title }}
 ## Rubric

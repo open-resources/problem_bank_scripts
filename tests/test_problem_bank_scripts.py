@@ -17,8 +17,24 @@ def test_version():
 
 #     assert rounded_value == str(33.333)
 
+@pytest.fixture(scope="session", autouse= True)
+def add_random_seed(paths):
+    for file in paths['inputDest'].glob('**/*'):
+      if os.path.isfile(file) and file.name.endswith('.md'):
+        inputPath = paths['inputDest'].joinpath(file.parent.name).joinpath(file.name)
+        mdtext = inputPath.read_text(encoding='utf8')
+        lines = mdtext.split('\n')
+        for i,line in enumerate(lines):
+            if 'import random' in line and not 'random.seed' in line:
+                lines[i] = (line + ';random.seed(111)')
+                break
+        new_mdtext = '\n'.join(lines)
+        f = open(inputPath, 'w')
+        f.write(new_mdtext)
+        f.close()
+    return
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def paths():
     p = {
         'inputDest': pathlib.Path('tests/test_question_templates/question_inputs/'),
@@ -26,6 +42,7 @@ def paths():
         'compareDest': pathlib.Path('tests/test_question_templates/question_expected_outputs/')
     }
     return p
+
 
 def test_prairie_learn(paths):
 

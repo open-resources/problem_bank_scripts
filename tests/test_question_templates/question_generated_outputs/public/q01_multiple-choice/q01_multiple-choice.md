@@ -21,7 +21,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -83,29 +83,29 @@ substitutions:
   params:
     vars:
       title: Kinematics
-      name: Abbas
-      vehicle: a skateboard
+      name: Maya
+      vehicle: a unicycle
       units: m/s
-    v: 3
+    v: 5
     t: 6
     part1:
       ans1:
         value: 42
         correct: false
       ans2:
-        value: 18
+        value: 30
         correct: true
       ans3:
-        value: 9
+        value: 11
         correct: false
       ans4:
-        value: 0.5
+        value: 0.8333333333333334
         correct: false
       ans5:
-        value: -3
+        value: -1
         correct: false
       ans6:
-        value: -3.9000000000000004
+        value: -1.3
         correct: false
 ---
 # {{ params.vars.title }}

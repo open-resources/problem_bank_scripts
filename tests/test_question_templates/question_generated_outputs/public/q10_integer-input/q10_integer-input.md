@@ -19,7 +19,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -65,12 +65,12 @@ substitutions:
   params:
     vars:
       name: Maya
-      vehicle: ice skates
+      vehicle: a unicycle
       title: Integer Math
       units: m/s
-    n: 47
+    n: 65
   correct_answers:
-    part1_ans: 470
+    part1_ans: 650
 ---
 # {{ params.vars.title }}
 

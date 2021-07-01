@@ -28,8 +28,8 @@ substitutions:
   params:
     vars:
       title: Symbolic Input 2 - Trig
-      name: Savannah
-      vehicle: bus
+      name: Maya
+      vehicle: van
 ---
 # {{ params.vars.title }}
 ## Rubric

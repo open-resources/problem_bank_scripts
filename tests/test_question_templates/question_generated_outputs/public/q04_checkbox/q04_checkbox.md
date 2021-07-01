@@ -19,7 +19,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: "data2 = pbh.create_data2()\n\n# define or load names/items/objects\n\
@@ -66,26 +66,26 @@ substitutions:
   params:
     vars:
       title: Vectors and Scalars
-      name: Ximena
+      name: Maya
     choice: scalars
     part1:
       ans1:
-        value: pressure
+        value: mass
         correct: true
       ans2:
-        value: length
+        value: temperature
         correct: true
       ans3:
-        value: entropy
-        correct: true
-      ans4:
         value: work
         correct: true
+      ans4:
+        value: drag
+        correct: false
       ans5:
-        value: thurst
+        value: weight
         correct: false
       ans6:
-        value: force
+        value: lift
         correct: false
 ---
 # {{ params.vars.title }}

@@ -18,7 +18,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -102,9 +102,9 @@ part2:
     weight: 1
 substitutions:
   params:
-    L: '13'
-    q: '6.6'
-    p: '-9'
+    L: '10'
+    q: '5.0'
+    p: '-7'
     d: '1.1'
     part2:
       ans1:
@@ -117,8 +117,8 @@ substitutions:
         value: points parallel to the plates
         correct: false
   correct_answers:
-    part1_ans: 44127.97111623709
-    part1_ans_str: 4.41E4
+    part1_ans: 5649717.514124292
+    part1_ans_str: 5.65E6
 ---
 # {{ params.vars.title }}
 Two parallel conducting plates ${{params.L}}\textrm{ cm}$ on a side are given equal and opposite charges of magnitude ${{params.q}}\times 10^{ {{params.p}} }\textrm{ C}$.

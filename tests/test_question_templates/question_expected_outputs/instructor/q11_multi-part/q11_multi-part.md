@@ -32,8 +32,8 @@ part2:
 substitutions:
   params:
     vars:
-      name: Savannah
-      vehicle: a bicycle
+      name: Maya
+      vehicle: a unicycle
       title: Distance travelled
       units: m/s
     v: 5

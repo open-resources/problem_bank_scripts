@@ -29,12 +29,12 @@ part1:
 substitutions:
   params:
     vars:
-      name: Ximena
+      name: Maya
       vehicle: a unicycle
       title: Distance travelled
       units: m/s
-    v: 3
-    t: 7
+    v: 5
+    t: 6
 ---
 # {{ params.vars.title }}
 ## Rubric

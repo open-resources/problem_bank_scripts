@@ -19,7 +19,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: "data2 = pbh.create_data2()\n\n# define or load names/items/objects\n\
@@ -70,22 +70,22 @@ substitutions:
     choice: scalars
     part1:
       ans1:
-        value: density
+        value: mass
         correct: true
       ans2:
-        value: area
+        value: temperature
         correct: true
       ans3:
-        value: power
-        correct: true
-      ans4:
         value: work
         correct: true
+      ans4:
+        value: drag
+        correct: false
       ans5:
-        value: velocity
+        value: weight
         correct: false
       ans6:
-        value: momentum
+        value: lift
         correct: false
 ---
 # {{ params.vars.title }}

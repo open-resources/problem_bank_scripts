@@ -27,21 +27,21 @@ substitutions:
   params:
     vars:
       title: Vectors and Scalars
-      name: Savannah
-    choice: vectors
+      name: Maya
+    choice: scalars
     part1:
       ans1:
-        value: acceleration
+        value: mass
       ans2:
-        value: drag
+        value: temperature
       ans3:
-        value: density
-      ans4:
-        value: power
-      ans5:
-        value: area
-      ans6:
         value: work
+      ans4:
+        value: drag
+      ans5:
+        value: weight
+      ans6:
+        value: lift
 ---
 # {{ params.vars.title }}
 ## Rubric

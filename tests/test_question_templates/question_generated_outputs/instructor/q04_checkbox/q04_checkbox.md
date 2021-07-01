@@ -27,21 +27,21 @@ substitutions:
   params:
     vars:
       title: Vectors and Scalars
-      name: Lorenzo
+      name: Maya
     choice: scalars
     part1:
       ans1:
-        value: pressure
+        value: mass
       ans2:
-        value: density
+        value: temperature
       ans3:
-        value: drag
+        value: work
       ans4:
-        value: acceleration
+        value: drag
       ans5:
         value: weight
       ans6:
-        value: displacement
+        value: lift
 ---
 # {{ params.vars.title }}
 ## Rubric

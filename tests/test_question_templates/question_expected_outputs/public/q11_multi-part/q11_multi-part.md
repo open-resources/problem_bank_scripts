@@ -21,7 +21,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random
+    import random;random.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -95,33 +95,33 @@ part2:
 substitutions:
   params:
     vars:
-      name: Ahmed
-      vehicle: ice skates
+      name: Maya
+      vehicle: a unicycle
       title: Distance travelled
       units: m/s
     v: 5
-    t: 9
+    t: 6
     part2:
       ans1:
         value: 42
         correct: false
       ans2:
-        value: 45
+        value: 30
         correct: true
       ans3:
-        value: 14
+        value: 11
         correct: false
       ans4:
-        value: 0.5555555555555556
+        value: 0.8333333333333334
         correct: false
       ans5:
-        value: -4
+        value: -1
         correct: false
       ans6:
-        value: -5.2
+        value: -1.3
         correct: false
   correct_answers:
-    part1_ans: 45
+    part1_ans: 30
 ---
 # {{ params.vars.title }}
 This part of the question is common to both Parts 1 and 2.
