@@ -235,7 +235,7 @@ def write_info_json(output_path, parsed_question):
     """
 
     pathlib.Path(output_path / 'info.json').write_text("""{
-            "uuid": \"""" + str(uuid.uuid4()) + """\",
+            "uuid": \"""" + str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path))) + """\",
             "title": \"""" + parsed_question['header']['title'] + """",
             "topic": \"""" + parsed_question['header']['topic'] + """",
             "tags":  """ + json.dumps(parsed_question['header']['tags']) + """,
