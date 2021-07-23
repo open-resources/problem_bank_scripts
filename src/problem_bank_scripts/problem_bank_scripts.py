@@ -172,7 +172,7 @@ def read_md_problem(filepath):
     for k,v in blocks.items():
 
         rendered_part = codecs.unicode_escape_decode(MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env))[0]
-
+        
         if k == 'title':
             body_parts['title'] = rendered_part
         
@@ -196,12 +196,14 @@ def read_md_problem(filepath):
 
         else:
             part_counter +=1
-            body_parts['part{0}'.format(part_counter)] = rendered_part
-    
-    return defdict_to_dict({'header': header,
+            body_parts[f'part{part_counter}'] = rendered_part
+
+    return_dict = {'header': header,
             'body_parts': body_parts,
             'num_parts': part_counter,
-            'body_parts_split': split_body_parts(part_counter,body_parts) },{})
+            'body_parts_split': split_body_parts(part_counter,body_parts.copy()) 
+            }
+    return defdict_to_dict(return_dict,{})
 
 def dict_to_md(md_dict, remove_keys = [None,]):
     """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
@@ -216,6 +218,10 @@ def dict_to_md(md_dict, remove_keys = [None,]):
     md_string = ""
 
     md_dict = defdict_to_dict(md_dict,{})
+
+    # Question Title and Preamble
+    md_string += md_dict.pop('title',None)
+    md_string += md_dict.pop('preamble',None)
 
     for k,v in md_dict.items():
         if k in remove_keys:
@@ -418,16 +424,16 @@ def process_attribution(source):
     """
     try:
         if 'openstax-physics-vol1' in source:
-            attribution_text = "Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).\n![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
+            attribution_text = "Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
 
         elif 'openstax-physics-vol2' in source:
-            attribution_text = "Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).\n![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
+            attribution_text = "Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
 
         elif 'ubc-mech2' in source:
             raise NotImplementedError
 
         elif 'standard' in source:
-            attribution_text = "Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).\n![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
+            attribution_text = "Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
     
         return attribution_text
     
@@ -475,9 +481,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
     exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
 
     # Remove the solutions from the server section
-    if instructor is True:
-        header.pop('server',None)
-
+    if instructor is False:
         # Remove python solution from the public view
         header.pop('server',None)
 
@@ -486,15 +490,15 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         data2_sanitized = remove_correct_answers(data2_sanitized)
 
         # Update the YAML header to add substitutions 
-        header.update({'substitutions': data2_sanitized})
+        header.update({'substitutions': defdict_to_dict(data2_sanitized,{})})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
-        
+
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['pl-submission-panel','pl-answer-panel']) +
-                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) ,encoding='utf8')
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments','pl-submission-panel','pl-answer-panel']) +
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
         
     else:
         # Update the YAML header to add substitutions 
@@ -505,8 +509,8 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments','pl-submission-panel','pl-answer-panel']) +
-                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
+        output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['pl-submission-panel','pl-answer-panel']) +
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) ,encoding='utf8')
 
     # Move image assets
     files_to_copy = header.get('assets')
@@ -554,7 +558,6 @@ def process_question_pl(source_filepath, output_path = None):
         question_html = f"<pl-question-panel>\n<markdown>\n{ parsed_q['body_parts']['preamble'] }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
-
 
     ## Single part questions
     if parsed_q['num_parts'] == 1:
