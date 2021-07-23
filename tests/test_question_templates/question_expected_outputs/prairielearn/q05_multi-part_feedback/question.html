@@ -1,0 +1,55 @@
+<pl-question-panel>
+<markdown>
+Two parallel conducting plates ${{params.L}}\textrm{ cm}$ on a side are given equal and opposite charges of magnitude ${{params.q}}\times 10^{ {{params.p}} }\textrm{ C}$.
+The plates are ${{params.d}} \textrm{ mm}$ apart.
+
+</markdown>
+</pl-question-panel>
+
+<div class="card my-2">
+<div class="card-header">Part 1</div>
+
+<div class="card-body">
+
+<pl-question-panel>
+	<markdown>What is the magnitude of the electric field at the centre of the region between the plates?
+	</markdown>
+</pl-question-panel>
+
+<pl-number-input answers-name="part1_ans" label = "$E=$" allow-blank = "False" show-correct-answer = "True" comparison = "relabs" rtol = "0.03" atol = "0" show-help-text = "True" suffix = "$\rm\ N/C$" weight = "1" ></pl-number-input>
+</div>
+</div>
+
+
+<div class="card my-2">
+<div class="card-header">Part 2</div>
+
+<div class="card-body">
+
+<pl-question-panel>
+<markdown>What is the direction of the electric field at the centre of the region between the plates?
+</markdown>
+</pl-question-panel>
+
+<pl-dropdown answers-name="part2_ans" blank = "True" weight = "1" >
+	<pl-answer correct= {{ params.part2.ans1.correct }} > {{ params.part2.ans1.value }}  </pl-answer>
+	<pl-answer correct= {{ params.part2.ans2.correct }} > {{ params.part2.ans2.value }}  </pl-answer>
+	<pl-answer correct= {{ params.part2.ans3.correct }} > {{ params.part2.ans3.value }}  </pl-answer>
+</pl-dropdown>
+</div>
+</div>
+
+
+<pl-submission-panel>{{ submitted_answers.part1_ans_str }}
+{{ feedback.part1_ans }}
+ </pl-submission-panel>
+<pl-answer-panel>$E=$ {{ correct_answers.part1_ans_str }} $\mathrm{N}/\mathrm{C}$
+ </pl-answer-panel>
+
+<pl-question-panel>
+<markdown>
+---
+Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).
+![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)
+</markdown>
+</pl-question-panel>
