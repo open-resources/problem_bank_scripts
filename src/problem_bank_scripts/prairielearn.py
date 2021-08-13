@@ -10,7 +10,7 @@ import sympy
 import numpy as np
 # import uuid
 # import sympy
-# import pandas
+import pandas
 # from python_helper_sympy import convert_string_to_sympy
 # from python_helper_sympy import sympy_to_json
 # from python_helper_sympy import json_to_sympy
