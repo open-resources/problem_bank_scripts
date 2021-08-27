@@ -465,7 +465,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
     def str_presenter(dumper, data2):
         if len(data2.splitlines()) > 1:  # check for multiline string
-            return dumper.represent_scalar('tag:yaml.org,2002:str', data2, style='|')
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data2.replace('\n  ','\n'), style='|')
         return dumper.represent_scalar('tag:yaml.org,2002:str', data2)
 
     yaml.add_representer(str, str_presenter)
@@ -493,7 +493,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         header.update({'substitutions': defdict_to_dict(data2_sanitized,{})})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
-        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
+        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False, allow_unicode=True)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -505,7 +505,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         header.update({'substitutions': defdict_to_dict(data2,{})})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
-        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False)
+        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False,allow_unicode=True)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
