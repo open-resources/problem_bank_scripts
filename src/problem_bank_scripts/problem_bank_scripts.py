@@ -611,7 +611,7 @@ def process_question_pl(source_filepath, output_path = None):
         question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
 
     # Add Attribution
-    question_html += f"\n<pl-question-panel>\n<markdown>\n---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
+    question_html += f"\n<pl-question-panel>\n<markdown>\n\n---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
 
     # Fix Latex underscore bug (_ being replaced with \_)
     question_html = question_html.replace('\\_','_')
