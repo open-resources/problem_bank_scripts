@@ -227,7 +227,7 @@ def dict_to_md(md_dict, remove_keys = [None,]):
         if k in remove_keys:
             continue
         else:
-            md_string += md_dict[k]
+            md_string += "\n"+md_dict[k]
 
     return md_string
 
