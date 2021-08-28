@@ -47,7 +47,7 @@ def generate(data):
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = scalars.pop()
             data2["params"]["part1"][choice]["correct"] = True
-            
+    
         for i in range(num_vectors):
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = vectors.pop()
