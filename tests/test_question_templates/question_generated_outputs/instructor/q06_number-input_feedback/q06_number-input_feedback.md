@@ -131,6 +131,7 @@ substitutions:
     part1_ans_str: '3.78e-03'
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 A solenoid with ${{ params.n }}$ turns per centimter carries a current $I$. An electron moves within the solenoid in a circle of radius ${{ params.r}}\textrm{ cm}$.
@@ -138,12 +139,15 @@ The plane of the circular motion is perpendicular to the axis of the solenoid.  
 What is the current $I$ in the solenoid?
 
 ### Answer Section
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

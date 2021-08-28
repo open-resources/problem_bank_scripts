@@ -80,6 +80,7 @@ substitutions:
 ---
 # {{ params.vars.title }}
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+
 ## Question Text
 
 How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
@@ -87,12 +88,15 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 ### Answer Section
 
 Please enter in a numeric value in {{ params.vars.units }}.
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

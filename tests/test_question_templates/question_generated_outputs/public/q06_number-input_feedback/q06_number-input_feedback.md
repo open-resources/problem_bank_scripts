@@ -47,6 +47,7 @@ substitutions:
     p: '4'
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 A solenoid with ${{ params.n }}$ turns per centimter carries a current $I$. An electron moves within the solenoid in a circle of radius ${{ params.r}}\textrm{ cm}$.

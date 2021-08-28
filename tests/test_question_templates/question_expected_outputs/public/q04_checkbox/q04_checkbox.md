@@ -44,6 +44,7 @@ substitutions:
         value: lift
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 {{ params.vars.name }} is given a list of physical quantities and has to identify all of the {{ params.choice }}. Can you help?

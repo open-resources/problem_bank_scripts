@@ -108,6 +108,7 @@ substitutions:
         correct: false
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
@@ -120,12 +121,15 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 - {{ params.part1.ans3}} {{ params.vars.units}}
 - {{ params.part1.ans4}} {{ params.vars.units}}
 - {{ params.part1.ans5}} {{ params.vars.units}}
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

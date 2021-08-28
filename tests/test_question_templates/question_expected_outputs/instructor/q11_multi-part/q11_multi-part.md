@@ -127,6 +127,7 @@ substitutions:
 This part of the question is common to both Parts 1 and 2.
 
 <img src="test1.png" width=400>
+
 ## Part 1
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
@@ -137,6 +138,7 @@ How far does {{ vars.name }} travel in {{ params.t }} seconds, assuming they con
 ### Answer Section
 
 Please enter in a numeric value in {{ params.vars.units }}.
+
 ## Part 2
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
@@ -150,12 +152,15 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 - {{ params.part2.ans4.value}} {{ params.vars.units}}
 - {{ params.part2.ans5.value}} {{ params.vars.units}}
 - {{ params.part2.ans6.value}} {{ params.vars.units}}
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

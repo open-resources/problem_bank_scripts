@@ -73,6 +73,7 @@ substitutions:
     part1_ans: 650
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 {{ params.vars.name }} is on a {{ params.vars.vehicle }} trying to calculate the result of 10 x {{ params.n }} {{ params.vars.units }}.
@@ -80,12 +81,15 @@ substitutions:
 ### Answer Section
 
 Please enter an integer value in {{ params.vars.units }}.
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

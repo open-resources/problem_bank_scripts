@@ -46,6 +46,7 @@ substitutions:
         value: -1.3
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.

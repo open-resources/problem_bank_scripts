@@ -50,6 +50,7 @@ substitutions:
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
 
 <img src="test1.png">
+
 ## Part 1
 
 How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?

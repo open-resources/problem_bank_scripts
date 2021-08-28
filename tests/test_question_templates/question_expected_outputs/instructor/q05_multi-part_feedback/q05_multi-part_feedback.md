@@ -123,6 +123,7 @@ substitutions:
 # {{ params.vars.title }}
 Two parallel conducting plates ${{params.L}}\textrm{ cm}$ on a side are given equal and opposite charges of magnitude ${{params.q}}\times 10^{ {{params.p}} }\textrm{ C}$.
 The plates are ${{params.d}} \textrm{ mm}$ apart.
+
 ## Part 1
 
 What is the magnitude of the electric field at the centre of the region between the plates?
@@ -130,6 +131,7 @@ What is the magnitude of the electric field at the centre of the region between 
 ### Answer Section
 
 Please enter a numeric value.
+
 ## Part 2
 
 What is the direction of the electric field at the centre of the region between the plates?
@@ -139,12 +141,15 @@ What is the direction of the electric field at the centre of the region between 
 - {{ params.part1.ans1.value }}
 - {{ params.part1.ans2.value }}
 - {{ params.part1.ans3.value }}
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

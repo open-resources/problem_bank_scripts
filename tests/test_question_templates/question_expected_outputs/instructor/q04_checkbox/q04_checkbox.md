@@ -117,6 +117,7 @@ substitutions:
         correct: false
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 {{ params.vars.name }} is given a list of physical quantities and has to identify all of the {{ params.choice }}. Can you help?
@@ -133,12 +134,15 @@ Note: You will be awarded full marks only if you select all the correct choices,
 - {{ params.part1.ans4.value}}
 - {{ params.part1.ans5.value}}
 - {{ params.part1.ans6.value}}
+
 ## Rubric
 
 This should be hidden from students until after the deadline.
+
 ## Solution
 
 This should never be revealed to students.
+
 ## Comments
 
 These are random comments associated with this question.

@@ -33,6 +33,7 @@ substitutions:
     n: 65
 ---
 # {{ params.vars.title }}
+
 ## Question Text
 
 {{ params.vars.name }} is on a {{ params.vars.vehicle }} trying to calculate the result of 10 x {{ params.n }} {{ params.vars.units }}.
