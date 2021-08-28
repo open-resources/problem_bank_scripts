@@ -21,8 +21,6 @@ def test_version():
 def add_random_seed(paths):
     for file in paths['inputDest'].glob('**/*.md'):
         read_file = file.read_text(encoding='utf8')
-
-        print(read_file)
         read_file.replace('import random','import random; random.seed(111)')
         file.write_text(read_file,encoding='utf8')
     #   if os.path.isfile(file) and file.name.endswith('.md'):
