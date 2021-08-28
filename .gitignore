@@ -141,3 +141,5 @@ dmypy.json
 data/
 dev_notebooks/
 Untitled.ipynb
+
+*.DS_Store
