@@ -449,23 +449,26 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         raise
         
     if output_path is None:
-        if instructor: 
-            # Set the output path (hard-coded)
-            output_path = pathlib.Path(source_filepath.replace('source','output/instructor'))
+        if instructor:
+            path_replace = 'output/instructor'
         else:
-            # Set the output path (hard-coded)
-            output_path = pathlib.Path(source_filepath.replace('source','output/public'))
+            path_replace = 'output/public'
+
+        if 'source' in source_filepath:
+            output_path = pathlib.Path(source_filepath.replace('source',path_replace))
+        else:
+            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!! ")
     else:
         ## TODO: Make this a bit more robust
         output_path = pathlib.Path(output_path)
-        print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
 
     # deal with multi-line strings in YAML Dump
     ## Code copied from here: https://stackoverflow.com/a/33300001/2217577
 
     def str_presenter(dumper, data2):
         if len(data2.splitlines()) > 1:  # check for multiline string
-            return dumper.represent_scalar('tag:yaml.org,2002:str', data2.replace('\n  ','\n'), style='|')
+            #data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
+            return dumper.represent_scalar('tag:yaml.org,2002:str', data2, style='|')
         return dumper.represent_scalar('tag:yaml.org,2002:str', data2)
 
     yaml.add_representer(str, str_presenter)
@@ -493,19 +496,23 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         header.update({'substitutions': defdict_to_dict(data2_sanitized,{})})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
-        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False, allow_unicode=True)
+        header_yml = yaml.dump(header,sort_keys=False,allow_unicode=True)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text('---\n' + header_yml + '---\n' + dict_to_md(body_parts,remove_keys=['Rubric','Solution','Comments','pl-submission-panel','pl-answer-panel']) +
-                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')) )
+                        '\n## Attribution\n\n' + process_attribution(header.get('attribution')),encoding='utf8')
         
     else:
         # Update the YAML header to add substitutions 
         header.update({'substitutions': defdict_to_dict(data2,{})})
 
+        # return {'header':header,
+        #         'body_parts':body_parts,
+        #         'output_path':output_path}
+
         # Update the YAML header to add substitutions, unsort it, and process for file
-        header_yml = yaml.dump(header,sort_keys=False,default_flow_style=False,allow_unicode=True)
+        header_yml = yaml.dump(header,sort_keys=False,allow_unicode=True)
 
         # Write the YAML to a file
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -525,13 +532,16 @@ def process_question_pl(source_filepath, output_path = None):
         print(f"{source_filepath} - File does not exist.")
         raise
 
-    if output_path is None:
-        output_path = pathlib.Path(source_filepath.replace('source','output/prairielearn')).parent
-    else:
-        output_path = pathlib.Path(output_path).parent
+    path_replace = 'output/prairielearn'
 
-        ## TODO: Make this a bit more robust
-        print(f"Warning: This feature (specifying your own directory {output_path}) is not tested!")
+    if output_path is None:
+        if 'source' in source_filepath:
+            output_path = pathlib.Path(source_filepath.replace('source',path_replace)).parent
+        else:
+            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!! ")
+    else:
+        ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
+        output_path = pathlib.Path(output_path).parent
 
     # Parse the MD file
     parsed_q = read_md_problem(source_filepath)
