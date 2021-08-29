@@ -294,7 +294,8 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
     pl_customizations = " ".join([f'{k} = "{v}"' for k,v in parsed_question['header'][part_name]['pl-customizations'].items()]) # PL-customizations
     html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
 
-    if data_dict['params'][f'vars']['units']:
+    ###### LOOKHERE
+    if (data_dict['params'][f'vars']['units']) and ('units' in q['body_parts_split'][part_name]['answer']['content']):
         units = f"|@ params.vars.units @|"
     else:
         units = ''
@@ -468,6 +469,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
     def str_presenter(dumper, data2):
         if len(data2.splitlines()) > 1:  # check for multiline string
             #data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
+            data2 = re.sub('\\n\s+\\n','\n\n',data2) # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar('tag:yaml.org,2002:str', data2, style='|')
         return dumper.represent_scalar('tag:yaml.org,2002:str', data2)
 
