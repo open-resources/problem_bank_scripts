@@ -295,7 +295,7 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
     html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
 
     ###### LOOKHERE
-    if (data_dict['params'][f'vars']['units']) and ('units' in q['body_parts_split'][part_name]['answer']['content']):
+    if (data_dict['params'][f'vars']['units']) and ('units' in parsed_question['body_parts_split'][part_name]['answer']['content']):
         units = f"|@ params.vars.units @|"
     else:
         units = ''
