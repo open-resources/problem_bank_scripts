@@ -657,7 +657,7 @@ def pl_image_path(html):
     res = re.subn(r"\(((?!http).*\.png)\)",'({{options.client_files_question_url}}/\\1)',html)
 
     # If image files are included as html format, add {{options.client_files_question_url}}
-    res = re.subn(r"src=\"(?!http)(.*\.png)",
+    res = re.subn(r"src[\s,=]*\"(?!http)(.*\.png)",
               "src=\"{{options.client_files_question_url}}/\\1",res[0]) # works
 
     return res[0]
