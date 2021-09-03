@@ -435,7 +435,7 @@ def process_attribution(source):
 
         elif 'standard' in source:
             attribution_text = "Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
-    
+
         return attribution_text
     
     except TypeError:
@@ -653,11 +653,21 @@ def pl_image_path(html):
     """Adds `{{options.client_files_question_url}}` directory before the path automatically
     """
 
+    # TODO: Figure out the regex to make this into a single expression, maybe with |
     # If image files are included as markdown format, add {{options.client_files_question_url}}
     res = re.subn(r"\(((?!http).*\.png)\)",'({{options.client_files_question_url}}/\\1)',html)
+    res = re.subn(r"\(((?!http).*\.gif)\)",'({{options.client_files_question_url}}/\\1)',html)
+    res = re.subn(r"\(((?!http).*\.jpeg)\)",'({{options.client_files_question_url}}/\\1)',html)
+    res = re.subn(r"\(((?!http).*\.jpg)\)",'({{options.client_files_question_url}}/\\1)',html)
 
     # If image files are included as html format, add {{options.client_files_question_url}}
     res = re.subn(r"src[\s,=]*\"(?!http)(.*\.png)",
+              "src=\"{{options.client_files_question_url}}/\\1",res[0]) # works
+    res = re.subn(r"src[\s,=]*\"(?!http)(.*\.gif)",
+              "src=\"{{options.client_files_question_url}}/\\1",res[0]) # works
+    res = re.subn(r"src[\s,=]*\"(?!http)(.*\.jpeg)",
+              "src=\"{{options.client_files_question_url}}/\\1",res[0]) # works
+    res = re.subn(r"src[\s,=]*\"(?!http)(.*\.jpg)",
               "src=\"{{options.client_files_question_url}}/\\1",res[0]) # works
 
     return res[0]
