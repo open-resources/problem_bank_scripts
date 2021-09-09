@@ -240,6 +240,20 @@ def write_info_json(output_path, parsed_question):
         parsed_question (dict]): [description]
     """
 
+    # Deal with optional tags in info.json
+    optional = ""
+
+    if parsed_question['header'].get('gradingMethod'):
+        optional += """ "gradingMethod": parsed_question['header']['gradingMethod'],\n"""
+    elif parsed_question['header'].get('partialCredit'):
+        optional += """ "partialCredi": parsed_question['header']['partialCredit'],\n"""
+    elif parsed_question['header'].get('externalGradingOptions'):
+        optional += """ "externalGradingOptions": parsed_question['header']['externalGradingOptions'],\n"""
+    elif parsed_question['header'].get('dependencies'):
+        optional += """ "dependencies": parsed_question['header']['dependencies'],\n"""
+    elif parsed_question['header'].get('singleVariant'):
+        optional += """ "singleVariant": parsed_question['header']['singleVariant'],\n"""
+
     pathlib.Path(output_path / 'info.json').write_text("""{
             "uuid": \"""" + str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path))) + """\",
             "title": \"""" + parsed_question['header']['title'] + """",
