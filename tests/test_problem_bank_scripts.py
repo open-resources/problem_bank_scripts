@@ -7,7 +7,7 @@ import os
 import pytest
 
 def test_version():
-    assert __version__ == '0.2.6'
+    assert __version__ == '0.2.7'
 
 @pytest.fixture(scope="session", autouse= True)
 def add_random_seed(paths):
@@ -89,5 +89,5 @@ def test_instructor(paths):
 
         if isFile and notHiddenFile and notImageFile and notExcludedFile:
             folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
+            outputFoldepir = outputPath.joinpath(folder)
             assert filecmp.cmp(file, outputFolder.joinpath(file.name), shallow = False)
