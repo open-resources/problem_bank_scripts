@@ -584,13 +584,14 @@ def process_question_pl(source_filepath, output_path = None):
         question_html = f"<pl-question-panel>\n<markdown>\n{ parsed_q['body_parts']['preamble'] }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
-            
-    ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
-    question_html += '<pl-hide-in-panel answer="true">\n'
 
     ## Single part questions
     if parsed_q['num_parts'] == 1:
         q_type = parsed_q['header']['part1']['type']
+
+        ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
+        question_html += '<pl-hide-in-panel answer="true">\n'
+        
         if 'multiple-choice' in q_type:
             question_html += process_multiple_choice('part1',parsed_q,data2)
         elif 'number-input' in q_type:
@@ -604,8 +605,8 @@ def process_question_pl(source_filepath, output_path = None):
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
-    ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-    question_html += '</pl-hide-in-panel>\n'
+        ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
+        question_html += '</pl-hide-in-panel>\n'
 
     ##### Multi part
     else:

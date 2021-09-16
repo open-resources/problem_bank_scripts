@@ -1,3 +1,4 @@
+<pl-hide-in-panel answer="true">
 <pl-question-panel>
 <markdown>{{ params.vars.name }} is given a list of physical quantities and has to identify all of the {{ params.choice }}. Can you help?
 </markdown>
@@ -11,6 +12,7 @@
 	<pl-answer correct= {{ params.part1.ans5.correct }} > {{ params.part1.ans5.value }}  </pl-answer>
 	<pl-answer correct= {{ params.part1.ans6.correct }} > {{ params.part1.ans6.value }}  </pl-answer>
 </pl-checkbox>
+</pl-hide-in-panel>
 <pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
  </pl-submission-panel>
 <pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.

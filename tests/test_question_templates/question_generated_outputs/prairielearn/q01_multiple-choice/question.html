@@ -7,6 +7,7 @@
 </markdown>
 </pl-question-panel>
 
+<pl-hide-in-panel answer="true">
 <pl-question-panel>
 <markdown>How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
@@ -22,6 +23,7 @@
 	<pl-answer correct= {{ params.part1.ans5.correct }} > {{ params.part1.ans5.value }} {{ params.vars.units }} </pl-answer>
 	<pl-answer correct= {{ params.part1.ans6.correct }} > {{ params.part1.ans6.value }} {{ params.vars.units }} </pl-answer>
 </pl-multiple-choice>
+</pl-hide-in-panel>
 <pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
  </pl-submission-panel>
 <pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
