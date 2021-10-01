@@ -6,29 +6,29 @@ The plates are ${{params.d}} \textrm{ mm}$ apart.
 </markdown>
 </pl-question-panel>
 
+<pl-hide-in-panel answer="true">
 <div class="card my-2">
 <div class="card-header">Part 1</div>
 
 <div class="card-body">
 
-<pl-hide-in-panel answer="true">
 <pl-question-panel>
 	<markdown>What is the magnitude of the electric field at the centre of the region between the plates?
 	</markdown>
 </pl-question-panel>
 
 <pl-number-input answers-name="part1_ans" label = "$E=$" allow-blank = "False" show-correct-answer = "True" comparison = "relabs" rtol = "0.03" atol = "0" show-help-text = "True" suffix = "$\rm\ N/C$" weight = "1" ></pl-number-input>
+</div>
+</div>
+
+
 </pl-hide-in-panel>
-</div>
-</div>
-
-
+<pl-hide-in-panel answer="true">
 <div class="card my-2">
 <div class="card-header">Part 2</div>
 
 <div class="card-body">
 
-<pl-hide-in-panel answer="true">
 <pl-question-panel>
 <markdown>What is the direction of the electric field at the centre of the region between the plates?
 </markdown>
@@ -39,11 +39,11 @@ The plates are ${{params.d}} \textrm{ mm}$ apart.
 	<pl-answer correct= {{ params.part2.ans2.correct }} > {{ params.part2.ans2.value }}  </pl-answer>
 	<pl-answer correct= {{ params.part2.ans3.correct }} > {{ params.part2.ans3.value }}  </pl-answer>
 </pl-dropdown>
+</div>
+</div>
+
+
 </pl-hide-in-panel>
-</div>
-</div>
-
-
 <pl-submission-panel>{{ submitted_answers.part1_ans_str }}
 {{ feedback.part1_ans }}
  </pl-submission-panel>
