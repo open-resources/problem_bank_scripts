@@ -614,12 +614,12 @@ def process_question_pl(source_filepath, output_path = None):
             part = 'part'+f'{pnum}'
             q_type = parsed_q['header'][part]['type']
 
+            ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
+            question_html += '<pl-hide-in-panel answer="true">\n'
+
             question_html += f"""<div class="card my-2">
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
 <div class="card-body">\n\n"""
-
-            ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
-            question_html += '<pl-hide-in-panel answer="true">\n'
 
             if 'multiple-choice' in q_type:                
                 question_html += f"{process_multiple_choice(part,parsed_q,data2)}"  
@@ -634,11 +634,11 @@ def process_question_pl(source_filepath, output_path = None):
             else:
                 raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
-            ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-            question_html += '</pl-hide-in-panel>\n'
-
             question_html += "</div>\n</div>\n\n\n"
 
+            ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
+            question_html += '</pl-hide-in-panel>\n'
+            
     # Add pl-submission-panel and pl-answer-panel (if they exist)
     subm_panel = parsed_q['body_parts_split'].get('pl-submission-panel', None)
     q_panel = parsed_q['body_parts_split'].get('pl-answer-panel', None)
