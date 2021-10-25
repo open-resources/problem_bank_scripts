@@ -5,6 +5,7 @@ import yaml
 import re
 import time
 from shutil import copy2
+import sys
 
 # loop through every file in the dir
 root_path = '../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
@@ -35,7 +36,6 @@ context_src = "Context"
 partial_answer_src = "showPartialCorrectAnswers"
 
 # extract file structure from source directory (handles ALL sub-directories)
-# for loop runs based # of folders in src
 for root, dirs, files in os.walk(root_path):
     for name in dirs:
         dest_folder = os.path.join(root, name).removeprefix(root_path)
@@ -361,6 +361,18 @@ def extract_problem_solution(problem_solution):
 
     return question_solution
 
+# a dynamic progress bar source: https://gist.github.com/vladignatyev/06860ec2040cb497f0f3
+def progress(count, total, status=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s%s -- %s\r' % (bar, percents, '%', status))
+    sys.stdout.flush()
+
+
 # for loop runs based # of folders in src
 for root, dirs, files in os.walk(root_path):
     # create dest file structure based on source directory
@@ -374,16 +386,13 @@ for root, dirs, files in os.walk(root_path):
 
 for source_filepath in source_files:
     try:
-        dest_file_path = source_filepath[78:source_filepath.rfind('/')]
+        # start timer for processing file
+        file_start_time = time.process_time()
+        # extract and build information directory
+        dest_file_path = source_filepath.split('/')[-2]
         filename = source_filepath[source_filepath.rfind('/')+1:-3]
         folder_dir = source_filepath[:source_filepath.rfind('/')]
-        file_start_time = time.process_time()
         file_dir = source_filepath[source_filepath.find("Contrib"):]
-        question_file = open(source_filepath, 'r')
-        file_contents = question_file.read()
-
-        file_contents_dic = split_file(file_contents)
-        metadata_dic = metadata_extract(file_contents_dic['metadata'])
         dir_info = {
             'filename': filename,
             'file_dir': file_dir,
@@ -391,24 +400,39 @@ for source_filepath in source_files:
             'root_dest_folder': root_dest_folder,
             'dest_file_path': dest_file_path
         }
+        # each question has a its own unique folder named after the fiile itself i.e question file NU_123.md is within NU_123 folder
         destination_file_path = root_dest_folder + dest_file_path + "/" + filename + "/"
+        Path(destination_file_path).mkdir(parents=True, exist_ok=True)
+        # open and read question file
+        question_file = open(source_filepath, 'r')
+        file_contents = question_file.read()
+        # split content of the question file into sections
+        file_contents_dic = split_file(file_contents)
+        # extract metadata from the question file
+        metadata_dic = metadata_extract(file_contents_dic['metadata'])
+        # extract question body from the question file
         question_body = file_contents_dic['question_body']
+        # extract question images from the question body
         image_dic = image_extract(question_body)
+        # extract question item such as text, part #s, units from the question body
         question_extract = problem_extract(question_body, image_dic['image_alt_text'])
         question_text = question_extract['question_text']
         question_parts = question_extract['question_parts']
         question_units = question_extract['question_units']
+        # determine question type
         question_formats = extract_problem_type(file_contents, dir_info['filename'])['question_type']
+        # extract question solution from the question content
         question_solution = extract_problem_solution(file_contents_dic['question_solution'])
-        Path(destination_file_path).mkdir(parents=True, exist_ok=True)
+        # send all dictionaries to yaml_dump to create yaml files
         yaml_dump(dir_info, metadata_dic, question_formats, image_dic, question_text,
                   question_units, question_parts, question_solution, destination_file_path)
+        # end timer for processing file
         end_file_time = time.process_time()
+        # calculate total time for processing file
         file_process_time = end_file_time - file_start_time
-        counterString = '#' + str(counter + 1) + ' - [' + str(round(file_process_time, 5)) + '] '
-        currentFile = root_dest_folder + dest_file_path + "/" + filename
+        # print/update progress bar
         counter += 1
-        print(counterString + currentFile)
+        progress(counter, len(source_files), status="Files Processed: " + str(counter) + "/" + str(len(source_files)))
 
     except Exception as e:
         print(e)
@@ -417,5 +441,6 @@ for source_filepath in source_files:
 # ------------------------ STATS ------------------------ #
 total_end_time = time.process_time()
 process_time_seconds = total_end_time - total_start_time
+print('\n---')
 print('total time:', round(process_time_seconds / 60, 2), 'minutes,', round(process_time_seconds, 2), 'seconds')
 print('avg time per each file:', round(process_time_seconds / counter, 2), 'seconds [', counter, '] files')
