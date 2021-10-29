@@ -43,6 +43,11 @@ for root, dirs, files in os.walk(root_path):
 
 
 def split_file(file_content):
+    """
+    description: splits the file into sections based on the keywords
+    @param file_content:
+    @return: dictionary of lists that contain problem parts
+    """
     # TODO: once all functions are completed, convert global variables above into local variables
     # split the file into bite-size pieces to increase speed and reduce bugs
     metadata_content = file_content[:file_content.find(metadata_end_src)]
@@ -62,6 +67,11 @@ def split_file(file_content):
 
 
 def metadata_extract(metadata_content):
+    """
+    description: extracts metadata variables from the metadata section of the file
+    @param metadata_content:
+    @return: dictionary of metadata
+    """
     metadata = "## "
     chapter_src = "DBchapter"
     section_src = "DBsection"
@@ -97,6 +107,12 @@ def metadata_extract(metadata_content):
 
 
 def determine_problem_type(question_ans, filename):
+    """
+    description: determines the type of problem
+    @param question_ans:
+    @param filename:
+    @return: dictionary of problem type
+    """
     # determine what type of question is based on the ANS(type)
     numerical_type = "num_cmp"
     functional_type = "fun_cmp"
@@ -133,6 +149,11 @@ def determine_problem_type(question_ans, filename):
 
 
 def server(question_solution):
+    """
+    description: function bundles up the problem's solution in python code
+    @param question_solution:
+    @return: dictionary of server containing various elements such as import, generate and prepare.
+    """
     # server variables
     server_imports = """
 import random
@@ -158,7 +179,21 @@ import problem_bank_helpers as pbh
             'parse': server_parse,
             'grade': server_grade}
 
+
 def yaml_dump(directory_info, metadata, question_format, image_dic, question_text, question_units, question_parts, question_solution, destination_file_path):
+    """
+    description: all problem sections are bundled up and dumped into a markdown file (created)
+    @param directory_info:
+    @param metadata:
+    @param question_format:
+    @param image_dic:
+    @param question_text:
+    @param question_units:
+    @param question_parts:
+    @param question_solution:
+    @param destination_file_path:
+    @return: none
+    """
     # This solution is copied from this SO answer: https://stackoverflow.com/a/45004775/2217577
     yaml.SafeDumper.org_represent_str = yaml.SafeDumper.represent_str
 
@@ -222,6 +257,11 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
 
 
 def get_part_type(part_type):
+    """
+    description: determines the type of each question part
+    @param part_type:
+    @return: dictionary containing type of question i.e numerical, text, etc.
+    """
     return {"type": part_type,
             "pl-customizations":
             {"weight": "1",
@@ -230,6 +270,11 @@ def get_part_type(part_type):
 
 
 def image_extract(question_content):
+    """
+    description: extracts images from question content
+    @param question_content:
+    @return: dictionary containing image name and image alt text and image line containing both
+    """
     image_src = "image("
     image_line = []
     image_alt_text = []
@@ -256,6 +301,12 @@ def image_extract(question_content):
 
 
 def problem_extract(question_body, image_alt_text):
+    """
+    description: extracts the question text, parts and units from the question body
+    @param question_body:
+    @param image_alt_text:
+    @return: dictionary containing question text, parts and units
+    """
     hint = ''
     question_units = ''
     question_raw = []
@@ -295,17 +346,34 @@ def problem_extract(question_body, image_alt_text):
 
 
 def append_part_counter(part_counter, part_headers):
+    """
+    description: outputs the unique question parts
+    @param part_counter:
+    @param part_headers:
+    @return: unique part counter
+    """
     if part_counter not in part_headers:
         part_headers.append(part_counter)
     return part_headers
 
 
 def extract_problem_type(problem_subsection, filename):
+    """
+    description: extracts the problem solution type from each problem  subsection
+    @param problem_subsection:
+    @param filename:
+    @return: extract problem format and then call the determine_problem_type function
+    """
     question_format_raw = re.findall("(ANS\(.+?\);)", str(problem_subsection))
     return determine_problem_type(question_format_raw, filename)
 
 
 def help_problem_extract_ans_units(problem_subsection):
+    """
+    description: extracts the final answer units and each section of the question
+    @param problem_subsection:
+    @return: dictionary containing question sections and final answer units
+    """
     final_ans_units = ''
     section_clean = ''
     if not problem_subsection.startswith("\\{ image") and not problem_subsection.endswith(") \\}"):
@@ -320,6 +388,11 @@ def help_problem_extract_ans_units(problem_subsection):
 
 
 def help_problem_extract_ans_type(problem_subsection):
+    """
+    description: extracts the question's answer type and returns the problem text without the answer type
+    @param problem_subsection:
+    @return: return dictionary containing question answer type and problem text without answer type
+    """
     ans_type = []
     problem_ans_type_removed = []
     if problem_subsection.startswith("END_TEXT"):
@@ -333,6 +406,12 @@ def help_problem_extract_ans_type(problem_subsection):
 
 
 def help_problem_extract_append(problem_subsection, final_dic):
+    """
+    description: extracts the question text clean of any PEAL syntax and appends it to the final dictionary
+    @param problem_subsection:
+    @param final_dic:
+    @return: list that contains clean problems without any PEARL syntax in them
+    """
     if len(problem_subsection) > 1:
         problem_stripped = problem_subsection.replace('\\', '').replace('textrm', '').replace('{', '').replace('}', '')\
             .replace('&middot;', '$\\cdot$').replace('END_TEXT', '').replace('BEGIN_TEXT', '').strip()
@@ -346,6 +425,11 @@ def help_problem_extract_append(problem_subsection, final_dic):
 
 
 def extract_problem_solution(problem_solution):
+    """
+    description: extracts the problem solution from the problem solution subsection
+    @param problem_solution:
+    @return: list containing problem solution
+    """
     question_solution = []
 
     for solution in problem_solution:
@@ -361,8 +445,14 @@ def extract_problem_solution(problem_solution):
 
     return question_solution
 
-# a dynamic progress bar source: https://gist.github.com/vladignatyev/06860ec2040cb497f0f3
+
 def progress(count, total, status=''):
+    """
+    description: prints a dynamic progress bar source: https://gist.github.com/vladignatyev/06860ec2040cb497f0f3
+    @param count:
+    @param total:
+    @param status:
+    """
     bar_len = 60
     filled_len = int(round(bar_len * count / float(total)))
 
@@ -393,6 +483,15 @@ for source_filepath in source_files:
         filename = source_filepath[source_filepath.rfind('/')+1:-3]
         folder_dir = source_filepath[:source_filepath.rfind('/')]
         file_dir = source_filepath[source_filepath.find("Contrib"):]
+        """ 
+        Example of dir_info output
+        {
+        'filename': 'NU_U17-33-02-002',
+        'file_dir': 'Contrib/BrockPhysics/College_Physics_Urone/33.Particle_Physics/33-02.Four_Basic_Forces/NU_U17-33-02-002.pg',
+        'folder_dir': '../../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/33.Particle_Physics/33-02.Four_Basic_Forces',
+        'dest_file_path': '33-02.Four_Basic_Forces',
+        'root_dest_folder': 'source/College_Physics_Urone/'}
+        """
         dir_info = {
             'filename': filename,
             'file_dir': file_dir,
@@ -433,7 +532,6 @@ for source_filepath in source_files:
         # print/update progress bar
         counter += 1
         progress(counter, len(source_files), status="Files Processed: " + str(counter) + "/" + str(len(source_files)))
-
     except Exception as e:
         print(e)
         pass
