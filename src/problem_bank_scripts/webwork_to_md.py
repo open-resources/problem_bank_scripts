@@ -22,7 +22,7 @@ from docopt import docopt
 # read passed in arguments
 args = docopt(__doc__)
 # set source_path with passed in path
-source_path = args['<source_patht>']
+source_path = args['<source_path>']
 # OLD source_path = '../../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
 # check if source_path ends with a backslash, if not, raise an error (this is needed to create the correct dest_folder)
 if source_path and source_path[-1] != '/':
@@ -486,9 +486,6 @@ def progress(count, total, status=''):
 
 # for loop runs based # of folders in src
 for root, dirs, files in os.walk(source_path):
-    # create dest file structure based on source directory
-    for dir_path in src_dirs:
-        Path(dir_path).mkdir(parents=True, exist_ok=True)
     # iterate through each file
     for file in files:
         if file.endswith('.pg'):
@@ -500,7 +497,7 @@ for source_filepath in source_files:
         # start timer for processing file
         file_start_time = time.process_time()
         # extract and build information directory
-        dest_file_path = source_filepath.split('/')[-2]
+        dest_file_path = source_filepath[:source_filepath.rfind('/')].removeprefix(source_path)
         filename = source_filepath[source_filepath.rfind('/')+1:-3]
         folder_dir = source_filepath[:source_filepath.rfind('/')]
         file_dir = source_filepath[source_filepath.find("Contrib"):]
