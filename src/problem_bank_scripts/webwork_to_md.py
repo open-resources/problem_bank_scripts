@@ -4,10 +4,11 @@
 @Description: Converts webwork files from .PL to markdown .MD
 
 Usage:
-    webwork_to_md.py <source_path>
+    webwork_to_md.py <source_path> <destination_path>
 
 Arguments:
-    source_path                Root of all the pl source files.
+    source_path                     Path to root of all the pl source files.
+    destination_path                Path to destination of all md output files.
 """
 import os
 from pathlib import Path
@@ -27,23 +28,14 @@ logging.info('Started Session')
 args = docopt(__doc__)
 # set source_path with passed in path
 source_path = args['<source_path>']
-# OLD source_path = '../../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
-# check if source_path ends with a backslash, if not, raise an error (this is needed to create the correct dest_folder)
-if source_path and source_path[-1] != '/':
-    raise Exception('Please make sure your source_path argument ends with a backslash i.e. /')
-
-root_dest_folder = 'source/' + source_path.split('/')[-2] + '/'
-# Creates root_dest_folder if it doesn't exist
-Path(root_dest_folder).mkdir(parents=True, exist_ok=True)
+destination_path = args['<destination_path>']
 
 # variable declaration
 counter = 0
 source_files = []
-src_dirs = []
 title = topic = author = editor = date = source = template_version = problem_type = attribution = outcomes = difficulty = randomization = taxonomy = ""
 tags = assets = altText = image_line = []
 total_start_time = time.process_time()
-
 
 # Variable declaration for Webwork keywords
 metadata_end_src = "DOCUMENT();"
@@ -60,11 +52,18 @@ image_src = "image"
 context_src = "Context"
 partial_answer_src = "showPartialCorrectAnswers"
 
-# extract file structure from source directory (handles ALL sub-directories)
-for root, dirs, files in os.walk(source_path):
-    for name in dirs:
-        dest_folder = os.path.join(root, name).removeprefix(source_path)
-        src_dirs.append(root_dest_folder + dest_folder)
+
+def sanitize_file_path(file_path):
+    """
+    description: sanitizes the file path to ensure it has a trailing slash at the end
+    @param file_path:
+    @return: file_path with trailing backslash
+    """
+    # check if file_path doesn't end with a backslash
+    if file_path and file_path[-1] != '/':
+        # Add backslash to end of file_path
+        file_path += "/"
+    return file_path
 
 
 def split_file(file_content):
@@ -278,7 +277,7 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
                                                                                 + '## Rubric \n\n\n'
                                                                                 + '## Solution \n\n\n'
                                                                                 + '## Comments \n\n\n')
-    # + ''.join(f'{value}' for key, value in section.items())
+                                                                                # + ''.join(f'{value}' for key, value in section.items())
 
 
 def get_part_type(part_type):
@@ -438,7 +437,7 @@ def help_problem_extract_append(problem_subsection, final_dic):
     @return: list that contains clean problems without any PEARL syntax in them
     """
     if len(problem_subsection) > 1:
-        problem_stripped = problem_subsection.replace('\\', '').replace('textrm', '').replace('{', '').replace('}', '') \
+        problem_stripped = problem_subsection.replace('\\', '').replace('textrm', '').replace('{', '').replace('}', '')\
             .replace('&middot;', '$\\cdot$').replace('END_TEXT', '').replace('BEGIN_TEXT', '').strip()
         if re.match(r'.\) ', problem_stripped):
             subsection_without_part_num = problem_stripped[3:]
@@ -487,15 +486,31 @@ def progress(count, total, status=''):
     sys.stdout.write('[%s] %s%s -- %s\r' % (bar, percents, '%', status))
     sys.stdout.flush()
 
+# -------------------------------------------------------------------------------------------------------------------- #
 
-# for loop runs based # of folders in src
+
+# sanitize source path to ensure it has a trailing backslash
+source_path = sanitize_file_path(source_path)
+# set root destination folder
+root_dest_folder = sanitize_file_path(destination_path) + 'source/' + source_path.split('/')[-2] + '/'
+# Create root_dest_folder if it doesn't exist
+Path(root_dest_folder).mkdir(parents=True, exist_ok=True)
+
+# iterate through all the files and dirs in the source directory
 for root, dirs, files in os.walk(source_path):
+    # iterate through all the files in the current directory
+    for name in dirs:
+        dest_folder = os.path.join(root, name).removeprefix(source_path)
+        # create dest file structure based on source directory
+        Path(root_dest_folder + dest_folder).mkdir(parents=True, exist_ok=True)
     # iterate through each file
     for file in files:
+        # if file is a .pg file (PEAL)
         if file.endswith('.pg'):
+            # add file path to source_files list
             source_files.append(os.path.join(root, file))
 
-
+# iterate through every .pg file found in the source directory
 for source_filepath in source_files:
     try:
         # start timer for processing file
