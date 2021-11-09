@@ -17,7 +17,11 @@ import re
 import time
 from shutil import copy2
 import sys
+import logging
 from docopt import docopt
+
+logging.basicConfig(filename='Webwork_to_md_logs.log', level=logging.INFO)
+logging.info('Started Session')
 
 # read passed in arguments
 args = docopt(__doc__)
@@ -274,7 +278,7 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
                                                                                 + '## Rubric \n\n\n'
                                                                                 + '## Solution \n\n\n'
                                                                                 + '## Comments \n\n\n')
-                                                                                # + ''.join(f'{value}' for key, value in section.items())
+    # + ''.join(f'{value}' for key, value in section.items())
 
 
 def get_part_type(part_type):
@@ -285,8 +289,8 @@ def get_part_type(part_type):
     """
     return {"type": part_type,
             "pl-customizations":
-            {"weight": "1",
-            "hide-answer-panel": "true"}
+                {"weight": "1",
+                 "hide-answer-panel": "true"}
             }
 
 
@@ -434,7 +438,7 @@ def help_problem_extract_append(problem_subsection, final_dic):
     @return: list that contains clean problems without any PEARL syntax in them
     """
     if len(problem_subsection) > 1:
-        problem_stripped = problem_subsection.replace('\\', '').replace('textrm', '').replace('{', '').replace('}', '')\
+        problem_stripped = problem_subsection.replace('\\', '').replace('textrm', '').replace('{', '').replace('}', '') \
             .replace('&middot;', '$\\cdot$').replace('END_TEXT', '').replace('BEGIN_TEXT', '').strip()
         if re.match(r'.\) ', problem_stripped):
             subsection_without_part_num = problem_stripped[3:]
@@ -507,8 +511,9 @@ for source_filepath in source_files:
         'filename': 'NU_U17-33-02-002',
         'file_dir': 'Contrib/BrockPhysics/College_Physics_Urone/33.Particle_Physics/33-02.Four_Basic_Forces/NU_U17-33-02-002.pg',
         'folder_dir': '../../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/33.Particle_Physics/33-02.Four_Basic_Forces',
-        'dest_file_path': '33-02.Four_Basic_Forces',
-        'root_dest_folder': 'source/College_Physics_Urone/'}
+        'root_dest_folder': 'source/College_Physics_Urone/',
+        'dest_file_path': '33.Particle_Physics/33-02.Four_Basic_Forces'
+        }
         """
         dir_info = {
             'filename': filename,
@@ -552,6 +557,7 @@ for source_filepath in source_files:
         progress(counter, len(source_files), status="Files Processed: " + str(counter) + "/" + str(len(source_files)))
     except Exception as e:
         print(e)
+        logging.error('Error: ' + str(e))
         pass
 
 # ------------------------ STATS ------------------------ #
@@ -560,3 +566,4 @@ process_time_seconds = total_end_time - total_start_time
 print('\n---')
 print('total time:', round(process_time_seconds / 60, 2), 'minutes,', round(process_time_seconds, 2), 'seconds')
 print('avg time per each file:', round(process_time_seconds / counter, 2), 'seconds [', counter, '] files')
+logging.info('Session Completed')
