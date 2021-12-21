@@ -267,11 +267,15 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
     Path(destination_file_path + directory_info['filename'] + ".md").write_text('---\n'
                                                                                 + yaml.safe_dump(yaml_dict, sort_keys=False)
                                                                                 + '---\n\n'
-                                                                                + '# {{ params.vars.title }} \n\n'
+                                                                                + '# {{ params.vars.title }} \n'
+                                                                                # Question image
                                                                                 + ''.join(f'{image}\n' for image in question_images)
+                                                                                # Question body
                                                                                 + ''.join(f'\n{question}\n' for part, question in zip(question_parts, question_text) if (part == 0))
-                                                                                + ''.join(f'\n## Part {part} \n{question} \n\n\n ### Answer Section\n' for part, question in zip(question_parts, question_text) if (part > 0))
-                                                                                + str(question_units) + '\n\n'
+                                                                                # Question part # (if question is multi-part
+                                                                                + ''.join(f'\n## Part {part} \n{question} \n\n### Answer Section\n' for part, question in zip(question_parts, question_text) if (part > 0))
+                                                                                # Final answer units
+                                                                                + ''.join(f'{final_answer_unit}' for final_answer_unit in question_units) + '\n\n'
                                                                                 + '## pl-submission-panel \n\n\n'
                                                                                 + '## pl-answer-panel \n\n\n'
                                                                                 + '## Rubric \n\n\n'
