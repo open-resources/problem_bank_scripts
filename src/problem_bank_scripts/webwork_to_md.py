@@ -36,7 +36,7 @@ source_files = []
 title = topic = author = editor = date = source = template_version = problem_type = attribution = outcomes = difficulty = randomization = taxonomy = ""
 tags = assets = altText = image_line = []
 total_start_time = time.process_time()
-
+temp_final_answer_units = []
 # Variable declaration for Webwork keywords
 metadata_end_src = "DOCUMENT();"
 marcos_end_src = "TEXT(beginproblem());"
@@ -273,9 +273,9 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
                                                                                 # Question body
                                                                                 + ''.join(f'\n{question}\n' for part, question in zip(question_parts, question_text) if (part == 0))
                                                                                 # Question part # (if question is multi-part
-                                                                                + ''.join(f'\n## Part {part} \n{question} \n\n### Answer Section\n' for part, question in zip(question_parts, question_text) if (part > 0))
+                                                                                + ''.join(f'\n## Part {part} \n{question}\n' for part, question in zip(question_parts, question_text) if (part > 0))
                                                                                 # Final answer units
-                                                                                + ''.join(f'{final_answer_unit}' for final_answer_unit in question_units) + '\n\n'
+                                                                                + ''.join(f'\n### Answer Section\n{final_answer_unit}' for final_answer_unit in question_units if (len(final_answer_unit) > 0)) + '\n\n'
                                                                                 + '## pl-submission-panel \n\n\n'
                                                                                 + '## pl-answer-panel \n\n\n'
                                                                                 + '## Rubric \n\n\n'
@@ -405,10 +405,10 @@ def help_problem_extract_ans_units(problem_subsection):
     final_ans_units = ''
     section_clean = ''
     if not problem_subsection.startswith("\\{ image") and not problem_subsection.endswith(") \\}"):
-        # if section is the end i.e. ans_rule (determines the length of the answer)
-        if problem_subsection.startswith("\\{ans_rule") and problem_subsection.endswith("\\)"):
-            # extract the question units using regex
-            final_ans_units = re.findall('textrm{(.+?)}', problem_subsection)
+        # extract the question units using regex
+        final_ans_units = re.findall('\\\\} \\\\\(\\\\textrm{(.+?)}', problem_subsection)
+        if len(final_ans_units) == 1:
+            temp_final_answer_units.append(temp_final_answer_units)
         if not problem_subsection.startswith("\\{ans_rule") and not problem_subsection.endswith("\\)"):
             section_clean = problem_subsection
     return {'section': section_clean,
@@ -574,6 +574,7 @@ for source_filepath in source_files:
         # print/update progress bar
         counter += 1
         progress(counter, len(source_files), status="Files Processed: " + str(counter) + "/" + str(len(source_files)))
+        temp_final_answer_units = []
     except Exception as e:
         print(e)
         logging.error('Error: ' + str(e))
