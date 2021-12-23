@@ -453,7 +453,7 @@ def process_attribution(source):
         return attribution_text
     
     except TypeError:
-        print("You probably need to update the template, the 'attribution' key seems to be missing.")
+        print(f"`source` value of {source} not recognized. You probably need to update the template, the 'source' key seems to be missing or not recognized.")
         
 def process_question_md(source_filepath, output_path = None, instructor = False):
     
