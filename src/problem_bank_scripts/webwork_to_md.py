@@ -36,7 +36,7 @@ source_files = []
 title = topic = author = editor = date = source = template_version = problem_type = attribution = outcomes = difficulty = randomization = taxonomy = ""
 tags = assets = altText = image_line = []
 total_start_time = time.process_time()
-temp_final_answer_units = []
+
 # Variable declaration for Webwork keywords
 metadata_end_src = "DOCUMENT();"
 marcos_end_src = "TEXT(beginproblem());"
@@ -270,13 +270,11 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
                                                                                 + '# {{ params.vars.title }} \n'
                                                                                 # Question image
                                                                                 + ''.join(f'{image}\n' for image in question_images)
-                                                                                # Question body
-                                                                                + ''.join(f'\n{question}\n' for part, question in zip(question_parts, question_text) if (part == 0))
-                                                                                # Question part # (if question is multi-part
-                                                                                + ''.join(f'\n## Part {part} \n{question}\n' for part, question in zip(question_parts, question_text) if (part > 0))
-                                                                                # Final answer units
-                                                                                + ''.join(f'\n### Answer Section\n{final_answer_unit}' for final_answer_unit in question_units if (len(final_answer_unit) > 0)) + '\n\n'
-                                                                                + '## pl-submission-panel \n\n\n'
+                                                                                # Question body w/ final answer units
+                                                                                + ''.join(f'\n{question}\n \n### Answer Section\n{final_answer_unit}\n ' for part, question, final_answer_unit in zip(question_parts, question_text, question_units) if (part == 0))
+                                                                                # Question part number and question body w/ final answer units (if question is multi-part)
+                                                                                + ''.join(f'\n## Part {part} \n{question}\n \n### Answer Section\n{final_answer_unit}\n' for part, question,final_answer_unit in zip(question_parts, question_text, question_units) if (part > 0))
+                                                                                + '\n ## pl-submission-panel \n\n\n'
                                                                                 + '## pl-answer-panel \n\n\n'
                                                                                 + '## Rubric \n\n\n'
                                                                                 + '## Solution \n\n\n'
@@ -336,11 +334,12 @@ def problem_extract(question_body, image_alt_text):
     @return: dictionary containing question text, parts and units
     """
     hint = ''
-    question_units = ''
+    question_unit = ''
     question_raw = []
     question_split = ''
     part_headers = []
     question_part = []
+    multi_part_question_units = []
 
     # split question into sections based on "$PAR"
     for question in question_body:
@@ -359,7 +358,9 @@ def problem_extract(question_body, image_alt_text):
             if not hint or hint not in section_clean:
                 subsection = help_problem_extract_ans_units(section_clean)
                 subsection_text = subsection['section']
-                question_units = subsection['final_ans_units']
+                question_unit = subsection['final_ans_units']
+                if len(question_unit) > 0:
+                    multi_part_question_units.append(question_unit)
                 subsection_multi_part = help_problem_extract_ans_type(subsection_text)
                 subsection_multi_part_ans_type = subsection_multi_part['ans_type']
                 subsection_clean = subsection_multi_part['problem_clean']
@@ -370,7 +371,7 @@ def problem_extract(question_body, image_alt_text):
 
     return {'question_text': question_raw,
             'question_parts': question_part,
-            'question_units': question_units}
+            'question_units': multi_part_question_units}
 
 
 def append_part_counter(part_counter, part_headers):
@@ -402,17 +403,17 @@ def help_problem_extract_ans_units(problem_subsection):
     @param problem_subsection:
     @return: dictionary containing question sections and final answer units
     """
-    final_ans_units = ''
+    question_final_units = ''
     section_clean = ''
     if not problem_subsection.startswith("\\{ image") and not problem_subsection.endswith(") \\}"):
         # extract the question units using regex
         final_ans_units = re.findall('\\\\} \\\\\(\\\\textrm{(.+?)}', problem_subsection)
         if len(final_ans_units) == 1:
-            temp_final_answer_units.append(temp_final_answer_units)
+            question_final_units = ''.join(final_ans_units)
         if not problem_subsection.startswith("\\{ans_rule") and not problem_subsection.endswith("\\)"):
             section_clean = problem_subsection
     return {'section': section_clean,
-            'final_ans_units': final_ans_units}
+            'final_ans_units': question_final_units}
 
 
 def help_problem_extract_ans_type(problem_subsection):
