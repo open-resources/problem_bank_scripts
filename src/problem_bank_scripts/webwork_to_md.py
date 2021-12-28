@@ -274,7 +274,7 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
                                                                                 + ''.join(f'\n{question}\n \n### Answer Section\n{final_answer_unit}\n ' for part, question, final_answer_unit in zip(question_parts, question_text, question_units) if (part == 0))
                                                                                 # Question part number and question body w/ final answer units (if question is multi-part)
                                                                                 + ''.join(f'\n## Part {part} \n{question}\n \n### Answer Section\n{final_answer_unit}\n' for part, question,final_answer_unit in zip(question_parts, question_text, question_units) if (part > 0))
-                                                                                + '\n ## pl-submission-panel \n\n\n'
+                                                                                + '\n## pl-submission-panel \n\n\n'
                                                                                 + '## pl-answer-panel \n\n\n'
                                                                                 + '## Rubric \n\n\n'
                                                                                 + '## Solution \n\n\n'
