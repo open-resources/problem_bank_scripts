@@ -575,7 +575,6 @@ for source_filepath in source_files:
         # print/update progress bar
         counter += 1
         progress(counter, len(source_files), status="Files Processed: " + str(counter) + "/" + str(len(source_files)))
-        temp_final_answer_units = []
     except Exception as e:
         print(e)
         logging.error('Error: ' + str(e))
