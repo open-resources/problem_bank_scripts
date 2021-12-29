@@ -118,7 +118,7 @@ substitutions:
         correct: false
   correct_answers:
     part1_ans: 5649717.514124292
-    part1_ans_str: 5.65E6
+    part1_ans_str: 5650000.0
 ---
 # {{ params.vars.title }}
 Two parallel conducting plates ${{params.L}}\textrm{ cm}$ on a side are given equal and opposite charges of magnitude ${{params.q}}\times 10^{ {{params.p}} }\textrm{ C}$.
