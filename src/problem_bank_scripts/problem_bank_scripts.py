@@ -404,7 +404,6 @@ def process_longtext(part_name,parsed_question, data_dict):
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
     html += f"""<pl-rich-text-editor { pl_customizations } > </pl-rich-text-editor>"""
-    print('this is actually working')
 
     return replace_tags(html)
 
