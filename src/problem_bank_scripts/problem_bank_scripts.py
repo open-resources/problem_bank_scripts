@@ -17,6 +17,8 @@ from collections import defaultdict
 from shutil import copy2
 import re
 import codecs
+import importlib.util
+import problem_bank_helpers as pbh
 
 ## Parse Markdown
 from markdown_it import MarkdownIt # pip install markdown-it-py 
@@ -492,7 +494,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         else:
             raise NotImplementedError("Check the source filepath; it does not have 'source' in it!! ")
     else:
-        ## TODO: Make this a bit more robust
+        ## TODO: Make this a bit more robust, perhaps by switching encodings!?
         output_path = pathlib.Path(output_path)
 
     # deal with multi-line strings in YAML Dump
@@ -512,10 +514,29 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
     header = parsed_q['header']
     body_parts = parsed_q['body_parts']
     
-    # Run the python code
+    #################################################################################
+    # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
+
+    # This is needed to run this locally compared to when it gets run on a PL server
+    imports = parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() 
+    # TODO: I am not sure if the split is needed since we are now running generate() directly.
+    generate = parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() 
+    server_py = imports + "\n" + generate
+
+    spec = importlib.util.spec_from_loader('server', loader=None)
+    server = importlib.util.module_from_spec(spec)
+    exec(server_py, server.__dict__)
+
+    data2 = pbh.create_data2()
+
+    server.generate(data2)
+
     ## TODO: Is there a better way to do this?
-    exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
-    exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
+    ## UPDATE: FIXED, SEE ABOVE
+    #exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
+    #exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
+
+    #################################################################################
 
     # Remove the solutions from the server section
     if instructor is False:
@@ -583,16 +604,35 @@ def process_question_pl(source_filepath, output_path = None):
     # Create output dir if it doesn't exist
     output_path.mkdir(parents=True, exist_ok=True)
 
-    ############### Start Sketchiest Part
-    # Run the python code
-    try:
-        exec(parsed_q['header']['server']['imports'],globals() )
-        exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )
-    except ModuleNotFoundError:
-        # AWFUL AWFUL hack because of the prairielearn.py file
-        exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
-        exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
-    ############### End Sketchiest Part
+    #################################################################################
+    # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
+
+    # This is needed to run this locally compared to when it gets run on a PL server
+    imports = parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() 
+    # TODO: I am not sure if the split is needed since we are now running generate() directly.
+    generate = parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() 
+    server_py = imports + "\n" + generate
+
+    spec = importlib.util.spec_from_loader('server', loader=None)
+    server = importlib.util.module_from_spec(spec)
+    exec(server_py, server.__dict__)
+
+    data2 = pbh.create_data2()
+
+    server.generate(data2)
+
+    # ############### Start Sketchiest Part
+    # # Run the python code
+    # try:
+    #     exec(parsed_q['header']['server']['imports'],globals() )
+    #     exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )
+    # except ModuleNotFoundError:
+    #     # AWFUL AWFUL hack because of the prairielearn.py file
+    #     exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
+    #     exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
+    # ############### End Sketchiest Part
+
+    #################################################################################
 
     # Write info.json file
     write_info_json(output_path, parsed_q)
