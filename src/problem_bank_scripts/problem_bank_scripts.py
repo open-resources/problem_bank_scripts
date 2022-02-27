@@ -247,7 +247,7 @@ def write_info_json(output_path, parsed_question):
     if parsed_question['header'].get('gradingMethod'):
         optional += """ "gradingMethod": parsed_question['header']['gradingMethod'],\n"""
     elif parsed_question['header'].get('partialCredit'):
-        optional += """ "partialCredi": parsed_question['header']['partialCredit'],\n"""
+        optional += """ "partialCredit": parsed_question['header']['partialCredit'],\n"""
     elif parsed_question['header'].get('externalGradingOptions'):
         optional += """ "externalGradingOptions": parsed_question['header']['externalGradingOptions'],\n"""
     elif parsed_question['header'].get('dependencies'):
