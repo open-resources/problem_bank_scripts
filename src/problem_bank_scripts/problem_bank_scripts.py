@@ -8,7 +8,6 @@ from docopt import docopt
 ## Loading and Saving files & others
 import uuid
 import json
-from . import prairielearn as pl
 import pathlib
 import sys
 import numpy as np
@@ -17,6 +16,8 @@ from collections import defaultdict
 from shutil import copy2
 import re
 import codecs
+import importlib.util
+import problem_bank_helpers as pbh
 
 ## Parse Markdown
 from markdown_it import MarkdownIt # pip install markdown-it-py 
@@ -246,7 +247,7 @@ def write_info_json(output_path, parsed_question):
     if parsed_question['header'].get('gradingMethod'):
         optional += """ "gradingMethod": parsed_question['header']['gradingMethod'],\n"""
     elif parsed_question['header'].get('partialCredit'):
-        optional += """ "partialCredi": parsed_question['header']['partialCredit'],\n"""
+        optional += """ "partialCredit": parsed_question['header']['partialCredit'],\n"""
     elif parsed_question['header'].get('externalGradingOptions'):
         optional += """ "externalGradingOptions": parsed_question['header']['externalGradingOptions'],\n"""
     elif parsed_question['header'].get('dependencies'):
@@ -262,28 +263,44 @@ def write_info_json(output_path, parsed_question):
             "type": "v3"
         }""",encoding='utf8')
 
-def write_server_py(output_path,parsed_question):
+def assemble_server_py(parsed_question,location):
+    """Assembles a string version of the server.py file from the YAML header of the md file.
+
+    Args:
+        parsed_question (_type_): dictionary that is created upon reading of the md problem.
+        location (string): 'local' or 'prairielearn' ; the import statements are different depending on if it's local or on a PL server.
     """
+
+    server_dict = parsed_question['header']['server']
+
+    if location == 'local':
+        # This is needed to run this locally compared to when it gets run on a PL server
+        server_dict['imports'] = parsed_question['header']['server']['imports'].replace('import prairielearn as pl','import problem_bank_scripts.prairielearn as pl') 
+
+    server_py = f""""""
+    
+    server_py += server_dict.get('imports','') + '\n'
+    
+    try:
+        for function, code in server_dict.items():
+            indented_code = code.replace('\n','\n    ')
+            if code:
+                server_py += f"def {function}(data):\n    {indented_code}\n"
+    except:
+        raise
+
+    return server_py
+
+def write_server_py(output_path,parsed_question):
+    """Writes the server.py file to disk
     Args:
         output_path ([type]): [description]
         parsed_question ([type]): [description]
     """
     
     output_path = pathlib.Path(output_path)
-    
-    server_dict = parsed_question['header']['server']
-    
-    server_file = f""""""
-    
-    server_file += server_dict.pop('imports',None) + '\n'
-    
-    try:
-        for function, code in server_dict.items():
-            indented_code = code.replace('\n','\n    ')
-            if code:
-                server_file += f"def {function}(data):\n    {indented_code}\n"
-    except:
-        raise
+
+    server_file = assemble_server_py(parsed_question,'prairielearn')
 
     # Deal with path differences when using PL
     server_file = server_file.replace('read_csv("',
@@ -492,7 +509,7 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
         else:
             raise NotImplementedError("Check the source filepath; it does not have 'source' in it!! ")
     else:
-        ## TODO: Make this a bit more robust
+        ## TODO: Make this a bit more robust, perhaps by switching encodings!?
         output_path = pathlib.Path(output_path)
 
     # deal with multi-line strings in YAML Dump
@@ -512,10 +529,18 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
     header = parsed_q['header']
     body_parts = parsed_q['body_parts']
     
-    # Run the python code
-    ## TODO: Is there a better way to do this?
-    exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
-    exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
+    #################################################################################
+    # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
+
+    server_py = assemble_server_py(parsed_q,'local')
+
+    spec = importlib.util.spec_from_loader('server', loader=None)
+    server = importlib.util.module_from_spec(spec)
+    exec(server_py, server.__dict__)
+
+    data2 = pbh.create_data2()
+    server.generate(data2)
+    #################################################################################
 
     # Remove the solutions from the server section
     if instructor is False:
@@ -583,16 +608,19 @@ def process_question_pl(source_filepath, output_path = None):
     # Create output dir if it doesn't exist
     output_path.mkdir(parents=True, exist_ok=True)
 
-    ############### Start Sketchiest Part
-    # Run the python code
-    try:
-        exec(parsed_q['header']['server']['imports'],globals() )
-        exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )
-    except ModuleNotFoundError:
-        # AWFUL AWFUL hack because of the prairielearn.py file
-        exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
-        exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
-    ############### End Sketchiest Part
+    #################################################################################
+    # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
+
+    server_py = assemble_server_py(parsed_q,'local')
+
+    spec = importlib.util.spec_from_loader('server', loader=None)
+    server = importlib.util.module_from_spec(spec)
+    exec(server_py, server.__dict__)
+
+    data2 = pbh.create_data2()
+
+    server.generate(data2)
+    #################################################################################
 
     # Write info.json file
     write_info_json(output_path, parsed_q)
