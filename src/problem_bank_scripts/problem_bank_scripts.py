@@ -276,9 +276,7 @@ def assemble_server_py(parsed_question,location):
     if location == 'local':
         # This is needed to run this locally compared to when it gets run on a PL server
         server_dict['imports'] = parsed_question['header']['server']['imports'].replace('import prairielearn as pl','import problem_bank_scripts.prairielearn as pl') 
-        # TODONE: I am not sure if the split is needed since we are now running generate() directly.
-        server_dict['generate'] = parsed_question['header']['server']['generate'].split('# Update the data object with a new dict')[0]
-    
+
     server_py = f""""""
     
     server_py += server_dict.get('imports','') + '\n'
@@ -542,12 +540,6 @@ def process_question_md(source_filepath, output_path = None, instructor = False)
 
     data2 = pbh.create_data2()
     server.generate(data2)
-
-    ## TODONE: Is there a better way to do this?
-    ## UPDATE: FIXED, SEE ABOVE
-    #exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
-    #exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
-
     #################################################################################
 
     # Remove the solutions from the server section
@@ -628,18 +620,6 @@ def process_question_pl(source_filepath, output_path = None):
     data2 = pbh.create_data2()
 
     server.generate(data2)
-
-    # ############### Start Sketchiest Part
-    # # Run the python code
-    # try:
-    #     exec(parsed_q['header']['server']['imports'],globals() )
-    #     exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )
-    # except ModuleNotFoundError:
-    #     # AWFUL AWFUL hack because of the prairielearn.py file
-    #     exec(parsed_q['header']['server']['imports'].replace('import prairielearn as pl','from . import prairielearn as pl'),globals() )
-    #     exec(parsed_q['header']['server']['generate'].split('# Update the data object with a new dict')[0],globals() )     
-    # ############### End Sketchiest Part
-
     #################################################################################
 
     # Write info.json file
