@@ -335,7 +335,7 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
     for a in data_dict['params'][f'{part_name}'].keys():
 
         if 'ans' in a:
-            if (data_dict['params'][f'{part_name}'][{a}]['feedback']):
+            if (data_dict['params'][f'{part_name}'][f'{a}']['feedback']):
                 feedback = f"|@ params.{part_name}.{a}.feedback @|"
             else:
                 feedback = 'No feedback is available.'
