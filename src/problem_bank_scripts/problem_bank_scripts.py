@@ -338,7 +338,7 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
             if (data_dict['params'][f'{part_name}'][f'{a}']['feedback']):
                 feedback = f"|@ params.{part_name}.{a}.feedback @|"
             else:
-                feedback = 'No feedback is available.'
+                feedback = f"'No feedback is available.'"
 
             correctness = f"|@ params.{part_name}.{a}.correct @|"
             value = f"|@ params.{part_name}.{a}.value @|"
