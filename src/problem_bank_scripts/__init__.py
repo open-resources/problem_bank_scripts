@@ -1,3 +1,3 @@
-__version__ = "0.2.14"
+__version__ = "0.3.0"
 
 from .problem_bank_scripts import *
