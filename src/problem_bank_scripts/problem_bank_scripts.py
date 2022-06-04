@@ -331,9 +331,19 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
     else:
         units = ''
 
+    ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
     for a in data_dict['params'][f'{part_name}'].keys():
+
         if 'ans' in a:
-            html += f"\t<pl-answer correct= |@ params.{part_name}.{a}.correct @| > |@ params.{part_name}.{a}.value @| {units} </pl-answer>\n"
+            if (data_dict['params'][f'{part_name}'][{a}]['feedback']):
+                feedback = f"|@ params.{part_name}.{a}.feedback @|"
+            else:
+                feedback = 'No feedback is available.'
+
+            correctness = f"|@ params.{part_name}.{a}.correct @|"
+            value = f"|@ params.{part_name}.{a}.value @|"
+
+            html += f"\t<pl-answer correct= {correctness} feedback = {feedback} > {value} {units} </pl-answer>\n"
 
     html += '</pl-multiple-choice>\n' 
 
