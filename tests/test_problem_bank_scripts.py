@@ -7,7 +7,7 @@ import os
 import pytest
 
 def test_version():
-    assert __version__ == '0.3.0'
+    assert __version__ == '0.3.1'
 
 @pytest.fixture(scope="session", autouse= True)
 def add_random_seed(paths):
