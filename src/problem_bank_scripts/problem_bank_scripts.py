@@ -338,12 +338,12 @@ def process_multiple_choice(part_name,parsed_question, data_dict):
             if (data_dict['params'][f'{part_name}'][f'{a}']['feedback']):
                 feedback = f"|@ params.{part_name}.{a}.feedback @|"
             else:
-                feedback = f"'No feedback is available.'"
+                feedback = f"Feedback for this choice is not available yet."
 
             correctness = f"|@ params.{part_name}.{a}.correct @|"
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            html += f"\t<pl-answer correct= {correctness} feedback = {feedback} > {value} {units} </pl-answer>\n"
+            html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
 
     html += '</pl-multiple-choice>\n' 
 
