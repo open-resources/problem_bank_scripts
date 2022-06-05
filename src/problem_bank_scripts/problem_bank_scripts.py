@@ -451,13 +451,13 @@ def process_file_upload(part_name,parsed_question, data_dict):
 
     html += f"""<pl-file-upload { pl_customizations } > </pl-file-upload>"""
 
-    html += f"""<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>\n\t{{#feedback.manual}}\n\t<p>Feedback from course staff:</p>\n\t<markdown>{{{feedback.manual}}}</markdown>\n\t{{/feedback.manual}}
-\n</pl-submission-panel>
+    html += f"""<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|
+\n</pl-submission-panel>"""
 
-    #TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
-    #TODO: Add support for wildcard *.png
-    #TODO: Add better message telling students the question needs to be manually graded.
-    """
+    # TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
+    # TODO: Add support for wildcard *.png
+    # TODO: Add better message telling students the question needs to be manually graded.
+
     return replace_tags(html)
 #################
 
@@ -470,7 +470,7 @@ def replace_tags(string):
     Returns:
         string (str): returns string with tags replaced with curly braces.
     """
-    return string.replace('|@','{{').replace('@|','}}')
+    return string.replace('|@|@','{{{').replace('@|@|','}}}').replace('|@','{{').replace('@|','}}')
 
 def remove_correct_answers(data2_dict):
     """Magical recursive function that removes particular keys from a nested dictionary: https://stackoverflow.com/a/29652561/2217577
