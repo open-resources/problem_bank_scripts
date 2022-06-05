@@ -434,6 +434,33 @@ def process_longtext(part_name,parsed_question, data_dict):
 
     return replace_tags(html)
 
+#################
+def process_file_upload(part_name,parsed_question, data_dict):
+    """Processes markdown format of file-upload questions and returns PL HTML 
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    pl_customizations = " ".join([f'{k} = "{v}"' for k,v in parsed_question['header'][part_name]['pl-customizations'].items()]) # PL-customizations
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-file-upload { pl_customizations } > </pl-file-upload>"""
+
+    html += f"""<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>\n\t{{#feedback.manual}}\n\t<p>Feedback from course staff:</p>\n\t<markdown>{{{feedback.manual}}}</markdown>\n\t{{/feedback.manual}}
+\n</pl-submission-panel>
+
+    #TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
+    #TODO: Add support for wildcard *.png
+    #TODO: Add better message telling students the question needs to be manually graded.
+    """
+    return replace_tags(html)
+#################
+
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
 
@@ -660,6 +687,8 @@ def process_question_pl(source_filepath, output_path = None):
             question_html += process_dropdown('part1',parsed_q,data2)
         elif 'longtext' in q_type:
             question_html += process_longtext('part1',parsed_q,data2)
+        elif 'file-upload' in q_type:
+            question_html += process_file_upload('part1',parsed_q,data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
@@ -691,6 +720,8 @@ def process_question_pl(source_filepath, output_path = None):
                 question_html += process_dropdown(part,parsed_q,data2)
             elif 'longtext' in q_type:
                 question_html += process_longtext(part,parsed_q,data2)
+            elif 'file-upload' in q_type:
+                question_html += process_file_upload(part,parsed_q,data2)
             else:
                 raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
