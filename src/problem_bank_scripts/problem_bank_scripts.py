@@ -434,7 +434,6 @@ def process_longtext(part_name,parsed_question, data_dict):
 
     return replace_tags(html)
 
-#################
 def process_file_upload(part_name,parsed_question, data_dict):
     """Processes markdown format of file-upload questions and returns PL HTML 
     Args:
@@ -459,7 +458,6 @@ def process_file_upload(part_name,parsed_question, data_dict):
     # TODO: Add better message telling students the question needs to be manually graded.
 
     return replace_tags(html)
-#################
 
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
