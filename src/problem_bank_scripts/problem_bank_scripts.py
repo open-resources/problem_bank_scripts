@@ -255,11 +255,28 @@ def write_info_json(output_path, parsed_question):
     elif parsed_question['header'].get('singleVariant'):
         optional += """ "singleVariant": parsed_question['header']['singleVariant'],\n"""
 
+    # Add tags based on part type
+    q_types = []
+
+    for pnum in range(1, parsed_question['num_parts'] + 1):
+        part = 'part'+f'{pnum}'
+        q_types.append(parsed_question['header'][part]['type'])
+
+    auto_tags = []
+    if len(q_types)>1:
+        auto_tags.append('multi_part')
+    auto_tags.extend(list(set(q_types)))
+
+    auto_tags.extend(parsed_question['header']['tags'])
+    auto_tags = [v for v in auto_tags if v != 'unknown']
+
+    # End add tags
+
     pathlib.Path(output_path / 'info.json').write_text("""{
             "uuid": \"""" + str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path))) + """\",
             "title": \"""" + parsed_question['header']['title'] + """",
             "topic": \"""" + parsed_question['header']['topic'] + """",
-            "tags":  """ + json.dumps(parsed_question['header']['tags']) + """,
+            "tags":  """ + json.dumps(auto_tags) + """,
             "type": "v3"
         }""",encoding='utf8')
 
