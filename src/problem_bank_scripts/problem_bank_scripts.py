@@ -19,9 +19,10 @@ import codecs
 import importlib.util
 import problem_bank_helpers as pbh
 
+
 ## Parse Markdown
-from markdown_it import MarkdownIt # pip install markdown-it-py 
-from mdformat.renderer import MDRenderer # pip install mdformat
+import markdown_it
+import mdformat
 
 ## Dealing with YAML
 import yaml
@@ -47,7 +48,7 @@ def defdict_to_dict(defdict, finaldict):
             finaldict[k] = v
     return finaldict
 
-def split_body_parts(num_parts,body_parts):
+def split_body_parts(num_parts, body_parts):
     """Parses individual question parts and splits out titles, and content
 
     Args:
@@ -57,46 +58,73 @@ def split_body_parts(num_parts,body_parts):
     Returns:
         body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
     """
-    mdit = MarkdownIt()
+    mdit = markdown_it.MarkdownIt()
     env = {}
     nested_dict = lambda: defaultdict(nested_dict)
 
     parts_dict = nested_dict()
+    print(f"before: {num_parts},{body_parts}")
+    print("\n\n")
 
-    for pnum in range(1,num_parts+1):
+    for pnum in range(1, num_parts + 1):
 
-        part = 'part'+f'{pnum}'
+        part = "part" + f"{pnum}"
         # Set up tokens by parsing the md file
         tokens = mdit.parse(body_parts[part], env)
 
-        ptt = [i for i,j in enumerate(tokens) if j.tag=='h2']
-        parts_dict[part]['title'] = MDRenderer().render(tokens[ptt[0]+1:ptt[1]], mdit.options, env).strip('\n')
+        ptt = [i for i, j in enumerate(tokens) if j.tag == "h2"]
+        parts_dict[part]["title"] = (
+            mdformat.renderer.MDRenderer()
+            .render(tokens[ptt[0] + 1 : ptt[1]], mdit.options, env)
+            .strip("\n")
+        )
 
-        pa = [i for i,j in enumerate(tokens) if j.tag=='h3']
+        pa = [i for i, j in enumerate(tokens) if j.tag == "h3"]
 
         try:
-            parts_dict[part]['answer']['title'] = codecs.unicode_escape_decode(MDRenderer().render(tokens[pa[0]+1:pa[1]], mdit.options, env))[0]
+            parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
+                mdformat.renderer.MDRenderer().render(
+                    tokens[pa[0] + 1 : pa[1]], mdit.options, env
+                )
+            )[0]
         except IndexError:
-            print("Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is).")
+            print(
+                "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
+            )
             raise
 
-        parts_dict[part]['content'] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[1]+1:pa[0]], mdit.options, env))[0]
-        parts_dict[part]['answer']['content'] = codecs.unicode_escape_decode(MDRenderer().render(tokens[pa[1]+1:], mdit.options, env))[0]
+        parts_dict[part]["content"] = codecs.unicode_escape_decode(
+            mdformat.renderer.MDRenderer().render(
+                tokens[ptt[1] + 1 : pa[0]], mdit.options, env
+            )
+        )[0]
+        parts_dict[part]["answer"]["content"] = codecs.unicode_escape_decode(
+            mdformat.renderer.MDRenderer().render(
+                tokens[pa[1] + 1 :], mdit.options, env
+            )
+        )[0]
 
         # Remove parts from body_parts
         body_parts.pop(part)
 
     # Deal with other headings: pl-submission-panel and pl-answer-panel
+    print(f"after: {body_parts}")
 
-    for key in body_parts.keys():
-        if key in ['pl-submission-panel','pl-answer-panel']:
-            # Set up tokens by parsing the md file
-            tokens = mdit.parse(body_parts[key], env)
+    # for key in body_parts.keys():
+    #     print(f'outside: {key}')
+    #     if key in ['pl-submission-panel','pl-answer-panel']:
+    #         # Set up tokens by parsing the md file
+    #         tokens = mdit.parse(body_parts[key], env)
 
-            ptt = [i for i,j in enumerate(tokens) if j.tag=='h2']
-            parts_dict[key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
+    #         print(key)
 
-    return defdict_to_dict(parts_dict,{})
+    #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
+    #         try:
+    #             parts_dict[key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
+    #         except IndexError:
+    #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
+
+    return defdict_to_dict(parts_dict, {})
 
 def read_md_problem(filepath):
     """Reads a MystMarkdown problem file and returns a dictionary of the header and body
@@ -172,6 +200,8 @@ def read_md_problem(filepath):
 
     for k,v in blocks.items():
 
+        print(f'k block in read_md_p..() : {k,v}')
+
         rendered_part = codecs.unicode_escape_decode(MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env))[0]
         
         if k == 'title':
@@ -189,11 +219,11 @@ def read_md_problem(filepath):
         elif 'Comments' in rendered_part:
             body_parts['Comments'] = rendered_part
 
-        elif 'pl-submission-panel' in rendered_part:
-            body_parts['pl-submission-panel'] = rendered_part
+        # elif 'pl-submission-panel' in rendered_part:
+        #     body_parts['pl-submission-panel'] = rendered_part
 
-        elif 'pl-answer-panel' in rendered_part:
-            body_parts['pl-answer-panel'] = rendered_part
+        # elif 'pl-answer-panel' in rendered_part:
+        #     body_parts['pl-answer-panel'] = rendered_part
 
         else:
             part_counter +=1
@@ -708,7 +738,7 @@ def process_question_pl(source_filepath, output_path = None):
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
         ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-        question_html += '</pl-hide-in-panel>\n'
+        question_html += '</pl-hide-in-panel>\n\n'
 
     ##### Multi part
     else:
@@ -743,7 +773,7 @@ def process_question_pl(source_filepath, output_path = None):
             question_html += "</div>\n</div>\n\n\n"
 
             ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-            question_html += '</pl-hide-in-panel>\n'
+            question_html += '</pl-hide-in-panel>\n\n'
             
     # Add pl-submission-panel and pl-answer-panel (if they exist)
     subm_panel = parsed_q['body_parts_split'].get('pl-submission-panel', None)
@@ -756,7 +786,7 @@ def process_question_pl(source_filepath, output_path = None):
         question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
 
     # Add Attribution
-    question_html += f"\n<pl-question-panel>\n<markdown>\n\n---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
+    question_html += f"\n<pl-question-panel>\n<markdown>\n---{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
 
     # Fix Latex underscore bug (_ being replaced with \_)
     question_html = question_html.replace('\\_','_')
