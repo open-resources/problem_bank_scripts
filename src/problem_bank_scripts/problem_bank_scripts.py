@@ -174,17 +174,17 @@ def read_md_problem(filepath):
             block_count += 1
 
             if block_count == 1:
-                blocks['block{0}'.format(block_count)] = [x,]
+                blocks[f'block{block_count}] = [x,]
             else:
-                blocks['block{0}'.format(block_count-1)].append(x)
-                blocks['block{0}'.format(block_count)] = [x,]
+                blocks[f'block{block_count-1}'].append(x)
+                blocks[f'block{block_count}] = [x,]
 
     # Add -1 to the end of the last block
-    blocks['block{0}'.format(block_count)].append(len(tokens))
+    blocks[f'block{block_count}].append(len(tokens))
 
     # Assert statements (turn into tests!)
-    assert num_titles == 1, "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(num_titles)
-    assert block_count >= 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(block_count -1)
+    assert num_titles == 1, f"I see {num_titles} Level 1 Headers (#) in this file, there should only be one!"
+    assert block_count >= 1, f"I see {block_count -1} Level 2 Headers (##) in this file, there should be at least 1"
 
     # Add the end of the title block; # small hack
     #blocks['title'].append(blocks['block1'][0])
