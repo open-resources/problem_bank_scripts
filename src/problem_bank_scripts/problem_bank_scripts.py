@@ -19,7 +19,6 @@ import codecs
 import importlib.util
 import problem_bank_helpers as pbh
 
-
 ## Parse Markdown
 import markdown_it
 import mdformat
@@ -66,7 +65,7 @@ def parse_body_part(pnum, md_text):
     # Create Markdown parser
     mdit = markdown_it.MarkdownIt()
     env = {}
-    tokens = mdit.parse(body_parts[part], env)
+    tokens = mdit.parse(md_text, env)
 
     # Get Level 2 headers and make sure there's only one!
     level2_headers = [
@@ -75,6 +74,13 @@ def parse_body_part(pnum, md_text):
     assert (
         len(level2_headers) == 1
     ), "There is a problem in the question, there seem to be multiple level two headers in a body part, or there is a weird edge-case in the parse_body_part() function"
+
+    # Store the content of the level 2 header
+    try:
+        nested_dict[part]["content"] = tokens[level2_headers[0] + 4].content
+    except IndexError:
+        print("It looks like there is an empty section of header level 2 in your md file.")
+        raise
 
     # Get all Level 3 headers
     level3_headers = [
@@ -96,7 +102,13 @@ def parse_body_part(pnum, md_text):
         if "answer" in header.lower():
             header = "answer"
 
-        nested_dict[part][header] = tokens[hd + 4].content
+        try:
+            nested_dict[part][header] = tokens[hd + 4].content
+        except IndexError:
+            print("It looks like there is an empty section of header level 3 in your md file.")
+            # TODO: in the future, suggest ignoring empty sections instead of throwing an error
+            raise
+
 
     return defdict_to_dict(nested_dict, {})
 
@@ -279,7 +291,7 @@ def read_md_problem(filepath):
 
     # Get the preamble before the parts start
     blocks["preamble"] = [blocks["title"][1], blocks["block1"][0]]
-    ###
+
     ## Process the blocks into markdown
 
     body_parts = {}
@@ -319,7 +331,7 @@ def read_md_problem(filepath):
     return_dict = {
         "header": header,
         "body_parts": body_parts,
-        "num_parts": part_counter,
+        "num_parts": part_counter-1,
         "body_parts_split": parts_dict,
     }
     return defdict_to_dict(return_dict, {})
@@ -810,6 +822,8 @@ def process_question_pl(source_filepath, output_path = None):
         ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
         question_html += '<pl-hide-in-panel answer="true">\n'
 
+        question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
+
         if parsed_q['num_parts'] > 1:
             question_html += f"""<div class="card my-2">
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
@@ -833,23 +847,26 @@ def process_question_pl(source_filepath, output_path = None):
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
         if parsed_q['num_parts'] > 1:
-            question_html += "</div>\n</div>\n\n\n"
+            question_html += "</div>\n</div>\n"
 
         ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-        question_html += '</pl-hide-in-panel>\n\n'
+        question_html += '</pl-hide-in-panel>\n'
         
         # Add pl-submission-panel and pl-answer-panel (if they exist)
-        subm_panel = parsed_q['body_parts_split'].get('pl-submission-panel', None)
-        q_panel = parsed_q['body_parts_split'].get('pl-answer-panel', None)
+        subm_panel = parsed_q['body_parts_split'][part].get('pl-submission-panel', None)
+        q_panel = parsed_q['body_parts_split'][part].get('pl-answer-panel', None)
 
         if subm_panel:
-            question_html += f"<pl-submission-panel>{ parsed_q['body_parts_split']['pl-submission-panel'] } </pl-submission-panel>\n"
-
+            question_html += f"<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
         if q_panel:
-            question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
+            question_html += f"<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
+
+        #TODO: Add support for other panels here as well !
+
+        question_html += f"\n<!-- ######## End of Part {pnum} ######## -->\n"
 
     # Add Attribution
-    question_html += f"\n<pl-question-panel>\n<markdown>\n---{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
+    question_html += f"\n<pl-question-panel>\n<markdown>\n---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
 
     # Fix Latex underscore bug (_ being replaced with \_)
     question_html = question_html.replace('\\_','_')
