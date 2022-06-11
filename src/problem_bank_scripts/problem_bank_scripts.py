@@ -63,9 +63,7 @@ def split_body_parts(num_parts, body_parts):
     nested_dict = lambda: defaultdict(nested_dict)
 
     parts_dict = nested_dict()
-    print(f"before: {num_parts},{body_parts}")
-    print("\n\n")
-
+    
     for pnum in range(1, num_parts + 1):
 
         part = "part" + f"{pnum}"
@@ -79,7 +77,13 @@ def split_body_parts(num_parts, body_parts):
             .strip("\n")
         )
 
-        pa = [i for i, j in enumerate(tokens) if j.tag == "h3"]
+        # Get the "### Answer section from the parts_dict"
+        pa = [i
+                for i, j in enumerate(tokens)
+                if j.tag == "h3"
+                if "pl-submission-panel" not in j.content
+                if "pl-answer-panel" not in j.content
+            ]
 
         try:
             parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
@@ -104,25 +108,44 @@ def split_body_parts(num_parts, body_parts):
             )
         )[0]
 
+        # Get the ### pl-submission-panel and ### pl-answer-panel
+        p_extra = [i
+                for i, j in enumerate(tokens)
+                if j.tag == "h3"
+                if "pl-submission-panel" in j.content
+                if "pl-answer-panel" in j.content
+            ]
+
+        if p_extra:
+            try:
+                parts_dict[part]["pl-submission-panel"] = codecs.unicode_escape_decode(
+                    mdformat.renderer.MDRenderer().render(
+                        tokens[p_extra[0] + 1 : p_extra[1]], mdit.options, env
+                    )
+                )[0]
+            except IndexError:
+                print(
+                    "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
+                )
+                raise            
+
+
+        # for key in body_parts.keys():
+        #     print(f'outside: {key}')
+        #     if key in ['pl-submission-panel','pl-answer-panel']:
+        #         # Set up tokens by parsing the md file
+        #         tokens = mdit.parse(body_parts[key], env)
+
+        #         print(key)
+
+        #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
+        #         try:
+        #             parts_dict[part][key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
+        #         except IndexError:
+        #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
+
         # Remove parts from body_parts
         body_parts.pop(part)
-
-    # Deal with other headings: pl-submission-panel and pl-answer-panel
-    print(f"after: {body_parts}")
-
-    # for key in body_parts.keys():
-    #     print(f'outside: {key}')
-    #     if key in ['pl-submission-panel','pl-answer-panel']:
-    #         # Set up tokens by parsing the md file
-    #         tokens = mdit.parse(body_parts[key], env)
-
-    #         print(key)
-
-    #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
-    #         try:
-    #             parts_dict[key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
-    #         except IndexError:
-    #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
 
     return defdict_to_dict(parts_dict, {})
 
@@ -713,77 +736,52 @@ def process_question_pl(source_filepath, output_path = None):
     else:
         question_html = f""
 
-    ## Single part questions
-    if parsed_q['num_parts'] == 1:
-        q_type = parsed_q['header']['part1']['type']
+    # Single and Multi-part question construction
+
+    for pnum in range(1, parsed_q['num_parts']):
+        part = 'part'+f'{pnum}'
+        q_type = parsed_q['header'][part]['type']
 
         ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
         question_html += '<pl-hide-in-panel answer="true">\n'
-        
-        if 'multiple-choice' in q_type:
-            question_html += process_multiple_choice('part1',parsed_q,data2)
-        elif 'number-input' in q_type:
-            question_html += process_number_input('part1',parsed_q,data2)
-        elif 'checkbox' in q_type:
-            question_html += process_checkbox('part1',parsed_q,data2)
-        elif 'symbolic-input' in q_type:
-            question_html += process_symbolic_input('part1',parsed_q,data2)
-        elif 'dropdown' in q_type:
-            question_html += process_dropdown('part1',parsed_q,data2)
-        elif 'longtext' in q_type:
-            question_html += process_longtext('part1',parsed_q,data2)
-        elif 'file-upload' in q_type:
-            question_html += process_file_upload('part1',parsed_q,data2)
-        else:
-            raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
-        ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-        question_html += '</pl-hide-in-panel>\n\n'
-
-    ##### Multi part
-    else:
-        for pnum in range(1, parsed_q['num_parts'] + 1):
-            part = 'part'+f'{pnum}'
-            q_type = parsed_q['header'][part]['type']
-
-            ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
-            question_html += '<pl-hide-in-panel answer="true">\n'
-
+        if parsed_q['num_parts'] > 1:
             question_html += f"""<div class="card my-2">
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
 <div class="card-body">\n\n"""
 
-            if 'multiple-choice' in q_type:                
-                question_html += f"{process_multiple_choice(part,parsed_q,data2)}"  
-            elif 'number-input' in q_type:
-                question_html += f"{process_number_input(part,parsed_q,data2)}"
-            elif 'checkbox' in q_type:
-                question_html += process_checkbox(part,parsed_q,data2)
-            elif 'symbolic-input' in q_type:
-                question_html += process_symbolic_input(part,parsed_q,data2)
-            elif 'dropdown' in q_type:
-                question_html += process_dropdown(part,parsed_q,data2)
-            elif 'longtext' in q_type:
-                question_html += process_longtext(part,parsed_q,data2)
-            elif 'file-upload' in q_type:
-                question_html += process_file_upload(part,parsed_q,data2)
-            else:
-                raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
+        if 'multiple-choice' in q_type:                
+            question_html += f"{process_multiple_choice(part,parsed_q,data2)}"  
+        elif 'number-input' in q_type:
+            question_html += f"{process_number_input(part,parsed_q,data2)}"
+        elif 'checkbox' in q_type:
+            question_html += process_checkbox(part,parsed_q,data2)
+        elif 'symbolic-input' in q_type:
+            question_html += process_symbolic_input(part,parsed_q,data2)
+        elif 'dropdown' in q_type:
+            question_html += process_dropdown(part,parsed_q,data2)
+        elif 'longtext' in q_type:
+            question_html += process_longtext(part,parsed_q,data2)
+        elif 'file-upload' in q_type:
+            question_html += process_file_upload(part,parsed_q,data2)
+        else:
+            raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
+        if parsed_q['num_parts'] > 1:
             question_html += "</div>\n</div>\n\n\n"
 
-            ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-            question_html += '</pl-hide-in-panel>\n\n'
-            
-    # Add pl-submission-panel and pl-answer-panel (if they exist)
-    subm_panel = parsed_q['body_parts_split'].get('pl-submission-panel', None)
-    q_panel = parsed_q['body_parts_split'].get('pl-answer-panel', None)
+        ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
+        question_html += '</pl-hide-in-panel>\n\n'
+        
+        # Add pl-submission-panel and pl-answer-panel (if they exist)
+        subm_panel = parsed_q['body_parts_split'].get('pl-submission-panel', None)
+        q_panel = parsed_q['body_parts_split'].get('pl-answer-panel', None)
 
-    if subm_panel:
-        question_html += f"<pl-submission-panel>{ parsed_q['body_parts_split']['pl-submission-panel'] } </pl-submission-panel>\n"
+        if subm_panel:
+            question_html += f"<pl-submission-panel>{ parsed_q['body_parts_split']['pl-submission-panel'] } </pl-submission-panel>\n"
 
-    if q_panel:
-        question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
+        if q_panel:
+            question_html += f"<pl-answer-panel>{ parsed_q['body_parts_split']['pl-answer-panel'] } </pl-answer-panel>\n"
 
     # Add Attribution
     question_html += f"\n<pl-question-panel>\n<markdown>\n---{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
