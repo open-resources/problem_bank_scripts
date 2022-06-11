@@ -48,106 +48,158 @@ def defdict_to_dict(defdict, finaldict):
             finaldict[k] = v
     return finaldict
 
-def split_body_parts(num_parts, body_parts):
-    """Parses individual question parts and splits out titles, and content
+def parse_body_part(pnum, md_text):
+    """Parses markdown and returns a dictionary split by header
 
     Args:
-        num_parts (int): An integer corresponding to the number of question parts (from `read_md_problem()`).
-        body_parts (dict): A dictionary from `read_md_problem()`.
+        md_text (str): A string of markdown format
 
     Returns:
-        body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
+        parsed_md_text (dict): A dictionary split of the text
     """
+
+    part = "part" + f"{pnum}"
+
+    # Special dict to store stuff
+    nested_dict = pbh.create_data2()
+
+    # Create Markdown parser
     mdit = markdown_it.MarkdownIt()
     env = {}
-    nested_dict = lambda: defaultdict(nested_dict)
+    tokens = mdit.parse(body_parts[part], env)
 
-    parts_dict = nested_dict()
+    # Get Level 2 headers and make sure there's only one!
+    level2_headers = [
+        i for i, j in enumerate(tokens) if j.tag == "h2" if j.nesting == 1
+    ]
+    assert (
+        len(level2_headers) == 1
+    ), "There is a problem in the question, there seem to be multiple level two headers in a body part, or there is a weird edge-case in the parse_body_part() function"
+
+    # Get all Level 3 headers
+    level3_headers = [
+        i for i, j in enumerate(tokens) if j.tag == "h3" if j.nesting == 1
+    ]
+    assert (
+        len(tokens[level2_headers[0] + 1].content) < 20
+    ), "There is an (arbitrary/opinionated) restriction on the length of 20 chars for a a 'part' title."
+
+    nested_dict[part]["title"] = tokens[level2_headers[0] + 1].content
+
+    for hd in level3_headers:
+        assert (
+            len(tokens[hd + 1].content) < 20
+        ), "There is an (arbitrary/opinionated) restriction on the length of 20 chars for a a 'sub-part' title."
+
+        header = tokens[hd + 1].content
+
+        if "answer" in header.lower():
+            header = "answer"
+
+        nested_dict[part][header] = tokens[hd + 4].content
+
+    return defdict_to_dict(nested_dict, {})
+
+# def split_body_parts(num_parts, body_parts):
+#     """Parses individual question parts and splits out titles, and content
+
+#     Args:
+#         num_parts (int): An integer corresponding to the number of question parts (from `read_md_problem()`).
+#         body_parts (dict): A dictionary from `read_md_problem()`.
+
+#     Returns:
+#         body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
+#     """
+#     mdit = markdown_it.MarkdownIt()
+#     env = {}
+#     nested_dict = lambda: defaultdict(nested_dict)
+
+#     parts_dict = nested_dict()
     
-    for pnum in range(1, num_parts + 1):
+#     for pnum in range(1, num_parts + 1):
 
-        part = "part" + f"{pnum}"
-        # Set up tokens by parsing the md file
-        tokens = mdit.parse(body_parts[part], env)
+#         part = "part" + f"{pnum}"
+#         # Set up tokens by parsing the md file
+#         tokens = mdit.parse(body_parts[part], env)
 
-        ptt = [i for i, j in enumerate(tokens) if j.tag == "h2"]
-        parts_dict[part]["title"] = (
-            mdformat.renderer.MDRenderer()
-            .render(tokens[ptt[0] + 1 : ptt[1]], mdit.options, env)
-            .strip("\n")
-        )
+#         ptt = [i for i, j in enumerate(tokens) if j.tag == "h2"]
+#         parts_dict[part]["title"] = (
+#             mdformat.renderer.MDRenderer()
+#             .render(tokens[ptt[0] + 1 : ptt[1]], mdit.options, env)
+#             .strip("\n")
+#         )
 
-        # Get the "### Answer section from the parts_dict"
-        pa = [i
-                for i, j in enumerate(tokens)
-                if j.tag == "h3"
-                if "pl-submission-panel" not in j.content
-                if "pl-answer-panel" not in j.content
-            ]
+#         # Get the "### Answer section from the parts_dict"
+#         pa = [i
+#                 for i, j in enumerate(tokens)
+#                 if j.tag == "h3"
+#                 if "pl-submission-panel" not in j.content
+#                 if "pl-answer-panel" not in j.content
+#             ]
 
-        try:
-            parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
-                mdformat.renderer.MDRenderer().render(
-                    tokens[pa[0] + 1 : pa[1]], mdit.options, env
-                )
-            )[0]
-        except IndexError:
-            print(
-                "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-            )
-            raise
+#         try:
+#             parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
+#                 mdformat.renderer.MDRenderer().render(
+#                     tokens[pa[0] + 1 : pa[1]], mdit.options, env
+#                 )
+#             )[0]
+#         except IndexError:
+#             print(
+#                 "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
+#             )
+#             raise
 
-        parts_dict[part]["content"] = codecs.unicode_escape_decode(
-            mdformat.renderer.MDRenderer().render(
-                tokens[ptt[1] + 1 : pa[0]], mdit.options, env
-            )
-        )[0]
-        parts_dict[part]["answer"]["content"] = codecs.unicode_escape_decode(
-            mdformat.renderer.MDRenderer().render(
-                tokens[pa[1] + 1 :], mdit.options, env
-            )
-        )[0]
+#         parts_dict[part]["content"] = codecs.unicode_escape_decode(
+#             mdformat.renderer.MDRenderer().render(
+#                 tokens[ptt[1] + 1 : pa[0]], mdit.options, env
+#             )
+#         )[0]
+#         parts_dict[part]["answer"]["content"] = codecs.unicode_escape_decode(
+#             mdformat.renderer.MDRenderer().render(
+#                 tokens[pa[1] + 1 :], mdit.options, env
+#             )
+#         )[0]
 
-        # Get the ### pl-submission-panel and ### pl-answer-panel
-        p_extra = [i
-                for i, j in enumerate(tokens)
-                if j.tag == "h3"
-                if "pl-submission-panel" in j.content
-                if "pl-answer-panel" in j.content
-            ]
+#         # Get the ### pl-submission-panel and ### pl-answer-panel
+#         p_extra = [i
+#                 for i, j in enumerate(tokens)
+#                 if j.tag == "h3"
+#                 if "pl-submission-panel" in j.content
+#                 if "pl-answer-panel" in j.content
+#             ]
 
-        if p_extra:
-            try:
-                parts_dict[part]["pl-submission-panel"] = codecs.unicode_escape_decode(
-                    mdformat.renderer.MDRenderer().render(
-                        tokens[p_extra[0] + 1 : p_extra[1]], mdit.options, env
-                    )
-                )[0]
-            except IndexError:
-                print(
-                    "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-                )
-                raise            
+#         if p_extra:
+#             try:
+#                 parts_dict[part]["pl-submission-panel"] = codecs.unicode_escape_decode(
+#                     mdformat.renderer.MDRenderer().render(
+#                         tokens[p_extra[0] + 1 : p_extra[1]], mdit.options, env
+#                     )
+#                 )[0]
+#             except IndexError:
+#                 print(
+#                     "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
+#                 )
+#                 raise            
 
 
-        # for key in body_parts.keys():
-        #     print(f'outside: {key}')
-        #     if key in ['pl-submission-panel','pl-answer-panel']:
-        #         # Set up tokens by parsing the md file
-        #         tokens = mdit.parse(body_parts[key], env)
+#         # for key in body_parts.keys():
+#         #     print(f'outside: {key}')
+#         #     if key in ['pl-submission-panel','pl-answer-panel']:
+#         #         # Set up tokens by parsing the md file
+#         #         tokens = mdit.parse(body_parts[key], env)
 
-        #         print(key)
+#         #         print(key)
 
-        #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
-        #         try:
-        #             parts_dict[part][key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
-        #         except IndexError:
-        #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
+#         #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
+#         #         try:
+#         #             parts_dict[part][key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
+#         #         except IndexError:
+#         #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
 
-        # Remove parts from body_parts
-        body_parts.pop(part)
+#         # Remove parts from body_parts
+#         body_parts.pop(part)
 
-    return defdict_to_dict(parts_dict, {})
+#     return defdict_to_dict(parts_dict, {})
 
 def read_md_problem(filepath):
     """Reads a MystMarkdown problem file and returns a dictionary of the header and body
@@ -156,25 +208,25 @@ def read_md_problem(filepath):
         filepath (str): Path of file to read.
 
     Returns:
-        dict: In this dictionary there are three keys containing useful portions of the parsed md file: 
+        dict: In this dictionary there are three keys containing useful portions of the parsed md file:
             - `header` - Header of the problem file (nested dictionary).
             - `body_parts` - Body text of the problem file (nested dictionary).
             - `num_parts` - Number of parts in the problem (integer).
     """
 
-    mdtext = pathlib.Path(filepath).read_text(encoding='utf8')
+    mdtext = pathlib.Path(filepath).read_text(encoding="utf8")
 
     # Deal with YAML header
-    header_text = mdtext.rsplit('---\n')[1]
-    header = yaml.safe_load('---\n' + header_text)
+    header_text = mdtext.rsplit("---\n")[1]
+    header = yaml.safe_load("---\n" + header_text)
 
     # Deal with Markdown Body
-    body = mdtext.rsplit('---\n')[2]
-    
+    body = mdtext.rsplit("---\n")[2]
+
     # Set up the markdown parser
     # to be honest, not fully sure what's going on here, see this issue: https://github.com/executablebooks/markdown-it-py/issues/164
 
-    mdit = MarkdownIt()
+    mdit = markdown_it.MarkdownIt()
     env = {}
 
     # Set up tokens by parsing the md file
@@ -186,78 +238,91 @@ def read_md_problem(filepath):
 
     num_titles = 0
 
-    for x,t in enumerate(tokens):
+    ###
+    for x, t in enumerate(tokens):
 
-        if t.tag == 'h1' and t.nesting == 1: # title
+        if t.tag == "h1" and t.nesting == 1:  # title
             # oh boy. this is going to break and it will be your fault firas.
-            blocks['title'] = [x,x+3]
+            blocks["title"] = [x, x + 3]
             num_titles += 1
 
-        elif t.tag == 'h2' and t.nesting == 1:
+        elif t.tag == "h2" and t.nesting == 1:
             block_count += 1
 
             if block_count == 1:
-                blocks[f'block{block_count}] = [x,]
+                blocks["block{0}".format(block_count)] = [
+                    x,
+                ]
             else:
-                blocks[f'block{block_count-1}'].append(x)
-                blocks[f'block{block_count}] = [x,]
-
+                blocks["block{0}".format(block_count - 1)].append(x)
+                blocks["block{0}".format(block_count)] = [
+                    x,
+                ]
+    ###
     # Add -1 to the end of the last block
-    blocks[f'block{block_count}].append(len(tokens))
+    blocks[f"block{block_count}"].append(len(tokens))
 
     # Assert statements (turn into tests!)
-    assert num_titles == 1, f"I see {num_titles} Level 1 Headers (#) in this file, there should only be one!"
-    assert block_count >= 1, f"I see {block_count -1} Level 2 Headers (##) in this file, there should be at least 1"
+    assert (
+        num_titles == 1
+    ), "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(
+        num_titles
+    )
+    assert (
+        block_count >= 1
+    ), "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(
+        block_count - 1
+    )
 
     # Add the end of the title block; # small hack
-    #blocks['title'].append(blocks['block1'][0])
+    # blocks['title'].append(blocks['block1'][0])
 
     # Get the preamble before the parts start
-    blocks['preamble'] = [blocks['title'][1],blocks['block1'][0]]
-
+    blocks["preamble"] = [blocks["title"][1], blocks["block1"][0]]
+    ###
     ## Process the blocks into markdown
 
     body_parts = {}
+    parts_dict = {}
 
-    part_counter = 0
+    part_counter = 1
 
-    for k,v in blocks.items():
+    for k, v in blocks.items():
 
-        print(f'k block in read_md_p..() : {k,v}')
+        rendered_part = codecs.unicode_escape_decode(
+            mdformat.renderer.MDRenderer().render(
+                tokens[v[0] : v[1]], mdit.options, env
+            )
+        )[0]
 
-        rendered_part = codecs.unicode_escape_decode(MDRenderer().render(tokens[v[0]:v[1]], mdit.options, env))[0]
-        
-        if k == 'title':
-            body_parts['title'] = rendered_part
-        
-        elif k == 'preamble':
-            body_parts['preamble'] = rendered_part
+        if k == "title":
+            body_parts["title"] = rendered_part
 
-        elif 'Rubric' in rendered_part:
-            body_parts['Rubric'] = rendered_part
+        elif k == "preamble":
+            body_parts["preamble"] = rendered_part
 
-        elif 'Solution' in rendered_part:
-            body_parts['Solution'] = rendered_part
+        elif "Rubric" in rendered_part:
+            body_parts["Rubric"] = rendered_part
 
-        elif 'Comments' in rendered_part:
-            body_parts['Comments'] = rendered_part
+        elif "Solution" in rendered_part:
+            body_parts["Solution"] = rendered_part
 
-        # elif 'pl-submission-panel' in rendered_part:
-        #     body_parts['pl-submission-panel'] = rendered_part
-
-        # elif 'pl-answer-panel' in rendered_part:
-        #     body_parts['pl-answer-panel'] = rendered_part
+        elif "Comments" in rendered_part:
+            body_parts["Comments"] = rendered_part
 
         else:
-            part_counter +=1
-            body_parts[f'part{part_counter}'] = rendered_part
+            body_parts[f"part{part_counter}"] = rendered_part
 
-    return_dict = {'header': header,
-            'body_parts': body_parts,
-            'num_parts': part_counter,
-            'body_parts_split': split_body_parts(part_counter,body_parts.copy()) 
-            }
-    return defdict_to_dict(return_dict,{})
+            parts_dict.update(parse_body_part(part_counter, rendered_part))
+            part_counter += 1
+
+    return_dict = {
+        "header": header,
+        "body_parts": body_parts,
+        "num_parts": part_counter,
+        "body_parts_split": parts_dict,
+    }
+    return defdict_to_dict(return_dict, {})
 
 def dict_to_md(md_dict, remove_keys = [None,]):
     """ Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).   
