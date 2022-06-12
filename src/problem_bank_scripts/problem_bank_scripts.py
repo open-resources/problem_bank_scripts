@@ -1024,10 +1024,10 @@ def process_question_pl(source_filepath, output_path=None):
 
         if subm_panel:
             question_html += (
-                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n\n"
+                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
             )
         if q_panel:
-            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n\n"
+            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
 
         # TODO: Add support for other panels here as well !
 
