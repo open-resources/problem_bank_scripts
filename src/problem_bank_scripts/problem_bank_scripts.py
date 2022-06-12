@@ -106,8 +106,7 @@ def parse_body_part(pnum, md_text):
 
         header = tokens[hd + 1].content
         assert (len(header) < 20), "There is an (arbitrary/opinionated) restriction on the length of 20 chars for a a 'sub-part' title."
-
-        if "Answer Section" in header.lower():
+        if "Answer Section" in header:
             header = "answer"
         try:
             content = codecs.unicode_escape_decode(
@@ -549,7 +548,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
 
     ###### LOOKHERE
     if (data_dict["params"][f"vars"]["units"]) and (
-        "units" in parsed_question["body_parts_split"][part_name]["answer"]["content"]
+        "units" in parsed_question["body_parts_split"][part_name]["answer"]
     ):
         units = f"|@ params.vars.units @|"
     else:
