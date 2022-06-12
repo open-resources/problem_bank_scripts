@@ -107,7 +107,6 @@ def parse_body_part(pnum, md_text):
         header = tokens[hd + 1].content
         assert (len(header) < 20), "There is an (arbitrary/opinionated) restriction on the length of 20 chars for a a 'sub-part' title."
 
-        print(f"The name of the header is: {header}")
         if "Answer Section" in header.lower():
             header = "answer"
         try:
@@ -334,7 +333,7 @@ def read_md_problem(filepath):
     body_parts = {}
     parts_dict = {}
 
-    part_counter = 1
+    part_counter = 0
 
     for k, v in blocks.items():
 
@@ -360,15 +359,15 @@ def read_md_problem(filepath):
             body_parts["Comments"] = rendered_part
 
         else:
+            part_counter += 1
             body_parts[f"part{part_counter}"] = rendered_part
 
             parts_dict.update(parse_body_part(part_counter, rendered_part))
-            part_counter += 1
 
     return_dict = {
         "header": header,
         "body_parts": body_parts,
-        "num_parts": part_counter - 1,
+        "num_parts": part_counter,
         "body_parts_split": parts_dict,
     }
     return defdict_to_dict(return_dict, {})
@@ -980,7 +979,7 @@ def process_question_pl(source_filepath, output_path=None):
 
     # Single and Multi-part question construction
 
-    for pnum in range(1, parsed_q["num_parts"]):
+    for pnum in range(1, parsed_q["num_parts"]+1):
         part = "part" + f"{pnum}"
         q_type = parsed_q["header"][part]["type"]
 
@@ -1023,14 +1022,12 @@ def process_question_pl(source_filepath, output_path=None):
         subm_panel = parsed_q["body_parts_split"][part].get("pl-submission-panel", None)
         q_panel = parsed_q["body_parts_split"][part].get("pl-answer-panel", None)
 
-        print(subm_panel)
-        print(q_panel)
         if subm_panel:
             question_html += (
-                f"<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
+                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n\n"
             )
         if q_panel:
-            question_html += f"<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
+            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n\n"
 
         # TODO: Add support for other panels here as well !
 
