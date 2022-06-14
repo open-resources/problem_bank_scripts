@@ -791,11 +791,14 @@ def process_attribution(source):
         elif "standard" in source:
             attribution_text = "Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
 
+        else:
+            raise NotImplementedError
+
         return attribution_text
 
-    except TypeError:
+    except NotImplementedError:
         print(
-            f"`source` value of {source} not recognized. You probably need to update the template, the 'source' key seems to be missing or not recognized."
+            f"`source` value of {source} is not recognized. You probably need to update the template, the 'source' key seems to be missing or not recognized."
         )
 
 def process_question_md(source_filepath, output_path=None, instructor=False):
