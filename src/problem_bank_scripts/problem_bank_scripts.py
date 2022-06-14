@@ -259,6 +259,7 @@ def read_md_problem(filepath):
             - `header` - Header of the problem file (nested dictionary).
             - `body_parts` - Body text of the problem file (nested dictionary).
             - `num_parts` - Number of parts in the problem (integer).
+            - `body_parts_split` - Dictionary with each part split into individual components.
     """
 
     mdtext = pathlib.Path(filepath).read_text(encoding="utf8")
@@ -911,7 +912,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             + header_yml
             + "---\n"
             + dict_to_md(
-                body_parts, remove_keys=["pl-submission-panel", "pl-answer-panel"]
+                body_parts,
             )
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),

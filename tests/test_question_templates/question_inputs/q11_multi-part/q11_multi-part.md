@@ -3,8 +3,10 @@ title: Multi-part Question
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -14,6 +16,10 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets:
@@ -21,15 +27,15 @@ assets:
 - test2.png
 server: 
   imports: |
-        import random;random.seed(111)
+        import random
         import pandas as pd
         import problem_bank_helpers as pbh
   generate: |
         data2 = pbh.create_data2()
         
         # define or load names/items/objects
-        names = pd.read_csv("data/names.csv")["Names"].tolist()
-        manual_vehicles = pd.read_csv("data/manual_vehicles.csv")["Manual Vehicles"].tolist()
+        names = pbh.names.copy()
+        manual_vehicles = pbh.manual_vehicles.copy()
 
         # store phrases etc
         data2["params"]["vars"]["name"] = random.choice(names)
@@ -81,10 +87,15 @@ server:
         pass
 part1:
   type: number-input
-  label: $d=$
   pl-customizations:
-    allow-blank: true
+    rtol: 0.05
     weight: 1
+    rtol: 0.05
+    allow-blank: true
+    label: $d= $
+    suffix: m
+    comparison: sigfig
+    digits: 2
 part2:
   type: multiple-choice  
   pl-customizations:
@@ -107,6 +118,16 @@ How far does {{ vars.name }} travel in {{ params.t }} seconds, assuming they con
 
 Please enter in a numeric value in {{ params.vars.units }}.
 
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
 ## Part 2
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
@@ -121,13 +142,15 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 - {{ params.part2.ans5.value}} {{ params.vars.units}} 
 - {{ params.part2.ans6.value}} {{ params.vars.units}}
 
-## pl-submission-panel
+### pl-submission-panel
 
 Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
-## pl-answer-panel
+### pl-answer-panel
 
 Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Rubric
 

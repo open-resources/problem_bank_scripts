@@ -140,6 +140,16 @@ What is the current $I$ in the solenoid?
 
 ### Answer Section
 
+## pl-submission-panel
+
+{{ submitted_answers.part1_ans_str }}
+
+{{ feedback.part1_ans }}
+
+## pl-answer-panel
+
+$I=$ {{ correct_answers.part1_ans_str }} $\textrm{ A}$
+
 ## Rubric
 
 This should be hidden from students until after the deadline.

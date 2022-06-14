@@ -1,7 +1,7 @@
 ---
-title: Integer Math
+title: Centripetal Motion
 topic: Template
-author: Firas Moosvi
+author: Michael Kudla
 source: original
 template_version: 1.4
 attribution: standard
@@ -27,28 +27,23 @@ server:
     imports: |
         import random
         import pandas as pd
+        import sympy as sp
+        import prairielearn as pl
         import problem_bank_helpers as pbh
     generate: |
         data2 = pbh.create_data2()
 
-        # define or load names/items/objects
-        names = pbh.names.copy()
-        manual_vehicles = pbh.manual_vehicles.copy()
-
         # store phrases etc
-        data2["params"]["vars"]["name"] = random.choice(names)
-        data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
-        data2["params"]["vars"]["title"] = "Integer Math"
-        data2["params"]["vars"]["units"] = "m/s"
+        data2["params"]["vars"]["title"] = 'Centripetal Motion'
 
-        # define bounds of the variables
-        n = random.randint(2,100)
+        # Declare math symbols to be used by sympy
+        m, v, r = sp.symbols('m v r')
 
-        # store the variables in the dictionary "params"
-        data2["params"]["n"] = n
-
-        # define correct answers
-        data2["correct_answers"]["part1_ans"] = int(n*10)
+        # Describe the solution equation
+        F = m*v**2/r
+        
+        # Answer to fill in the blank input stored as JSON.
+        data2['correct_answers']['part1_ans'] = pl.to_json(F)
         
         # Update the data object with a new dict
         data.update(data2)
@@ -59,21 +54,29 @@ server:
     grade: |
         pass
 part1:
-  type: number-input
-  label: $d=$
+  type: symbolic-input
   pl-customizations:
+    label: $F_r = $
+    variables: "m, v, r"
     weight: 1
-    allow-blank: true
+    allow-blank: false
 ---
 # {{ params.vars.title }}
 
 ## Question Text
 
-{{ params.vars.name }} is on a {{ params.vars.vehicle }} trying to calculate the result of 10 x {{ params.n }} {{ params.vars.units }}.
+Write the centripetal force $F_r$ in terms of the mass $m$, velocity $v$, and radius $r$.
+
+Note that it may not be necessary to use every variable. Use the following table as a reference for each variable:
+
+| For  | Use   |
+|----------|-------|
+| $m$  | m  |
+| $v$  | v  |
+| $r$  | r  |
+
 
 ### Answer Section
-
-Please enter an integer value in {{ params.vars.units }}.
 
 ### pl-submission-panel
 

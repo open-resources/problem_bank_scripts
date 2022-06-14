@@ -3,8 +3,10 @@ title: Electric Field and Direction
 topic: Template
 author: Jake Bobowski
 source: 2.6.67
-template_version: 1.1
+template_version: 1.4
 attribution: openstax-physics-vol2
+partialCredit: true
+singleVariant: false
 outcomes:
 - undefined
 difficulty:
@@ -13,12 +15,16 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets:
 server:
     imports: |
-        import random;random.seed(111)
+        import random
         import numpy as np
         import pandas as pd
         import problem_bank_helpers as pbh
@@ -86,17 +92,16 @@ server:
 part1:
   type: number-input
   pl-customizations:
+    rtol: 0.05
     label: $E=$
     allow-blank: false
     show-correct-answer: true
-    comparison: relabs
-    rtol: 0.03
-    atol: 0
+    #rtol: 0.03
     show-help-text: true
     suffix: $\rm\ N/C$
     weight: 1
 part2:
-  type: dropdown  
+  type: dropdown
   pl-customizations:
     blank: true
     weight: 1
@@ -120,16 +125,16 @@ What is the direction of the electric field at the centre of the region between 
 
 ### Answer Section
 
-- {{ params.part1.ans1.value }}
-- {{ params.part1.ans2.value }}
-- {{ params.part1.ans3.value }}
+- {{ params.part2.ans1.value }}
+- {{ params.part2.ans2.value }}
+- {{ params.part2.ans3.value }}
 
-## pl-submission-panel
+### pl-submission-panel
 
 {{ submitted_answers.part1_ans_str }}
 {{ feedback.part1_ans }}
 
-## pl-answer-panel
+### pl-answer-panel
 
 $E=$ {{ correct_answers.part1_ans_str }} $\mathrm{N}/\mathrm{C}$
 
