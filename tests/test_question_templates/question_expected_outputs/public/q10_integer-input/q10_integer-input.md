@@ -3,8 +3,10 @@ title: Integer Math
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -13,6 +15,10 @@ difficulty:
 randomization:
 - undefined
 taxonomy:
+- undefined
+span:
+- undefined
+length:
 - undefined
 tags:
 - unknown
@@ -26,11 +32,11 @@ part1:
 substitutions:
   params:
     vars:
-      name: Maya
-      vehicle: a unicycle
+      name: Mateo
+      vehicle: ice skates
       title: Integer Math
       units: m/s
-    n: 65
+    n: 94
 ---
 # {{ params.vars.title }}
 
@@ -41,6 +47,16 @@ substitutions:
 ### Answer Section
 
 Please enter an integer value in {{ params.vars.units }}.
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Attribution
 

@@ -3,8 +3,10 @@ title: Multi-part Question
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -14,6 +16,10 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets:
@@ -21,15 +27,15 @@ assets:
 - test2.png
 server:
   imports: |
-    import random;random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
     data2 = pbh.create_data2()
 
     # define or load names/items/objects
-    names = pd.read_csv("data/names.csv")["Names"].tolist()
-    manual_vehicles = pd.read_csv("data/manual_vehicles.csv")["Manual Vehicles"].tolist()
+    names = pbh.names.copy()
+    manual_vehicles = pbh.manual_vehicles.copy()
 
     # store phrases etc
     data2["params"]["vars"]["name"] = random.choice(names)
@@ -84,10 +90,14 @@ server:
     '
 part1:
   type: number-input
-  label: $d=$
   pl-customizations:
-    allow-blank: true
+    rtol: 0.05
     weight: 1
+    allow-blank: true
+    label: $d= $
+    suffix: m
+    comparison: sigfig
+    digits: 2
 part2:
   type: multiple-choice
   pl-customizations:
@@ -95,33 +105,33 @@ part2:
 substitutions:
   params:
     vars:
-      name: Maya
+      name: Abbas
       vehicle: a unicycle
       title: Distance travelled
       units: m/s
     v: 5
-    t: 6
+    t: 8
     part2:
       ans1:
         value: 42
         correct: false
       ans2:
-        value: 30
+        value: 40
         correct: true
       ans3:
-        value: 11
+        value: 13
         correct: false
       ans4:
-        value: 0.8333333333333334
+        value: 0.625
         correct: false
       ans5:
-        value: -1
+        value: -3
         correct: false
       ans6:
-        value: -1.3
+        value: -3.9000000000000004
         correct: false
   correct_answers:
-    part1_ans: 30
+    part1_ans: 40
 ---
 # {{ params.vars.title }}
 This part of the question is common to both Parts 1 and 2.
@@ -139,6 +149,16 @@ How far does {{ vars.name }} travel in {{ params.t }} seconds, assuming they con
 
 Please enter in a numeric value in {{ params.vars.units }}.
 
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
 ## Part 2
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
@@ -152,6 +172,16 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 - {{ params.part2.ans4.value}} {{ params.vars.units}}
 - {{ params.part2.ans5.value}} {{ params.vars.units}}
 - {{ params.part2.ans6.value}} {{ params.vars.units}}
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Rubric
 

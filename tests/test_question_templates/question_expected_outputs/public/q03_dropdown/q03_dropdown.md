@@ -3,8 +3,10 @@ title: Distance travelled
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -13,6 +15,10 @@ difficulty:
 randomization:
 - undefined
 taxonomy:
+- undefined
+span:
+- undefined
+length:
 - undefined
 tags:
 - unknown
@@ -25,25 +31,35 @@ part1:
 substitutions:
   params:
     vars:
-      name: Maya
-      vehicle: a unicycle
+      name: Emilia
+      vehicle: rollerblades
       title: Distance travelled
       units: m/s
     v: 5
-    t: 6
+    t: 10
     part1:
       ans1:
         value: 42
+        feedback: This is a random number, you probably selected this choice by mistake!
+          Try again please!
       ans2:
-        value: 30
+        value: 50
+        feedback: Great! You got it.
       ans3:
-        value: 11
+        value: 15
+        feedback: Hmm, does it make sense to add a velocity and a time? Check the
+          units!
       ans4:
-        value: 0.8333333333333334
+        value: 0.5
+        feedback: 'Hmm, check the units of the resulting answer: v/t.'
       ans5:
-        value: -1
+        value: -5
+        feedback: Hmm, does it make sense to subtract a velocity and a time? Check
+          the units!
       ans6:
-        value: -1.3
+        value: -6.5
+        feedback: Hmm, does it make sense to subtract a velocity and a time? Check
+          the units!
 ---
 # {{ params.vars.title }}
 
@@ -59,6 +75,16 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 - {{ params.part1.ans3}} {{ params.vars.units}}
 - {{ params.part1.ans4}} {{ params.vars.units}}
 - {{ params.part1.ans5}} {{ params.vars.units}}
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Attribution
 

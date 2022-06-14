@@ -3,8 +3,10 @@ title: Vectors and Scalars
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -14,26 +16,30 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets: null
 server:
   imports: |
-    import random;random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
     data2 = pbh.create_data2()
 
     # define or load names/items/objects
-    names = pd.read_csv("data/names.csv")["Names"].tolist()
+    names = pbh.names.copy()
 
     # store phrases etc
     data2["params"]["vars"]["title"] = 'Vectors and Scalars'
     data2["params"]["vars"]["name"] = random.choice(names)
 
     # define useful variables/lists
-    vectors = ["displacement", "velocity", "acceleration", "momentum", "force", "lift", "drag", "thurst", "weight"]
+    vectors = ["displacement", "velocity", "acceleration", "momentum", "force", "lift", "drag", "thrust", "weight"]
     scalars = ["length", "area", "volume", "mass", "density", "pressure", "temperature", "energy", "entropy", "work", "power"]
 
     # Randomly select 2,3,4 scalars and shuffle the lists
@@ -45,7 +51,7 @@ server:
     data2["params"]["choice"] = select
 
     # Create ans_choices
-    ans_choices = ["ans{0}".format(i+1) for i in range(total_choices)]
+    ans_choices = [f"ans{i+1}" for i in range(total_choices)]
 
     random.shuffle(scalars)
     random.shuffle(vectors)
@@ -56,22 +62,26 @@ server:
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = vectors.pop()
             data2["params"]["part1"][choice]["correct"] = True
+            data2["params"]["part1"][choice]["feedback"] = "Correct! Nice work"
 
         for i in range(num_scalars):
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = scalars.pop()
             data2["params"]["part1"][choice]["correct"] = False
+            data2["params"]["part1"][choice]["feedback"] = "Not quite - Try again!"
 
     elif select == "scalars":
         for i in range(num_scalars):
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = scalars.pop()
             data2["params"]["part1"][choice]["correct"] = True
+            data2["params"]["part1"][choice]["feedback"] = "Correct! Nice work"
 
         for i in range(num_vectors):
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = vectors.pop()
             data2["params"]["part1"][choice]["correct"] = False
+            data2["params"]["part1"][choice]["feedback"] = "Not quite - Try again!"
 
     # Update the data object with a new dict
     data.update(data2)
@@ -94,27 +104,33 @@ substitutions:
   params:
     vars:
       title: Vectors and Scalars
-      name: Maya
+      name: Emilia
     choice: scalars
     part1:
       ans1:
-        value: mass
+        value: pressure
         correct: true
+        feedback: Correct! Nice work
       ans2:
+        value: density
+        correct: true
+        feedback: Correct! Nice work
+      ans3:
+        value: entropy
+        correct: true
+        feedback: Correct! Nice work
+      ans4:
         value: temperature
         correct: true
-      ans3:
-        value: work
-        correct: true
-      ans4:
-        value: drag
-        correct: false
+        feedback: Correct! Nice work
       ans5:
         value: weight
         correct: false
+        feedback: Not quite - Try again!
       ans6:
-        value: lift
+        value: velocity
         correct: false
+        feedback: Not quite - Try again!
 ---
 # {{ params.vars.title }}
 
@@ -134,6 +150,16 @@ Note: You will be awarded full marks only if you select all the correct choices,
 - {{ params.part1.ans4.value}}
 - {{ params.part1.ans5.value}}
 - {{ params.part1.ans6.value}}
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Rubric
 

@@ -1,13 +1,18 @@
-import random;random.seed(111)
+import random
 import pandas as pd
 import problem_bank_helpers as pbh
 
+def imports(data):
+    import random
+    import pandas as pd
+    import problem_bank_helpers as pbh
+    
 def generate(data):
     data2 = pbh.create_data2()
     
     # define or load names/items/objects
-    names = pd.read_csv(data["options"]["client_files_course_path"]+"/data/names.csv")["Names"].tolist()
-    manual_vehicles = pd.read_csv(data["options"]["client_files_course_path"]+"/data/manual_vehicles.csv")["Manual Vehicles"].tolist()
+    names = pbh.names.copy()
+    manual_vehicles = pbh.manual_vehicles.copy()
     
     # store phrases etc
     data2["params"]["vars"]["name"] = random.choice(names)

@@ -1,7 +1,7 @@
 {
-            "uuid": "0cfde1a1-2966-306c-9e00-84542193882a",
+            "uuid": "7337e04a-4269-3a4a-8f29-fb5051c70b8f",
             "title": "Multi-part Question",
             "topic": "Template",
-            "tags":  ["unknown"],
+            "tags":  ["multi_part", "number-input", "multiple-choice"],
             "type": "v3"
         }

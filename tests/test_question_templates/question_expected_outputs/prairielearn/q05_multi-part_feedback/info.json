@@ -1,7 +1,7 @@
 {
-            "uuid": "feb1f5c5-d24f-343b-ac2a-6f63ec35ca05",
+            "uuid": "08803c0e-ab8a-381b-85a2-b171bf3c2782",
             "title": "Electric Field and Direction",
             "topic": "Template",
-            "tags":  ["unknown"],
+            "tags":  ["multi_part", "number-input", "dropdown"],
             "type": "v3"
         }

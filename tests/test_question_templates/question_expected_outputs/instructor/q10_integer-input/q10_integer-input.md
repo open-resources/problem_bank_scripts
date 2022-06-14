@@ -3,8 +3,10 @@ title: Integer Math
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -14,20 +16,24 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets: null
 server:
   imports: |
-    import random;random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
     data2 = pbh.create_data2()
 
     # define or load names/items/objects
-    names = pd.read_csv("data/names.csv")["Names"].tolist()
-    manual_vehicles = pd.read_csv("data/manual_vehicles.csv")["Manual Vehicles"].tolist()
+    names = pbh.names.copy()
+    manual_vehicles = pbh.manual_vehicles.copy()
 
     # store phrases etc
     data2["params"]["vars"]["name"] = random.choice(names)
@@ -64,13 +70,13 @@ part1:
 substitutions:
   params:
     vars:
-      name: Maya
-      vehicle: a unicycle
+      name: Lorenzo
+      vehicle: a skateboard
       title: Integer Math
       units: m/s
-    n: 65
+    n: 29
   correct_answers:
-    part1_ans: 650
+    part1_ans: 290
 ---
 # {{ params.vars.title }}
 
@@ -81,6 +87,16 @@ substitutions:
 ### Answer Section
 
 Please enter an integer value in {{ params.vars.units }}.
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Rubric
 

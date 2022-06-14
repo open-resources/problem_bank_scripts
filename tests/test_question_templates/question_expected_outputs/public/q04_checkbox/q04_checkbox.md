@@ -3,8 +3,10 @@ title: Vectors and Scalars
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -13,6 +15,10 @@ difficulty:
 randomization:
 - undefined
 taxonomy:
+- undefined
+span:
+- undefined
+length:
 - undefined
 tags:
 - unknown
@@ -27,21 +33,27 @@ substitutions:
   params:
     vars:
       title: Vectors and Scalars
-      name: Maya
-    choice: scalars
+      name: Savannah
+    choice: vectors
     part1:
       ans1:
-        value: mass
-      ans2:
-        value: temperature
-      ans3:
-        value: work
-      ans4:
-        value: drag
-      ans5:
         value: weight
+        feedback: Correct! Nice work
+      ans2:
+        value: thrust
+        feedback: Correct! Nice work
+      ans3:
+        value: volume
+        feedback: Not quite - Try again!
+      ans4:
+        value: pressure
+        feedback: Not quite - Try again!
+      ans5:
+        value: work
+        feedback: Not quite - Try again!
       ans6:
-        value: lift
+        value: energy
+        feedback: Not quite - Try again!
 ---
 # {{ params.vars.title }}
 
@@ -61,6 +73,16 @@ Note: You will be awarded full marks only if you select all the correct choices,
 - {{ params.part1.ans4.value}}
 - {{ params.part1.ans5.value}}
 - {{ params.part1.ans6.value}}
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Attribution
 

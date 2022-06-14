@@ -3,8 +3,10 @@ title: Distance travelled
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -14,20 +16,24 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets: null
 server:
   imports: |
-    import random;random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
     data2 = pbh.create_data2()
 
     # define or load names/items/objects
-    names = pd.read_csv("data/names.csv")["Names"].tolist()
-    manual_vehicles = pd.read_csv("data/manual_vehicles.csv")["Manual Vehicles"].tolist()
+    names = pbh.names.copy()
+    manual_vehicles = pbh.manual_vehicles.copy()
 
     # store phrases etc
     data2["params"]["vars"]["name"] = random.choice(names)
@@ -45,6 +51,7 @@ server:
 
     # define correct answers
     data2["correct_answers"]["part1_ans"] = v*t
+    data2["correct_answers"]["part2_ans"] = v*t
 
     # Update the data object with a new dict
     data.update(data2)
@@ -54,40 +61,78 @@ server:
   parse: 'pass
 
     '
-  grade: 'pass
-
-    '
+  grade: |
+    data = pbh.automatic_feedback(data,rtol=0.03)
+    #pass
 part1:
   type: number-input
   pl-customizations:
+    rtol: 0.05
     weight: 1
     allow-blank: true
     label: $d= $
     suffix: m
-    comparison: sigfig
-    digits: 2
+part2:
+  type: number-input
+  pl-customizations:
+    rtol: 0.05
+    weight: 1
+    allow-blank: true
+    label: $d= $
+    suffix: m
 substitutions:
   params:
     vars:
-      name: Maya
-      vehicle: a unicycle
+      name: Ximena
+      vehicle: a skateboard
       title: Distance travelled
       units: m/s
-    v: 5
-    t: 6
+    v: 3
+    t: 7
   correct_answers:
-    part1_ans: 30
+    part1_ans: 21
+    part2_ans: 21
 ---
 # {{ params.vars.title }}
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
 
-## Question Text
+## Part 1
 
 How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
 Please enter in a numeric value in {{ params.vars.units }}.
+
+### pl-submission-panel
+
+{{ feedback.part1_ans }}
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+## Part 2
+
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+
+### Answer Section
+
+Please enter in a numeric value in {{ params.vars.units }}.
+
+### pl-submission-panel
+
+{{ feedback.part1_ans }}
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 
 ## Rubric
 

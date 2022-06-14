@@ -3,8 +3,10 @@ title: Multi-part Question
 topic: Template
 author: Firas Moosvi
 source: original
-template_version: 1.1
+template_version: 1.4
 attribution: standard
+partialCredit: true
+singleVariant: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -14,6 +16,10 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets:
@@ -21,10 +27,14 @@ assets:
 - test2.png
 part1:
   type: number-input
-  label: $d=$
   pl-customizations:
-    allow-blank: true
+    rtol: 0.05
     weight: 1
+    allow-blank: true
+    label: $d= $
+    suffix: m
+    comparison: sigfig
+    digits: 2
 part2:
   type: multiple-choice
   pl-customizations:
@@ -32,25 +42,25 @@ part2:
 substitutions:
   params:
     vars:
-      name: Maya
-      vehicle: a unicycle
+      name: Savannah
+      vehicle: a bicycle
       title: Distance travelled
       units: m/s
-    v: 5
-    t: 6
+    v: 2
+    t: 10
     part2:
       ans1:
         value: 42
       ans2:
-        value: 30
+        value: 20
       ans3:
-        value: 11
+        value: 12
       ans4:
-        value: 0.8333333333333334
+        value: 0.2
       ans5:
-        value: -1
+        value: -8
       ans6:
-        value: -1.3
+        value: -10.4
 ---
 # {{ params.vars.title }}
 This part of the question is common to both Parts 1 and 2.
@@ -68,6 +78,16 @@ How far does {{ vars.name }} travel in {{ params.t }} seconds, assuming they con
 
 Please enter in a numeric value in {{ params.vars.units }}.
 
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
 ## Part 2
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
@@ -81,6 +101,16 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 - {{ params.part2.ans4.value}} {{ params.vars.units}}
 - {{ params.part2.ans5.value}} {{ params.vars.units}}
 - {{ params.part2.ans6.value}} {{ params.vars.units}}
+
+### pl-submission-panel
+
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+
+### pl-answer-panel
+
+Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Attribution
 

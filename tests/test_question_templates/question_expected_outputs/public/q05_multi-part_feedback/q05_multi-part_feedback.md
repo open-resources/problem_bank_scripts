@@ -3,8 +3,10 @@ title: Electric Field and Direction
 topic: Template
 author: Jake Bobowski
 source: 2.6.67
-template_version: 1.1
+template_version: 1.4
 attribution: openstax-physics-vol2
+partialCredit: true
+singleVariant: false
 outcomes:
 - undefined
 difficulty:
@@ -13,18 +15,20 @@ randomization:
 - undefined
 taxonomy:
 - undefined
+span:
+- undefined
+length:
+- undefined
 tags:
 - unknown
 assets: null
 part1:
   type: number-input
   pl-customizations:
+    rtol: 0.05
     label: $E=$
     allow-blank: false
     show-correct-answer: true
-    comparison: relabs
-    rtol: 0.03
-    atol: 0
     show-help-text: true
     suffix: $\rm\ N/C$
     weight: 1
@@ -35,10 +39,10 @@ part2:
     weight: 1
 substitutions:
   params:
-    L: '10'
-    q: '5.0'
-    p: '-7'
-    d: '1.1'
+    L: '12'
+    q: '9.0'
+    p: '-6'
+    d: '2.1'
     part2:
       ans1:
         value: points towards the negative plate
@@ -65,9 +69,18 @@ What is the direction of the electric field at the centre of the region between 
 
 ### Answer Section
 
-- {{ params.part1.ans1.value }}
-- {{ params.part1.ans2.value }}
-- {{ params.part1.ans3.value }}
+- {{ params.part2.ans1.value }}
+- {{ params.part2.ans2.value }}
+- {{ params.part2.ans3.value }}
+
+### pl-submission-panel
+
+{{ submitted_answers.part1_ans_str }}
+{{ feedback.part1_ans }}
+
+### pl-answer-panel
+
+$E=$ {{ correct_answers.part1_ans_str }} $\mathrm{N}/\mathrm{C}$
 
 ## Attribution
 

@@ -3,8 +3,10 @@ title: OSUPv2p12_55
 topic: Template
 author: Jake Bobowksi
 source: 2.12.55
-template_version: 1.1
+template_version: 1.4
 attribution: openstax-physics-vol2
+partialCredit: true
+singleVariant: false
 outcomes:
 - 19.2.3.0
 - 19.2.3.1
@@ -17,6 +19,10 @@ difficulty:
 randomization:
 - undefined
 taxonomy:
+- undefined
+span:
+- undefined
+length:
 - undefined
 tags:
 - OSUP
@@ -31,20 +37,18 @@ assets: null
 part1:
   type: number-input
   pl-customizations:
+    rtol: 0.05
     weight: 1
     allow-blank: false
     show-correct-answer: false
     label: $I= $
     suffix: $\rm\ A$
-    comparison: relabs
-    rtol: 0.03
-    atol: 0
 substitutions:
   params:
     n: '15'
-    r: '2.00'
-    v: '2.50'
-    p: '4'
+    r: '1.20'
+    v: '2.80'
+    p: '5'
 ---
 # {{ params.vars.title }}
 
@@ -56,13 +60,13 @@ What is the current $I$ in the solenoid?
 
 ### Answer Section
 
-## pl-submission-panel
+### pl-submission-panel
 
 {{ submitted_answers.part1_ans_str }}
 
 {{ feedback.part1_ans }}
 
-## pl-answer-panel
+### pl-answer-panel
 
 $I=$ {{ correct_answers.part1_ans_str }} $\textrm{ A}$
 
