@@ -8,7 +8,7 @@ from shutil import copy2
 
 # loop through every file in the dir
 root_path = '../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
-root_dest_folder = 'source/College_Physics_Urone/'
+root_dest_folder = '../../instructor_physics_bank/source_ww/output_md/College_Physics_Urone/'
 
 # variable declaration
 counter = 0
