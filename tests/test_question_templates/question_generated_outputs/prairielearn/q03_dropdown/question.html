@@ -1,0 +1,36 @@
+<pl-hide-in-panel answer="true">
+
+<!-- ######## Start of Part 1 ######## -->
+
+<pl-question-panel>
+<markdown>{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+</markdown>
+</pl-question-panel>
+
+<pl-dropdown answers-name="part1_ans" weight = "1" blank = "true" >
+	<pl-answer correct= {{ params.part1.ans1.correct }} feedback = '{{ params.part1.ans1.feedback }}' > {{ params.part1.ans1.value }} {{ params.vars.units }} </pl-answer>
+	<pl-answer correct= {{ params.part1.ans2.correct }} feedback = '{{ params.part1.ans2.feedback }}' > {{ params.part1.ans2.value }} {{ params.vars.units }} </pl-answer>
+	<pl-answer correct= {{ params.part1.ans3.correct }} feedback = '{{ params.part1.ans3.feedback }}' > {{ params.part1.ans3.value }} {{ params.vars.units }} </pl-answer>
+	<pl-answer correct= {{ params.part1.ans4.correct }} feedback = '{{ params.part1.ans4.feedback }}' > {{ params.part1.ans4.value }} {{ params.vars.units }} </pl-answer>
+	<pl-answer correct= {{ params.part1.ans5.correct }} feedback = '{{ params.part1.ans5.feedback }}' > {{ params.part1.ans5.value }} {{ params.vars.units }} </pl-answer>
+	<pl-answer correct= {{ params.part1.ans6.correct }} feedback = '{{ params.part1.ans6.feedback }}' > {{ params.part1.ans6.value }} {{ params.vars.units }} </pl-answer>
+</pl-dropdown>
+</pl-hide-in-panel>
+
+<pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+ </pl-submission-panel>
+
+<pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+ </pl-answer-panel>
+
+<!-- ######## End of Part 1 ######## -->
+
+<pl-question-panel>
+<markdown>
+---
+Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)
+</markdown>
+</pl-question-panel>

@@ -24,7 +24,7 @@ tags:
 assets:
 server:
     imports: |
-        import random
+        import random; random.seed(111)
         import numpy as np
         import pandas as pd
         import problem_bank_helpers as pbh

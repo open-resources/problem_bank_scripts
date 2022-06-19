@@ -25,7 +25,7 @@ tags:
 assets:
 server: 
     imports: |
-        import random
+        import random; random.seed(111)
         import pandas as pd
         import sympy as sp
         import prairielearn as pl

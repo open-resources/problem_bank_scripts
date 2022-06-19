@@ -25,7 +25,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random; random.seed(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -73,15 +73,15 @@ substitutions:
   params:
     vars:
       title: Symbolic Input 2 - Trig
-      name: Santiago
+      name: Maya
       vehicle: van
   correct_answers:
     part1_ans:
       _type: sympy
       _value: g*(mu_s*cos(theta) - sin(theta))
       _variables:
-      - g
       - mu_s
+      - g
       - theta
 ---
 # {{ params.vars.title }}

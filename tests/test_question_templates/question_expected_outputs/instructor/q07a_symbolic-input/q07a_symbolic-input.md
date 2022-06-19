@@ -25,7 +25,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random; random.seed(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -72,8 +72,8 @@ substitutions:
       _type: sympy
       _value: m*v**2/r
       _variables:
-      - r
       - v
+      - r
       - m
 ---
 # {{ params.vars.title }}
