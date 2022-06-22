@@ -770,37 +770,33 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
-def process_attribution(source):
+def process_attribution(attribution):
     """Takes in a string and returns the HTML for the attribution
 
     Args:
-        source (string): One of a set of pre-defined values corresponding to a particular attribution.
+        attribution (string): One of a set of pre-defined values corresponding to a particular attribution.
 
     Returns:
         string (str): returns the html of the attribution
     """
+
+    possible_attributions = {"openstax-physics-vol1":"Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)",
+                             "openstax-physics-vol2":"Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)",
+                             #"ubc-mech2"
+                             "standard":"Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
+                            }
+
     try:
-        if "openstax-physics-vol1" in source:
-            attribution_text = "Problem is from the [OpenStax University Physics Volume 1](https://openstax.org/details/books/university-physics-volume-1) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
-
-        elif "openstax-physics-vol2" in source:
-            attribution_text = "Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)"
-
-        elif "ubc-mech2" in source:
-            raise NotImplementedError
-
-        elif "standard" in source:
-            attribution_text = "Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)"
-
-        else:
-            raise NotImplementedError
-
-        return attribution_text
-
-    except NotImplementedError:
+        attribution_text = possible_attributions[attribution]
+    
+    except KeyError:
         print(
-            f"`source` value of {source} is not recognized. You probably need to update the template, the 'source' key seems to be missing or not recognized."
+            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {possible_attributions.keys()}. You need to update your md file and fix the `attribution` in the header"
         )
+        raise
+
+    return attribution_text
+
 
 def process_question_md(source_filepath, output_path=None, instructor=False):
 
