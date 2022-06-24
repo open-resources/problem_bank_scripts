@@ -23,10 +23,15 @@ logging.basicConfig(filename='Webwork_to_md_logs.log', level=logging.INFO)
 logging.info('Started Session')
 
 # read passed in arguments
-args = docopt(__doc__)
+#args = docopt(__doc__)
+
 # set source_path with passed in path
-source_path = args['<source_path>']
-destination_path = args['<destination_path>']
+#source_path = args['<source_path>']
+#destination_path = args['<destination_path>']
+
+#TODO: comment out the above lines to reactivate docopt, using this as a temporary workaround
+source_path = '../../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
+destination_path = '../../../instructor_physics_bank/webwork/'
 
 # variable declaration
 counter = 0
@@ -272,8 +277,6 @@ def yaml_dump(directory_info, metadata, question_format, image_dic, question_tex
                                                                                 + ''.join(f'\n{question}\n \n### Answer Section\n{final_answer_unit}\n ' for part, question, final_answer_unit in zip(question_parts, question_text, question_units) if (part == 0))
                                                                                 # Question part number and question body w/ final answer units (if question is multi-part)
                                                                                 + ''.join(f'\n## Part {part} \n{question}\n \n### Answer Section\n{final_answer_unit}\n' for part, question,final_answer_unit in zip(question_parts, question_text, question_units) if (part > 0))
-                                                                                + '\n## pl-submission-panel \n\n\n'
-                                                                                + '## pl-answer-panel \n\n\n'
                                                                                 + '## Rubric \n\n\n'
                                                                                 + '## Solution \n\n\n'
                                                                                 + '## Comments \n\n\n')
@@ -495,7 +498,10 @@ def progress(count, total, status=''):
 # sanitize source path to ensure it has a trailing backslash
 source_path = sanitize_file_path(source_path)
 # set root destination folder
+
+#TODO: Fix this so it's more robust by using pathlib!
 root_dest_folder = sanitize_file_path(destination_path) + 'source/' + source_path.split('/')[-2] + '/'
+
 # Create root_dest_folder if it doesn't exist
 Path(root_dest_folder).mkdir(parents=True, exist_ok=True)
 
@@ -540,7 +546,7 @@ for source_filepath in source_files:
             'root_dest_folder': root_dest_folder,
             'dest_file_path': dest_file_path
         }
-        # each question has a its own unique folder named after the fiile itself i.e question file NU_123.md is within NU_123 folder
+        # each question has a its own unique folder named after the file itself i.e question file NU_123.md is within NU_123 folder
         destination_file_path = root_dest_folder + dest_file_path + "/" + filename + "/"
         Path(destination_file_path).mkdir(parents=True, exist_ok=True)
         # open and read question file
@@ -584,7 +590,7 @@ process_time_seconds = total_end_time - total_start_time
 print('\n---')
 print('total time:', round(process_time_seconds / 60, 2), 'minutes,', round(process_time_seconds, 2), 'seconds')
 try:
-    print('avg time per each file:', round(process_time_seconds / counter, 2), 'seconds [', counter, '] files')
+    print('avg time per file:', round(process_time_seconds / counter, 2), 'seconds [', counter, '] files')
 except ZeroDivisionError:
     print("Something went wrong, the counter is 0!")
 logging.info('Session Completed')
