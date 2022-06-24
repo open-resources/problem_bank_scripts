@@ -1,3 +1,14 @@
+"""
+@Author:     Parsa Rajabi (@parsa-rajabi)
+@Created:    2021
+@Description: Converts webwork files from .PL to markdown .MD
+
+Usage:
+    webwork_to_md.py <source_path>
+
+Arguments:
+    source_path                Root of all the pl source files.
+"""
 import os
 from pathlib import Path
 from pprint import pprint
@@ -6,10 +17,20 @@ import re
 import time
 from shutil import copy2
 import sys
+from docopt import docopt
 
-# loop through every file in the dir
-root_path = '../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
-root_dest_folder = '../../instructor_physics_bank/source_ww/output_md/College_Physics_Urone/'
+# read passed in arguments
+args = docopt(__doc__)
+# set source_path with passed in path
+source_path = args['<source_patht>']
+# OLD source_path = '../../../webwork-open-problem-library/Contrib/BrockPhysics/College_Physics_Urone/'
+# check if source_path ends with a backslash, if not, raise an error (this is needed to create the correct dest_folder)
+if source_path and source_path[-1] != '/':
+    raise Exception('Please make sure your source_path argument ends with a backslash i.e. /')
+
+root_dest_folder = 'source/' + source_path.split('/')[-2] + '/'
+# Creates root_dest_folder if it doesn't exist
+Path(root_dest_folder).mkdir(parents=True, exist_ok=True)
 
 # variable declaration
 counter = 0
@@ -36,9 +57,9 @@ context_src = "Context"
 partial_answer_src = "showPartialCorrectAnswers"
 
 # extract file structure from source directory (handles ALL sub-directories)
-for root, dirs, files in os.walk(root_path):
+for root, dirs, files in os.walk(source_path):
     for name in dirs:
-        dest_folder = os.path.join(root, name).removeprefix(root_path)
+        dest_folder = os.path.join(root, name).removeprefix(source_path)
         src_dirs.append(root_dest_folder + dest_folder)
 
 
@@ -464,7 +485,7 @@ def progress(count, total, status=''):
 
 
 # for loop runs based # of folders in src
-for root, dirs, files in os.walk(root_path):
+for root, dirs, files in os.walk(source_path):
     # create dest file structure based on source directory
     for dir_path in src_dirs:
         Path(dir_path).mkdir(parents=True, exist_ok=True)
