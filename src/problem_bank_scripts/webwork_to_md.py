@@ -1,11 +1,11 @@
 """
 @Author:     Parsa Rajabi (@parsa-rajabi)
 @Created:    2021
-@Description: Converts webwork files from .PL to markdown .MD
+@Description: Converts webwork files from .PG to markdown .MD
 Usage:
     webwork_to_md.py <source_path> <destination_path>
 Arguments:
-    source_path                     Path to root of all the pl source files.
+    source_path                     Path to root of all the pg source files.
     destination_path                Path to destination of all md output files.
 """
 import os
