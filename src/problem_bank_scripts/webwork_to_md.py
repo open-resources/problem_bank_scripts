@@ -2,10 +2,8 @@
 @Author:     Parsa Rajabi (@parsa-rajabi)
 @Created:    2021
 @Description: Converts webwork files from .PL to markdown .MD
-
 Usage:
     webwork_to_md.py <source_path> <destination_path>
-
 Arguments:
     source_path                     Path to root of all the pl source files.
     destination_path                Path to destination of all md output files.
@@ -585,5 +583,8 @@ total_end_time = time.process_time()
 process_time_seconds = total_end_time - total_start_time
 print('\n---')
 print('total time:', round(process_time_seconds / 60, 2), 'minutes,', round(process_time_seconds, 2), 'seconds')
-print('avg time per each file:', round(process_time_seconds / counter, 2), 'seconds [', counter, '] files')
+try:
+    print('avg time per each file:', round(process_time_seconds / counter, 2), 'seconds [', counter, '] files')
+except ZeroDivisionError:
+    print("Something went wrong, the counter is 0!")
 logging.info('Session Completed')
