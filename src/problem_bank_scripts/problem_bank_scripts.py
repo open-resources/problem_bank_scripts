@@ -923,9 +923,6 @@ def process_question_pl(source_filepath, output_path=None):
         part = "part" + f"{pnum}"
         q_type = parsed_q["header"][part]["type"]
 
-        ## Add code to make sure correct answer is not shown by default (START of hide-in-panel)
-        question_html += '<pl-hide-in-panel answer="true">\n'
-
         question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
 
         if parsed_q["num_parts"] > 1:
@@ -952,9 +949,6 @@ def process_question_pl(source_filepath, output_path=None):
 
         if parsed_q["num_parts"] > 1:
             question_html += "</div>\n</div>\n"
-
-        ## Add code to make sure correct answer is not shown by default (END of hide-in-panel)
-        question_html += "</pl-hide-in-panel>\n"
 
         # Add pl-submission-panel and pl-answer-panel (if they exist)
         subm_panel = parsed_q["body_parts_split"][part].get("pl-submission-panel", None)
