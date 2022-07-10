@@ -419,6 +419,8 @@ def write_info_json(output_path, parsed_question):
         optional += """ "dependencies": parsed_question['header']['dependencies'],\n"""
     elif parsed_question["header"].get("singleVariant"):
         optional += """ "singleVariant": parsed_question['header']['singleVariant'],\n"""
+    elif parsed_question["header"].get("showCorrectAnswer"):
+        optional += """ "showCorrectAnswer": parsed_question['header']['showCorrectAnswer'],\n"""
 
     # Add tags based on part type
     q_types = []
