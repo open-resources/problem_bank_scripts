@@ -390,6 +390,8 @@ def dict_to_md(
     md_string += md_dict.pop("title", None)
     md_string += md_dict.pop("preamble", None)
 
+    #TODO: Refactor this to use the elegant solution provided here: https://stackoverflow.com/a/49723101/2217577
+
     for k, v in md_dict.items():
         if k in remove_keys:
             continue
@@ -832,8 +834,8 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
                     "Rubric",
                     "Solution",
                     "Comments",
-                    "pl-submission-panel",
-                    "pl-answer-panel",
+                    "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
+                    "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
                 ],
             )
             + "\n## Attribution\n\n"
