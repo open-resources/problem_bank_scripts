@@ -349,6 +349,9 @@ def read_md_problem(filepath):
         elif "Comments" in rendered_part:
             body_parts["Comments"] = rendered_part
 
+        elif "Useful Info" in rendered_part:
+            body_parts["Useful_info"] = rendered_part
+
         else:
             part_counter += 1
             body_parts[f"part{part_counter}"] = rendered_part
@@ -912,10 +915,30 @@ def process_question_pl(source_filepath, output_path=None):
     write_info_json(output_path, parsed_q)
 
     # Question Preamble
-    if parsed_q["body_parts"]["preamble"]:
-        question_html = f"<pl-question-panel>\n<markdown>\n{ parsed_q['body_parts']['preamble'] }\n</markdown>\n</pl-question-panel>\n\n"
+    preamble = parsed_q["body_parts"].get("preamble", None)
+    print(f"premable: {preamble}")
+    if preamble:
+        question_html = f"<pl-question-panel>\n<markdown>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
+
+    # Useful info panel
+    useful_info = parsed_q["body_parts"].get("Useful_info", None)
+
+    #TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
+    if useful_info:
+        question_html += f"""<p>
+   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+   <i class="fa fa-info-circle" aria-hidden="true"></i> Helpful Information
+   </button>
+</p>
+<div class="collapse" id="collapseExample">
+   <div class="card card-body">
+      <markdown>
+{parsed_q['body_parts']['Useful_info']}
+      </markdown>
+   </div>
+</div>"""
 
     # Single and Multi-part question construction
 
