@@ -80,9 +80,9 @@ substitutions:
       _type: sympy
       _value: g*(mu_s*cos(theta) - sin(theta))
       _variables:
-      - mu_s
       - theta
       - g
+      - mu_s
 ---
 # {{ params.vars.title }}
 
