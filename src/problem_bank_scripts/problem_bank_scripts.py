@@ -859,7 +859,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         output_path.write_text(
             "---\n"
             + header_yml
-            + "---\n"
+            + "\n---\n"
             + dict_to_md(
                 body_parts,
             )
