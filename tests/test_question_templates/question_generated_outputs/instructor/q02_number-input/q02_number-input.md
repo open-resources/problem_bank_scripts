@@ -92,6 +92,7 @@ substitutions:
   correct_answers:
     part1_ans: 30
     part2_ans: 30
+
 ---
 # {{ params.vars.title }}
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.

@@ -43,6 +43,7 @@ part1:
   pl-customizations:
     file-names: file.png, file.jpg, file.pdf, filename space.png
 substitutions: {}
+
 ---
 # {{ params.vars.title }}
 

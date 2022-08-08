@@ -77,6 +77,7 @@ substitutions:
     n: 65
   correct_answers:
     part1_ans: 650
+
 ---
 # {{ params.vars.title }}
 

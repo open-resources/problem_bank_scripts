@@ -918,7 +918,9 @@ def process_question_pl(source_filepath, output_path=None):
 
     # Question Preamble
     preamble = parsed_q["body_parts"].get("preamble", None)
-    print(f"premable: {preamble}")
+    #TODO: Remove Debugging print statement
+    #print(f"premable: {preamble}")
+    
     if preamble:
         question_html = f"<pl-question-panel>\n<markdown>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
     else:

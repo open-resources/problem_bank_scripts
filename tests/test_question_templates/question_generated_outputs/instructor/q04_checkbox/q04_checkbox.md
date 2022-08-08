@@ -131,6 +131,7 @@ substitutions:
         value: lift
         correct: false
         feedback: Not quite - Try again!
+
 ---
 # {{ params.vars.title }}
 

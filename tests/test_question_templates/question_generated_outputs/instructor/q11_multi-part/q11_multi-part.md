@@ -132,6 +132,7 @@ substitutions:
         correct: false
   correct_answers:
     part1_ans: 30
+
 ---
 # {{ params.vars.title }}
 This part of the question is common to both Parts 1 and 2.

@@ -41,6 +41,7 @@ part1:
     directory: clientFilesQuestion
     source-file-name: sample.html
 substitutions: {}
+
 ---
 # {{ params.vars.title }}
 
