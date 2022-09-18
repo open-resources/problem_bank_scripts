@@ -552,7 +552,11 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
             correctness = f"|@ params.{part_name}.{a}.correct @|"
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
+            ## Hack to remove feedback for Dropdown questions
+            if parsed_question["header"][part_name]['type'] == 'dropdown':
+                html += f"\t<pl-answer correct= {correctness} > {value} {units} </pl-answer>\n"
+            else:
+                html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
 
     html += "</pl-multiple-choice>\n"
 
