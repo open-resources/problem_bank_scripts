@@ -821,7 +821,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         data2_sanitized = remove_correct_answers(data2_sanitized)
 
         # Update the YAML header to add substitutions
-        header.update({"substitutions": defdict_to_dict(data2_sanitized, {})})
+        header.update({"myst": {"substitutions": defdict_to_dict(data2_sanitized, {})} })
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
@@ -849,7 +849,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
     else:
         # Update the YAML header to add substitutions
-        header.update({"substitutions": defdict_to_dict(data2, {})})
+        header.update("myst": {{"substitutions": defdict_to_dict(data2, {})}})
 
         # return {'header':header,
         #         'body_parts':body_parts,
