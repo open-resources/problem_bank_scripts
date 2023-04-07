@@ -29,31 +29,32 @@ part1:
     weight: 1
     partial-credit: true
     partial-credit-method: EDC
-substitutions:
-  params:
-    vars:
-      title: Vectors and Scalars
-      name: Maya
-    choice: scalars
-    part1:
-      ans1:
-        value: mass
-        feedback: Correct! Nice work
-      ans2:
-        value: temperature
-        feedback: Correct! Nice work
-      ans3:
-        value: work
-        feedback: Correct! Nice work
-      ans4:
-        value: drag
-        feedback: Not quite - Try again!
-      ans5:
-        value: weight
-        feedback: Not quite - Try again!
-      ans6:
-        value: lift
-        feedback: Not quite - Try again!
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Vectors and Scalars
+        name: Maya
+      choice: scalars
+      part1:
+        ans1:
+          value: mass
+          feedback: Correct! Nice work
+        ans2:
+          value: temperature
+          feedback: Correct! Nice work
+        ans3:
+          value: work
+          feedback: Correct! Nice work
+        ans4:
+          value: drag
+          feedback: Not quite - Try again!
+        ans5:
+          value: weight
+          feedback: Not quite - Try again!
+        ans6:
+          value: lift
+          feedback: Not quite - Try again!
 ---
 # {{ params.vars.title }}
 

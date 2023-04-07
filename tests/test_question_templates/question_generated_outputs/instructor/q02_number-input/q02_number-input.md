@@ -80,18 +80,19 @@ part2:
     allow-blank: true
     label: $d= $
     suffix: m
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Distance travelled
-      units: m/s
-    v: 5
-    t: 6
-  correct_answers:
-    part1_ans: 30
-    part2_ans: 30
+myst:
+  substitutions:
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Distance travelled
+        units: m/s
+      v: 5
+      t: 6
+    correct_answers:
+      part1_ans: 30
+      part2_ans: 30
 
 ---
 # {{ params.vars.title }}

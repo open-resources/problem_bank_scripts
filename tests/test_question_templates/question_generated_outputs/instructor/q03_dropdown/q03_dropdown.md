@@ -90,44 +90,45 @@ part1:
   pl-customizations:
     weight: 1
     blank: 'true'
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Distance travelled
-      units: m/s
-    v: 5
-    t: 6
-    part1:
-      ans1:
-        value: 42
-        correct: false
-        feedback: This is a random number, you probably selected this choice by mistake!
-          Try again please!
-      ans2:
-        value: 30
-        correct: true
-        feedback: Great! You got it.
-      ans3:
-        value: 11
-        correct: false
-        feedback: Hmm, does it make sense to add a velocity and a time? Check the
-          units!
-      ans4:
-        value: 0.8333333333333334
-        correct: false
-        feedback: 'Hmm, check the units of the resulting answer: v/t.'
-      ans5:
-        value: -1
-        correct: false
-        feedback: Hmm, does it make sense to subtract a velocity and a time? Check
-          the units!
-      ans6:
-        value: -1.3
-        correct: false
-        feedback: Hmm, does it make sense to subtract a velocity and a time? Check
-          the units!
+myst:
+  substitutions:
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Distance travelled
+        units: m/s
+      v: 5
+      t: 6
+      part1:
+        ans1:
+          value: 42
+          correct: false
+          feedback: This is a random number, you probably selected this choice by
+            mistake! Try again please!
+        ans2:
+          value: 30
+          correct: true
+          feedback: Great! You got it.
+        ans3:
+          value: 11
+          correct: false
+          feedback: Hmm, does it make sense to add a velocity and a time? Check the
+            units!
+        ans4:
+          value: 0.8333333333333334
+          correct: false
+          feedback: 'Hmm, check the units of the resulting answer: v/t.'
+        ans5:
+          value: -1
+          correct: false
+          feedback: Hmm, does it make sense to subtract a velocity and a time? Check
+            the units!
+        ans6:
+          value: -1.3
+          correct: false
+          feedback: Hmm, does it make sense to subtract a velocity and a time? Check
+            the units!
 
 ---
 # {{ params.vars.title }}

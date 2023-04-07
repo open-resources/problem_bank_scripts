@@ -108,31 +108,32 @@ part1:
     show-correct-answer: false
     label: $I= $
     suffix: $\rm\ A$
-substitutions:
-  params:
-    n: '15'
-    r: '2.00'
-    v: '2.50'
-    p: '4'
-  correct_answers:
-    part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
-    - !!python/object/apply:numpy.dtype
-      args:
-      - f8
-      - false
-      - true
-      state: !!python/tuple
-      - 3
-      - <
-      - null
-      - null
-      - null
-      - -1
-      - -1
-      - 0
-    - !!binary |
-      ZVy1Q2Xubj8=
-    part1_ans_str: '3.78e-03'
+myst:
+  substitutions:
+    params:
+      n: '15'
+      r: '2.00'
+      v: '2.50'
+      p: '4'
+    correct_answers:
+      part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
+      - !!python/object/apply:numpy.dtype
+        args:
+        - f8
+        - false
+        - true
+        state: !!python/tuple
+        - 3
+        - <
+        - null
+        - null
+        - null
+        - -1
+        - -1
+        - 0
+      - !!binary |
+        ZVy1Q2Xubj8=
+      part1_ans_str: '3.78e-03'
 
 ---
 # {{ params.vars.title }}

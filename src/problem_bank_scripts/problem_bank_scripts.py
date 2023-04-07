@@ -849,7 +849,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
     else:
         # Update the YAML header to add substitutions
-        header.update("myst": {{"substitutions": defdict_to_dict(data2, {})}})
+        header.update({"myst": {"substitutions": defdict_to_dict(data2, {})}})
 
         # return {'header':header,
         #         'body_parts':body_parts,

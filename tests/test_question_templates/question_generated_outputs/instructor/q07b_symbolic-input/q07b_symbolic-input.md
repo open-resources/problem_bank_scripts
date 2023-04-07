@@ -69,20 +69,21 @@ part1:
     variables: mu_s, g , theta
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      title: Symbolic Input 2 - Trig
-      name: Maya
-      vehicle: van
-  correct_answers:
-    part1_ans:
-      _type: sympy
-      _value: g*(mu_s*cos(theta) - sin(theta))
-      _variables:
-      - theta
-      - g
-      - mu_s
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Symbolic Input 2 - Trig
+        name: Maya
+        vehicle: van
+    correct_answers:
+      part1_ans:
+        _type: sympy
+        _value: g*(mu_s*cos(theta) - sin(theta))
+        _variables:
+        - theta
+        - g
+        - mu_s
 
 ---
 # {{ params.vars.title }}

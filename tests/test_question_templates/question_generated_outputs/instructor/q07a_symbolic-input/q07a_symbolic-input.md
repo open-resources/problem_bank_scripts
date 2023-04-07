@@ -63,18 +63,19 @@ part1:
     variables: m, v, r
     weight: 1
     allow-blank: false
-substitutions:
-  params:
-    vars:
-      title: Centripetal Motion
-  correct_answers:
-    part1_ans:
-      _type: sympy
-      _value: m*v**2/r
-      _variables:
-      - r
-      - m
-      - v
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Centripetal Motion
+    correct_answers:
+      part1_ans:
+        _type: sympy
+        _value: m*v**2/r
+        _variables:
+        - r
+        - m
+        - v
 
 ---
 # {{ params.vars.title }}

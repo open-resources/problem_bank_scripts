@@ -42,7 +42,8 @@ part1:
   type: file-upload
   pl-customizations:
     file-names: file.png, file.jpg, file.pdf, filename space.png
-substitutions: {}
+myst:
+  substitutions: {}
 
 ---
 # {{ params.vars.title }}

@@ -39,28 +39,29 @@ part2:
   type: multiple-choice
   pl-customizations:
     weight: 1
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Distance travelled
-      units: m/s
-    v: 5
-    t: 6
-    part2:
-      ans1:
-        value: 42
-      ans2:
-        value: 30
-      ans3:
-        value: 11
-      ans4:
-        value: 0.8333333333333334
-      ans5:
-        value: -1
-      ans6:
-        value: -1.3
+myst:
+  substitutions:
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Distance travelled
+        units: m/s
+      v: 5
+      t: 6
+      part2:
+        ans1:
+          value: 42
+        ans2:
+          value: 30
+        ans3:
+          value: 11
+        ans4:
+          value: 0.8333333333333334
+        ans5:
+          value: -1
+        ans6:
+          value: -1.3
 ---
 # {{ params.vars.title }}
 This part of the question is common to both Parts 1 and 2.

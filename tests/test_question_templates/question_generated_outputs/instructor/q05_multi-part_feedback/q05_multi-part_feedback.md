@@ -104,25 +104,26 @@ part2:
   pl-customizations:
     blank: true
     weight: 1
-substitutions:
-  params:
-    L: '10'
-    q: '5.0'
-    p: '-7'
-    d: '1.1'
-    part2:
-      ans1:
-        value: points towards the negative plate
-        correct: true
-      ans2:
-        value: points towards the positive plate
-        correct: false
-      ans3:
-        value: points parallel to the plates
-        correct: false
-  correct_answers:
-    part1_ans: 5649717.514124292
-    part1_ans_str: 5650000.0
+myst:
+  substitutions:
+    params:
+      L: '10'
+      q: '5.0'
+      p: '-7'
+      d: '1.1'
+      part2:
+        ans1:
+          value: points towards the negative plate
+          correct: true
+        ans2:
+          value: points towards the positive plate
+          correct: false
+        ans3:
+          value: points parallel to the plates
+          correct: false
+    correct_answers:
+      part1_ans: 5649717.514124292
+      part1_ans_str: 5650000.0
 
 ---
 # {{ params.vars.title }}

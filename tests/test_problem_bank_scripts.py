@@ -7,7 +7,7 @@ import pytest
 
 
 def test_version():
-    assert __version__ == "0.4.6"
+    assert __version__ == "0.4.7"
 
 
 # TODO: excluding symbolic questions, needs to be fixed because of how sympy objects are handled
