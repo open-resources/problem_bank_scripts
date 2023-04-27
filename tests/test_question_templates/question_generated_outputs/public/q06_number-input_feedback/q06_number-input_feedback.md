@@ -45,18 +45,17 @@ part1:
     suffix: $\rm\ A$
 myst:
   substitutions:
-    params:
-      n: '15'
-      r: '2.00'
-      v: '2.50'
-      p: '4'
+    params_n: '15'
+    params_r: '2.00'
+    params_v: '2.50'
+    params_p: '4'
 ---
-# {{ params.vars.title }}
+# {{ params_vars.title }}
 
 ## Question Text
 
-A solenoid with ${{ params.n }}$ turns per centimter carries a current $I$. An electron moves within the solenoid in a circle of radius ${{ params.r}}\textrm{ cm}$.
-The plane of the circular motion is perpendicular to the axis of the solenoid.  The speed of the electron is ${{ params.v }}\times 10^{ {{ params.p }} }\textrm{ m/s}$.
+A solenoid with ${{ params_n }}$ turns per centimter carries a current $I$. An electron moves within the solenoid in a circle of radius ${{ params_r}}\textrm{ cm}$.
+The plane of the circular motion is perpendicular to the axis of the solenoid.  The speed of the electron is ${{ params_v }}\times 10^{ {{ params_p }} }\textrm{ m/s}$.
 What is the current $I$ in the solenoid?
 
 ### Answer Section

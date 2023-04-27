@@ -73,9 +73,9 @@ myst:
         _type: sympy
         _value: m*v**2/r
         _variables:
-        - r
-        - m
         - v
+        - m
+        - r
 
 ---
 # {{ params.vars.title }}

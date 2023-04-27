@@ -31,36 +31,27 @@ part1:
     partial-credit-method: EDC
 myst:
   substitutions:
-    params:
-      vars:
-        title: Vectors and Scalars
-        name: Maya
-      choice: scalars
-      part1:
-        ans1:
-          value: mass
-          feedback: Correct! Nice work
-        ans2:
-          value: temperature
-          feedback: Correct! Nice work
-        ans3:
-          value: work
-          feedback: Correct! Nice work
-        ans4:
-          value: drag
-          feedback: Not quite - Try again!
-        ans5:
-          value: weight
-          feedback: Not quite - Try again!
-        ans6:
-          value: lift
-          feedback: Not quite - Try again!
+    params_vars_title: Vectors and Scalars
+    params_vars_name: Maya
+    params_choice: scalars
+    params_part1_ans1_value: mass
+    params_part1_ans1_feedback: Correct! Nice work
+    params_part1_ans2_value: temperature
+    params_part1_ans2_feedback: Correct! Nice work
+    params_part1_ans3_value: work
+    params_part1_ans3_feedback: Correct! Nice work
+    params_part1_ans4_value: drag
+    params_part1_ans4_feedback: Not quite - Try again!
+    params_part1_ans5_value: weight
+    params_part1_ans5_feedback: Not quite - Try again!
+    params_part1_ans6_value: lift
+    params_part1_ans6_feedback: Not quite - Try again!
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 
-{{ params.vars.name }} is given a list of physical quantities and has to identify all of the {{ params.choice }}. Can you help?
+{{ params_vars_name }} is given a list of physical quantities and has to identify all of the {{ params_choice }}. Can you help?
 
 ### Answer Section
 
@@ -68,12 +59,12 @@ Select all the choices that apply.
 
 Note: You will be awarded full marks only if you select all the correct choices, and none of the incorrect choices. Choosing incorrect choices as well as not choosing correct choices will result in deductions.
 
-- {{ params.part1.ans1.value}}
-- {{ params.part1.ans2.value}}
-- {{ params.part1.ans3.value}}
-- {{ params.part1.ans4.value}}
-- {{ params.part1.ans5.value}}
-- {{ params.part1.ans6.value}}
+- {{ params_part1_ans1_value}}
+- {{ params_part1_ans2_value}}
+- {{ params_part1_ans3_value}}
+- {{ params_part1_ans4_value}}
+- {{ params_part1_ans5_value}}
+- {{ params_part1_ans6_value}}
 
 ### pl-submission-panel
 
