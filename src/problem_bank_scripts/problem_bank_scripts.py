@@ -18,6 +18,7 @@ import re
 import codecs
 import importlib.util
 import problem_bank_helpers as pbh
+import pandas as pd
 
 ## Parse Markdown
 import markdown_it
@@ -818,10 +819,33 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
         # Remove correct answers from the data2 dict
         data2_sanitized = defdict_to_dict(data2, {})
-        data2_sanitized = remove_correct_answers(data2_sanitized)
+        data2_sanitized = defdict_to_dict(remove_correct_answers(data2_sanitized), {})
+
+        ####################################################
+        #### Start Temporary Fix for issue of myst no longer permitting nested dicts
+        #### GitHub issue: https://github.com/executablebooks/MyST-Parser/issues/761
+
+        df = pd.json_normalize(data2_sanitized, sep="_")
+        data2_sanitized_flattened = df.to_dict(orient="records")[0]
+
+        repl_keys = {k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())}
+
+        text = dict_to_md(
+                body_parts,
+                remove_keys=[
+                    "Rubric",
+                    "Solution",
+                    "Comments",
+                    "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
+                    "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
+                ],
+            )
+
+        for k, v in repl_keys.items():
+            text = text.replace(k, v)
 
         # Update the YAML header to add substitutions
-        header.update({"myst": {"substitutions": defdict_to_dict(data2_sanitized, {})} })
+        header.update({"myst": {"substitutions": data2_sanitized_flattened} })
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
@@ -832,20 +856,42 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             "---\n"
             + header_yml
             + "---\n"
-            + dict_to_md(
-                body_parts,
-                remove_keys=[
-                    "Rubric",
-                    "Solution",
-                    "Comments",
-                    "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
-                    "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
-                ],
-            )
+            + text
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),
             encoding="utf8",
         )
+
+        ####################################################
+        #### End Temporary Fix for issue of myst no longer permitting nested dicts
+        #### Uncomment below when the fix is implemented to recover past behaviour
+
+        # # Update the YAML header to add substitutions
+        # header.update({"myst": {"substitutions": data2_sanitized} })
+
+        # # Update the YAML header to add substitutions, unsort it, and process for file
+        # header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
+
+        # # Write the YAML to a file
+        # output_path.parent.mkdir(parents=True, exist_ok=True)
+        # output_path.write_text(
+        #     "---\n"
+        #     + header_yml
+        #     + "---\n"
+        #     + dict_to_md(
+        #         body_parts,
+        #         remove_keys=[
+        #             "Rubric",
+        #             "Solution",
+        #             "Comments",
+        #             "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
+        #             "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
+        #         ],
+        #     )
+        #     + "\n## Attribution\n\n"
+        #     + process_attribution(header.get("attribution")),
+        #     encoding="utf8",
+        # )
 
     else:
         # Update the YAML header to add substitutions
