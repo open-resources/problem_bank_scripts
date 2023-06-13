@@ -419,14 +419,14 @@ def write_info_json(output_path, parsed_question):
         optional += """\"gradingMethod": \"""" + parsed_question['header']['gradingMethod'] + """\",\n\t\t"""
     if parsed_question["header"].get("partialCredit"):
         optional += """\"partialCredit":""" + str(parsed_question['header']['partialCredit']).lower() + """,\n\t\t"""
-    if parsed_question["header"].get("externalGradingOptions"):
-        optional += """\"externalGradingOptions": """ + parsed_question['header']['externalGradingOptions'] + """,\n\t\t"""
     if parsed_question["header"].get("dependencies"):
         optional += """\"dependencies": """ + parsed_question['header']['dependencies'] + """,\n\t\t"""
     if parsed_question["header"].get("singleVariant"):
         optional += """\"singleVariant": """ + str(parsed_question['header']['singleVariant']).lower() + """,\n\t\t"""
     if parsed_question["header"].get("showCorrectAnswer"):
         optional += """\"showCorrectAnswer": """ + str(parsed_question['header']['showCorrectAnswer']).lower() + """,\n\t\t"""
+    if parsed_question["header"].get("externalGradingOptions"):
+        optional += """\"externalGradingOptions": """ + json.dumps(parsed_question['header']['externalGradingOptions']) + """,\n\t\t"""
     optional = optional[:-4] + """\n"""
 
     # Add tags based on part type
