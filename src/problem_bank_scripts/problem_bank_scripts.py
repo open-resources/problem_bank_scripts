@@ -551,7 +551,13 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
                 feedback = f"Feedback for this choice is not available yet."
 
             correctness = f"|@ params.{part_name}.{a}.correct @|"
-            value = f"|@ params.{part_name}.{a}.value @|"
+            value = re.sub(
+                r"(?P<backticks>(?:```)|`)([^`]+)(?P=backticks)", # Match ticks in sets of 1 or 3, on both sides of the text
+                "<code>\\2</code>", # Replace with <code>...</code>, \\2 is the second capturing group
+                parsed_question["body_parts_split"][part_name]["answer"] 
+                .split("\n")[int(a[3:]) - 1].lstrip("-"), # The text to search
+                flags=re.MULTILINE, # Allow matching across multiple lines
+            ).replace("{{{", "|@|@").replace("}}}", "@|@|").replace("{{", "|@").replace("}}", "@|")
 
             ## Hack to remove feedback for Dropdown questions
             if parsed_question["header"][part_name]['type'] == 'dropdown':
