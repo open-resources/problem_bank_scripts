@@ -427,7 +427,7 @@ def write_info_json(output_path, parsed_question):
         optional += """\"singleVariant": """ + str(parsed_question['header']['singleVariant']).lower() + """,\n\t\t"""
     if parsed_question["header"].get("showCorrectAnswer"):
         optional += """\"showCorrectAnswer": """ + str(parsed_question['header']['showCorrectAnswer']).lower() + """,\n\t\t"""
-    optional = optional[:-4] + optional[-3:-2]
+    optional = optional[:-4] + """\n"""
 
     # Add tags based on part type
     q_types = []
@@ -460,9 +460,10 @@ def write_info_json(output_path, parsed_question):
             "tags":  """
         + json.dumps(auto_tags)
         + """,
-            "type": "v3",
+            "type": "v3\""""
+        + ((""",
             """
-        + optional
+        + optional) if (optional) else ("""\n"""))
         + """}""",
         encoding="utf8",
     )
@@ -1097,7 +1098,7 @@ def process_question_pl(source_filepath, output_path=None):
     if files_to_copy:
         pl_path = output_path / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
+        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy]
 
 
 def pl_image_path(html):
