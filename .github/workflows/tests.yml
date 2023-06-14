@@ -22,6 +22,8 @@ on:
   workflow_dispatch:
   merge_group:
 
+permissions:
+  contents: read
 
 jobs:
   tests:
@@ -50,3 +52,11 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest tests
+      - name: Upload generated files
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-generated-files-${{ github.ref }}-${{ matrix.python_version }}
+          path: tests/test_question_templates/question_generated_outputs/
+          if-no-files-found: ignore
+          retention-days: 5
