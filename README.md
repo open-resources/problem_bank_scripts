@@ -11,6 +11,29 @@
 $ pip install -i https://test.pypi.org/simple/ problem_bank_scripts
 ```
 
+## Update version
+
+Here are the steps to increment the version (replace patch with major/minor/patch)
+
+```
+poetry version patch
+
+pico src/problem_bank_scripts/__init__.py
+
+pico tests/test_problem_bank_scripts.py
+
+poetry run pytest
+
+cd docs; poetry run make html; cd ..
+
+git add .; git commit -m "increment version"; git push
+
+poetry build
+
+poetry publish
+```
+
+
 ## Features
 
 - TODO
