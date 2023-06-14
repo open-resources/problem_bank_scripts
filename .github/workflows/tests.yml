@@ -1,0 +1,52 @@
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tests/**"
+      - "src/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+      - ".github/workflows/tests.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "tests/**"
+      - "src/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+      - ".github/workflows/tests.yml"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  merge_group:
+
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Minimum supported; Maybe add in some newer version to test things won't break if used on newer versions of python?
+        python_version: ["3.8"] #, "3.x"] 
+    concurrency:
+      group: tests-${{ github.ref }}-${{ matrix.python_version }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python_version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python_version }}
+          cache: poetry
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Run tests
+        run: |
+          poetry run pytest tests
