@@ -56,7 +56,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: test-generated-files-${{ github.ref }}-${{ matrix.python_version }}
+          name: test-generated-files-${{ github.event_name }}-${{ matrix.python_version }}
           path: tests/test_question_templates/question_generated_outputs/
           if-no-files-found: ignore
           retention-days: 5
