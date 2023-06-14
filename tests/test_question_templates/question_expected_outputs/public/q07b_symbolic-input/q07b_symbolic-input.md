@@ -30,12 +30,8 @@ part1:
     variables: mu_s, g , theta
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      title: Symbolic Input 2 - Trig
-      name: Maya
-      vehicle: van
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 

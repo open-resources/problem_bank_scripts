@@ -30,10 +30,8 @@ part1:
     variables: m, v, r
     weight: 1
     allow-blank: false
-substitutions:
-  params:
-    vars:
-      title: Centripetal Motion
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 

@@ -25,7 +25,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    from numpy.random import RandomState; random = RandomState(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -69,20 +69,54 @@ part1:
     variables: mu_s, g , theta
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      title: Symbolic Input 2 - Trig
-      name: Maya
-      vehicle: van
-  correct_answers:
-    part1_ans:
-      _type: sympy
-      _value: g*(mu_s*cos(theta) - sin(theta))
-      _variables:
-      - mu_s
-      - g
-      - theta
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Symbolic Input 2 - Trig
+        name: !!python/object/apply:numpy.core.multiarray.scalar
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U8
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 32
+          - 4
+          - 8
+        - !!binary |
+          UwAAAGEAAABuAAAAdAAAAGkAAABhAAAAZwAAAG8AAAA=
+        vehicle: !!python/object/apply:numpy.core.multiarray.scalar
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U3
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 12
+          - 4
+          - 8
+        - !!binary |
+          YgAAAHUAAABzAAAA
+    correct_answers:
+      part1_ans:
+        _type: sympy
+        _value: g*(mu_s*cos(theta) - sin(theta))
+        _variables:
+        - theta
+        - mu_s
+        - g
+
 ---
 # {{ params.vars.title }}
 

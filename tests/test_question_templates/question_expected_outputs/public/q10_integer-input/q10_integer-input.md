@@ -29,14 +29,8 @@ part1:
   pl-customizations:
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Integer Math
-      units: m/s
-    n: 65
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 

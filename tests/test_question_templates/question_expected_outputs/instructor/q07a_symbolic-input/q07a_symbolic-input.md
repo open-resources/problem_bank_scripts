@@ -25,7 +25,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    from numpy.random import RandomState; random = RandomState(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -63,18 +63,20 @@ part1:
     variables: m, v, r
     weight: 1
     allow-blank: false
-substitutions:
-  params:
-    vars:
-      title: Centripetal Motion
-  correct_answers:
-    part1_ans:
-      _type: sympy
-      _value: m*v**2/r
-      _variables:
-      - v
-      - r
-      - m
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Centripetal Motion
+    correct_answers:
+      part1_ans:
+        _type: sympy
+        _value: m*v**2/r
+        _variables:
+        - r
+        - m
+        - v
+
 ---
 # {{ params.vars.title }}
 

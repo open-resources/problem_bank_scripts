@@ -43,12 +43,8 @@ part1:
     show-correct-answer: false
     label: $I= $
     suffix: $\rm\ A$
-substitutions:
-  params:
-    n: '15'
-    r: '2.00'
-    v: '2.50'
-    p: '4'
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 

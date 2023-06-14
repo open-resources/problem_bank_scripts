@@ -1,11 +1,11 @@
-import random; random.seed(111)
+from numpy.random import RandomState; random = RandomState(111)
 import pandas as pd
 import sympy as sp
 import problem_bank_scripts.prairielearn as pl
 import problem_bank_helpers as pbh
 
 def imports(data):
-    import random; random.seed(111)
+    from numpy.random import RandomState; random = RandomState(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl

@@ -1,4 +1,4 @@
-import random; random.seed(111)
+from numpy.random import RandomState; random = RandomState(111)
 import numpy as np
 import pandas as pd
 import problem_bank_helpers as pbh
@@ -13,7 +13,7 @@ feedback_dict = {'vars': ['part1_ans'],
                  }
 
 def imports(data):
-    import random; random.seed(111)
+    from numpy.random import RandomState; random = RandomState(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh

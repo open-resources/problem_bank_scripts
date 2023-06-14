@@ -39,15 +39,8 @@ part2:
     allow-blank: true
     label: $d= $
     suffix: m
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Distance travelled
-      units: m/s
-    v: 5
-    t: 6
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.

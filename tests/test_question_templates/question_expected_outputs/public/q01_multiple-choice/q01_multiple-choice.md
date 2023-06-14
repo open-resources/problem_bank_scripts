@@ -29,38 +29,8 @@ part1:
   type: multiple-choice
   pl-customizations:
     weight: 1
-substitutions:
-  params:
-    vars:
-      title: Kinematics
-      name: Maya
-      vehicle: a unicycle
-      units: m/s
-    v: 5
-    t: 6
-    part1:
-      ans1:
-        value: 42
-        feedback: This is a random number, you probably selected this choice by mistake!
-          Try again please!
-      ans2:
-        value: 30
-        feedback: Great! You got it.
-      ans3:
-        value: 11
-        feedback: Hmm, does it make sense to add a velocity and a time? Check the
-          units!
-      ans4:
-        value: 0.8333333333333334
-        feedback: 'Hmm, check the units of the resulting answer: v/t.'
-      ans5:
-        value: -1
-        feedback: Hmm, does it make sense to subtract a velocity and a time? Check
-          the units!
-      ans6:
-        value: -1.3
-        feedback: Hmm, does it make sense to subtract a velocity and a time? Check
-          the units!
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.

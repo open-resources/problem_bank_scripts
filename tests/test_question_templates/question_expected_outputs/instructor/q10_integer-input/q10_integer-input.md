@@ -67,16 +67,18 @@ part1:
   pl-customizations:
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Integer Math
-      units: m/s
-    n: 65
-  correct_answers:
-    part1_ans: 650
+myst:
+  substitutions:
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Integer Math
+        units: m/s
+      n: 65
+    correct_answers:
+      part1_ans: 650
+
 ---
 # {{ params.vars.title }}
 

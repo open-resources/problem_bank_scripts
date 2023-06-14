@@ -40,7 +40,9 @@ part1:
     quill-theme: snow
     directory: clientFilesQuestion
     source-file-name: sample.html
-substitutions: {}
+myst:
+  substitutions: {}
+
 ---
 # {{ params.vars.title }}
 

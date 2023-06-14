@@ -37,19 +37,8 @@ part2:
   pl-customizations:
     blank: true
     weight: 1
-substitutions:
-  params:
-    L: '10'
-    q: '5.0'
-    p: '-7'
-    d: '1.1'
-    part2:
-      ans1:
-        value: points towards the negative plate
-      ans2:
-        value: points towards the positive plate
-      ans3:
-        value: points parallel to the plates
+myst:
+  substitutions: {}
 ---
 # {{ params.vars.title }}
 Two parallel conducting plates ${{params.L}}\textrm{ cm}$ on a side are given equal and opposite charges of magnitude ${{params.q}}\times 10^{ {{params.p}} }\textrm{ C}$.
