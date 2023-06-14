@@ -31,17 +31,52 @@ part1:
     weight: 1
     allow-blank: true
 myst:
-  substitutions: {}
+  substitutions:
+    params_vars_title: Symbolic Input 2 - Trig
+    params_vars_name: !!python/object/apply:numpy.core.multiarray.scalar
+    - !!python/object/apply:numpy.dtype
+      args:
+      - U8
+      - false
+      - true
+      state: !!python/tuple
+      - 3
+      - <
+      - null
+      - null
+      - null
+      - 32
+      - 4
+      - 8
+    - !!binary |
+      UwAAAGEAAABuAAAAdAAAAGkAAABhAAAAZwAAAG8AAAA=
+    params_vars_vehicle: !!python/object/apply:numpy.core.multiarray.scalar
+    - !!python/object/apply:numpy.dtype
+      args:
+      - U3
+      - false
+      - true
+      state: !!python/tuple
+      - 3
+      - <
+      - null
+      - null
+      - null
+      - 12
+      - 4
+      - 8
+    - !!binary |
+      YgAAAHUAAABzAAAA
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 
-{{ params.vars.name }} is driving a {{ params.vars.vehicle }} up a slope of angle $\theta$.
+{{ params_vars_name }} is driving a {{ params_vars_vehicle }} up a slope of angle $\theta$.
 
-There is a wooden crate in the back of the {{ params.vars.vehicle }} and the coefficients of static and kinetic friction between the crate and the {{ params.vars.vehicle }} are $\mu_s$ and $\mu_k$ respectively.
+There is a wooden crate in the back of the {{ params_vars_vehicle }} and the coefficients of static and kinetic friction between the crate and the {{ params_vars_vehicle }} are $\mu_s$ and $\mu_k$ respectively.
 
-If the {{ params.vars.vehicle }} starts moving, what is the maximum acceleration the {{ params.vars.vehicle }} can have without the crate slipping? You should provide a symbolic answer in terms of the following variables: $\mu_s$, $\mu_k$, $g$, and $\theta$.
+If the {{ params_vars_vehicle }} starts moving, what is the maximum acceleration the {{ params_vars_vehicle }} can have without the crate slipping? You should provide a symbolic answer in terms of the following variables: $\mu_s$, $\mu_k$, $g$, and $\theta$.
 
 Note that it may not be necessary to use every variable. Use the following table as a reference for using each variable:
 

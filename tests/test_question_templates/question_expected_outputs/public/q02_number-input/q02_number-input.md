@@ -40,18 +40,24 @@ part2:
     label: $d= $
     suffix: m
 myst:
-  substitutions: {}
+  substitutions:
+    params_vars_name: Maya
+    params_vars_vehicle: a unicycle
+    params_vars_title: Distance travelled
+    params_vars_units: m/s
+    params_v: 5
+    params_t: 6
 ---
-# {{ params.vars.title }}
-{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+# {{ params_vars_title }}
+{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
 
 ## Part 1
 
-How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params.vars.units }}.
+Please enter in a numeric value in {{ params_vars_units }}.
 
 ### pl-submission-panel
 
@@ -67,11 +73,11 @@ Please remove this section if it is not application for this question.
 
 ## Part 2
 
-How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params.vars.units }}.
+Please enter in a numeric value in {{ params_vars_units }}.
 
 ### pl-submission-panel
 

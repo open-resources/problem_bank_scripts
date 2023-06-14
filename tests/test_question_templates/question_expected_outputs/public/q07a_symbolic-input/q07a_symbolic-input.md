@@ -31,9 +31,10 @@ part1:
     weight: 1
     allow-blank: false
 myst:
-  substitutions: {}
+  substitutions:
+    params_vars_title: Centripetal Motion
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 
