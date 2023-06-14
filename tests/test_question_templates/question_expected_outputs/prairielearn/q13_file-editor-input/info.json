@@ -1,0 +1,11 @@
+{
+            "uuid": "df38f704-0753-3b10-8183-cea5e3331384",
+            "title": "Python Powers",
+            "topic": "Template",
+            "tags":  ["file-editor", "nothing"],
+            "type": "v3",
+            "gradingMethod": "External",
+		"partialCredit":true,
+		"singleVariant": true,
+		"externalGradingOptions": {"enabled": true, "image": "prairielearn/grader-python", "entrypoint": "/python_autograder/run.sh"}
+}
