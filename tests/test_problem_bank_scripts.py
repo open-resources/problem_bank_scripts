@@ -1,13 +1,15 @@
-from __future__ import (
-    annotations,
-)  # python>=3.8 doesn't support subscripting builtin collections
+from __future__ import annotations
 
-from problem_bank_scripts import __version__, process_question_pl, process_question_md
-import pandas as pd
-import pathlib
+# python >= 3.8 doesn't support subscripting builtin collections
+
 import filecmp
 import os
+import pathlib
+
+import pandas as pd
 import pytest
+
+from problem_bank_scripts import __version__, process_question_pl, process_question_md
 
 
 def test_version():
@@ -20,6 +22,7 @@ exclude_question = (
     "q07b_symbolic-input",
 )
 
+# Generate a list of all problems in the test problems directory
 files = sorted(
     [
         file.name
