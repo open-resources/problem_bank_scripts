@@ -416,17 +416,18 @@ def write_info_json(output_path, parsed_question):
     optional = ""
 
     if parsed_question["header"].get("gradingMethod"):
-        optional += """ "gradingMethod": parsed_question['header']['gradingMethod'],\n"""
-    elif parsed_question["header"].get("partialCredit"):
-        optional += """ "partialCredit": parsed_question['header']['partialCredit'],\n"""
-    elif parsed_question["header"].get("externalGradingOptions"):
-        optional += """ "externalGradingOptions": parsed_question['header']['externalGradingOptions'],\n"""
-    elif parsed_question["header"].get("dependencies"):
-        optional += """ "dependencies": parsed_question['header']['dependencies'],\n"""
-    elif parsed_question["header"].get("singleVariant"):
-        optional += """ "singleVariant": parsed_question['header']['singleVariant'],\n"""
-    elif parsed_question["header"].get("showCorrectAnswer"):
-        optional += """ "showCorrectAnswer": parsed_question['header']['showCorrectAnswer'],\n"""
+        optional += """\"gradingMethod": \"""" + parsed_question['header']['gradingMethod'] + """\",\n\t\t"""
+    if parsed_question["header"].get("partialCredit"):
+        optional += """\"partialCredit":""" + str(parsed_question['header']['partialCredit']).lower() + """,\n\t\t"""
+    if parsed_question["header"].get("dependencies"):
+        optional += """\"dependencies": """ + parsed_question['header']['dependencies'] + """,\n\t\t"""
+    if parsed_question["header"].get("singleVariant"):
+        optional += """\"singleVariant": """ + str(parsed_question['header']['singleVariant']).lower() + """,\n\t\t"""
+    if parsed_question["header"].get("showCorrectAnswer"):
+        optional += """\"showCorrectAnswer": """ + str(parsed_question['header']['showCorrectAnswer']).lower() + """,\n\t\t"""
+    if parsed_question["header"].get("externalGradingOptions"):
+        optional += """\"externalGradingOptions": """ + json.dumps(parsed_question['header']['externalGradingOptions']) + """,\n\t\t"""
+    optional = optional[:-4] + """\n"""
 
     # Add tags based on part type
     q_types = []
@@ -452,15 +453,18 @@ def write_info_json(output_path, parsed_question):
         + """\",
             "title": \""""
         + parsed_question["header"]["title"]
-        + """",
+        + """\",
             "topic": \""""
         + parsed_question["header"]["topic"]
-        + """",
+        + """\",
             "tags":  """
         + json.dumps(auto_tags)
         + """,
-            "type": "v3"
-        }""",
+            "type": "v3\""""
+        + ((""",
+            """
+        + optional) if (optional) else ("""\n"""))
+        + """}""",
         encoding="utf8",
     )
 
@@ -686,6 +690,27 @@ def process_file_upload(part_name, parsed_question, data_dict):
     # TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
     # TODO: Add support for wildcard *.png
     # TODO: Add better message telling students the question needs to be manually graded.
+
+    return replace_tags(html)
+
+
+def process_file_editor(part_name, parsed_question, data_dict):
+    """Processes markdown format of code-input questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    pl_customizations = " ".join(
+        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+    )  # PL-customizations
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-file-editor { pl_customizations } > </pl-file-editor>"""
 
     return replace_tags(html)
 
@@ -1021,6 +1046,8 @@ def process_question_pl(source_filepath, output_path=None):
             question_html += process_longtext(part, parsed_q, data2)
         elif "file-upload" in q_type:
             question_html += process_file_upload(part, parsed_q, data2)
+        elif "file-editor" in q_type:
+            question_html += process_file_editor(part, parsed_q, data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
@@ -1065,6 +1092,13 @@ def process_question_pl(source_filepath, output_path=None):
         pl_path = output_path / "clientFilesQuestion"
         pl_path.mkdir(parents=True, exist_ok=True)
         [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
+
+    # Move autograde py test files
+    files_to_copy = parsed_q["header"].get("autogradeTestFiles")
+    if files_to_copy:
+        pl_path = output_path / "tests"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy]
 
 
 def pl_image_path(html):
