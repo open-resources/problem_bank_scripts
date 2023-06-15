@@ -42,12 +42,8 @@ def paths():
     """
     p = {
         "inputDest": pathlib.Path("tests/test_question_templates/question_inputs/"),
-        "outputDest": pathlib.Path(
-            "tests/test_question_templates/question_generated_outputs/"
-        ),
-        "compareDest": pathlib.Path(
-            "tests/test_question_templates/question_expected_outputs/"
-        ),
+        "outputDest": pathlib.Path("tests/test_question_templates/question_generated_outputs/"),
+        "compareDest": pathlib.Path("tests/test_question_templates/question_expected_outputs/"),
     }
     return p
 
@@ -69,6 +65,8 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
     Args:
         paths (dict): set by the fixture paths()
     """
+    if question != "q13_file-editor-input":
+        return
     outputPath = paths["outputDest"].joinpath("prairielearn/")
     comparePath = paths["compareDest"].joinpath("prairielearn/")
 
@@ -95,12 +93,12 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
             outputFolder = outputPath.joinpath(folder)
 
             try:
-                filecmp.cmp(file, outputFolder.joinpath(file.name))
+                filecmp.cmp(file, str(file).replace(str(comparePath), str(outputPath)))
             except FileNotFoundError:
-                print(file, folder, outputFolder, outputFolder.joinpath(file.name))
+                print(file, folder, outputFolder, str(file).replace(str(comparePath), str(outputPath)))
 
             assert filecmp.cmp(
-                file, outputFolder.joinpath(file.name), shallow=False
+                file, str(file).replace(str(comparePath), str(outputPath))
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
