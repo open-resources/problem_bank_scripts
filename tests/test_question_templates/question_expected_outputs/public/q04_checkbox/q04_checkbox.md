@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -32,19 +33,19 @@ part1:
 myst:
   substitutions:
     params_vars_title: Vectors and Scalars
-    params_vars_name: Maya
-    params_choice: scalars
-    params_part1_ans1_value: mass
+    params_vars_name: Emilia
+    params_choice: vectors
+    params_part1_ans1_value: velocity
     params_part1_ans1_feedback: Correct! Nice work
-    params_part1_ans2_value: temperature
+    params_part1_ans2_value: thrust
     params_part1_ans2_feedback: Correct! Nice work
-    params_part1_ans3_value: work
-    params_part1_ans3_feedback: Correct! Nice work
-    params_part1_ans4_value: drag
+    params_part1_ans3_value: entropy
+    params_part1_ans3_feedback: Not quite - Try again!
+    params_part1_ans4_value: area
     params_part1_ans4_feedback: Not quite - Try again!
-    params_part1_ans5_value: weight
+    params_part1_ans5_value: temperature
     params_part1_ans5_feedback: Not quite - Try again!
-    params_part1_ans6_value: lift
+    params_part1_ans6_value: volume
     params_part1_ans6_feedback: Not quite - Try again!
 ---
 # {{ params_vars_title }}

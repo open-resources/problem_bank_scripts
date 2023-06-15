@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 19.2.3.0
 - 19.2.3.1
@@ -45,10 +46,10 @@ part1:
     suffix: $\rm\ A$
 myst:
   substitutions:
-    params_n: '30'
-    params_r: '2.20'
-    params_v: '3.00'
-    params_p: '4'
+    params_n: '15'
+    params_r: '2.50'
+    params_v: '1.60'
+    params_p: '5'
 ---
 # {{ params_vars.title }}
 

@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -27,7 +28,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -106,33 +107,33 @@ myst:
   substitutions:
     params:
       vars:
-        name: Maya
+        name: Savannah
         vehicle: a unicycle
         title: Distance travelled
         units: m/s
-      v: 5
-      t: 6
+      v: 6
+      t: 10
       part2:
         ans1:
           value: 42
           correct: false
         ans2:
-          value: 30
+          value: 60
           correct: true
         ans3:
-          value: 11
+          value: 16
           correct: false
         ans4:
-          value: 0.8333333333333334
+          value: 0.6
           correct: false
         ans5:
-          value: -1
+          value: -4
           correct: false
         ans6:
-          value: -1.3
+          value: -5.2
           correct: false
     correct_answers:
-      part1_ans: 30
+      part1_ans: 60
 
 ---
 # {{ params.vars.title }}

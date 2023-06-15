@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -41,12 +42,12 @@ part2:
     suffix: m
 myst:
   substitutions:
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
+    params_vars_name: Ximena
+    params_vars_vehicle: a tricycle
     params_vars_title: Distance travelled
     params_vars_units: m/s
-    params_v: 5
-    params_t: 6
+    params_v: 7
+    params_t: 9
 ---
 # {{ params_vars_title }}
 {{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.

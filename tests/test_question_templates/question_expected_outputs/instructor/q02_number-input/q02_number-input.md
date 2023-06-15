@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -88,11 +89,11 @@ myst:
         vehicle: a unicycle
         title: Distance travelled
         units: m/s
-      v: 5
-      t: 6
+      v: 4
+      t: 8
     correct_answers:
-      part1_ans: 30
-      part2_ans: 30
+      part1_ans: 32
+      part2_ans: 32
 
 ---
 # {{ params.vars.title }}

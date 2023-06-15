@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -32,25 +33,25 @@ part1:
 myst:
   substitutions:
     params_vars_title: Kinematics
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
+    params_vars_name: Ahmed
+    params_vars_vehicle: a skateboard
     params_vars_units: m/s
-    params_v: 5
-    params_t: 6
+    params_v: 7
+    params_t: 5
     params_part1_ans1_value: 42
     params_part1_ans1_feedback: This is a random number, you probably selected this
       choice by mistake! Try again please!
-    params_part1_ans2_value: 30
+    params_part1_ans2_value: 35
     params_part1_ans2_feedback: Great! You got it.
-    params_part1_ans3_value: 11
+    params_part1_ans3_value: 12
     params_part1_ans3_feedback: Hmm, does it make sense to add a velocity and a time?
       Check the units!
-    params_part1_ans4_value: 0.8333333333333334
+    params_part1_ans4_value: 1.4
     params_part1_ans4_feedback: 'Hmm, check the units of the resulting answer: v/t.'
-    params_part1_ans5_value: -1
+    params_part1_ans5_value: 2
     params_part1_ans5_feedback: Hmm, does it make sense to subtract a velocity and
       a time? Check the units!
-    params_part1_ans6_value: -1.3
+    params_part1_ans6_value: 2.6
     params_part1_ans6_feedback: Hmm, does it make sense to subtract a velocity and
       a time? Check the units!
 ---

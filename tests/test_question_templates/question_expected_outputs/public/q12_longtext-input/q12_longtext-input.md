@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes: null
 difficulty:
 - undefined
@@ -32,9 +33,10 @@ part1:
     directory: clientFilesQuestion
     source-file-name: sample.html
 myst:
-  substitutions: {}
+  substitutions:
+    params_vars_title: Describe an Experiment
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 

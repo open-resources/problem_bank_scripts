@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - undefined
 difficulty:
@@ -24,7 +25,7 @@ tags:
 assets: null
 server:
   imports: |
-    from numpy.random import RandomState; random = RandomState(111)
+    import random
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -107,10 +108,10 @@ part2:
 myst:
   substitutions:
     params:
-      L: '11'
-      q: '5.0'
-      p: '-6'
-      d: '2.4'
+      L: '13'
+      q: '2.4'
+      p: '-8'
+      d: '1.4'
       part2:
         ans1:
           value: points towards the negative plate
@@ -122,8 +123,8 @@ myst:
           value: points parallel to the plates
           correct: false
     correct_answers:
-      part1_ans: 46691880.28201895
-      part1_ans_str: 46700000.0
+      part1_ans: 160465.3495135894
+      part1_ans_str: 160000.0
 
 ---
 # {{ params.vars.title }}

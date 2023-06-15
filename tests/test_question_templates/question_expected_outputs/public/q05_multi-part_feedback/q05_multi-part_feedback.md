@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - undefined
 difficulty:
@@ -39,10 +40,10 @@ part2:
     weight: 1
 myst:
   substitutions:
-    params_L: '11'
-    params_q: '5.0'
-    params_p: '-6'
-    params_d: '2.4'
+    params_L: '14'
+    params_q: '4.4'
+    params_p: '-8'
+    params_d: '0.5'
     params_part2_ans1_value: points towards the negative plate
     params_part2_ans2_value: points towards the positive plate
     params_part2_ans3_value: points parallel to the plates

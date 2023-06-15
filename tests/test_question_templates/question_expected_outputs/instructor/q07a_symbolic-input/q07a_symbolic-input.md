@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    from numpy.random import RandomState; random = RandomState(111)
+    import random
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -73,9 +74,9 @@ myst:
         _type: sympy
         _value: m*v**2/r
         _variables:
-        - r
         - m
         - v
+        - r
 
 ---
 # {{ params.vars.title }}

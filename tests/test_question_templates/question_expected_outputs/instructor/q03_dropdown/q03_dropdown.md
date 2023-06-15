@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -94,12 +95,12 @@ myst:
   substitutions:
     params:
       vars:
-        name: Maya
-        vehicle: a unicycle
+        name: Ximena
+        vehicle: a bicycle
         title: Distance travelled
         units: m/s
-      v: 5
-      t: 6
+      v: 2
+      t: 9
       part1:
         ans1:
           value: 42
@@ -107,7 +108,7 @@ myst:
           feedback: This is a random number, you probably selected this choice by
             mistake! Try again please!
         ans2:
-          value: 30
+          value: 18
           correct: true
           feedback: Great! You got it.
         ans3:
@@ -116,16 +117,16 @@ myst:
           feedback: Hmm, does it make sense to add a velocity and a time? Check the
             units!
         ans4:
-          value: 0.8333333333333334
+          value: 0.2222222222222222
           correct: false
           feedback: 'Hmm, check the units of the resulting answer: v/t.'
         ans5:
-          value: -1
+          value: -7
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!
         ans6:
-          value: -1.3
+          value: -9.1
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!

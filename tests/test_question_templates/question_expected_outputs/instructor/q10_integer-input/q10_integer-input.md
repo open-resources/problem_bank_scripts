@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -71,13 +72,13 @@ myst:
   substitutions:
     params:
       vars:
-        name: Maya
-        vehicle: a unicycle
+        name: Lorenzo
+        vehicle: rollerblades
         title: Integer Math
         units: m/s
-      n: 65
+      n: 63
     correct_answers:
-      part1_ans: 650
+      part1_ans: 630
 
 ---
 # {{ params.vars.title }}

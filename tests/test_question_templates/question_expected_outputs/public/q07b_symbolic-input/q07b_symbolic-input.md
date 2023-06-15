@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -33,40 +34,8 @@ part1:
 myst:
   substitutions:
     params_vars_title: Symbolic Input 2 - Trig
-    params_vars_name: !!python/object/apply:numpy.core.multiarray.scalar
-    - !!python/object/apply:numpy.dtype
-      args:
-      - U8
-      - false
-      - true
-      state: !!python/tuple
-      - 3
-      - <
-      - null
-      - null
-      - null
-      - 32
-      - 4
-      - 8
-    - !!binary |
-      UwAAAGEAAABuAAAAdAAAAGkAAABhAAAAZwAAAG8AAAA=
-    params_vars_vehicle: !!python/object/apply:numpy.core.multiarray.scalar
-    - !!python/object/apply:numpy.dtype
-      args:
-      - U3
-      - false
-      - true
-      state: !!python/tuple
-      - 3
-      - <
-      - null
-      - null
-      - null
-      - 12
-      - 4
-      - 8
-    - !!binary |
-      YgAAAHUAAABzAAAA
+    params_vars_name: Abbas
+    params_vars_vehicle: van
 ---
 # {{ params_vars_title }}
 

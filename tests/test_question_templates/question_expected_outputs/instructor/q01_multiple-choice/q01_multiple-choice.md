@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -27,7 +28,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -96,10 +97,10 @@ myst:
     params:
       vars:
         title: Kinematics
-        name: Maya
-        vehicle: a unicycle
+        name: Aliyah
+        vehicle: a skateboard
         units: m/s
-      v: 5
+      v: 4
       t: 6
       part1:
         ans1:
@@ -108,25 +109,25 @@ myst:
           feedback: This is a random number, you probably selected this choice by
             mistake! Try again please!
         ans2:
-          value: 30
+          value: 24
           correct: true
           feedback: Great! You got it.
         ans3:
-          value: 11
+          value: 10
           correct: false
           feedback: Hmm, does it make sense to add a velocity and a time? Check the
             units!
         ans4:
-          value: 0.8333333333333334
+          value: 0.6666666666666666
           correct: false
           feedback: 'Hmm, check the units of the resulting answer: v/t.'
         ans5:
-          value: -1
+          value: -2
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!
         ans6:
-          value: -1.3
+          value: -2.6
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!

@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -105,23 +106,23 @@ myst:
     params:
       vars:
         title: Vectors and Scalars
-        name: Maya
+        name: Ximena
       choice: scalars
       part1:
         ans1:
-          value: mass
-          correct: true
-          feedback: Correct! Nice work
-        ans2:
-          value: temperature
-          correct: true
-          feedback: Correct! Nice work
-        ans3:
           value: work
           correct: true
           feedback: Correct! Nice work
+        ans2:
+          value: energy
+          correct: true
+          feedback: Correct! Nice work
+        ans3:
+          value: thrust
+          correct: false
+          feedback: Not quite - Try again!
         ans4:
-          value: drag
+          value: velocity
           correct: false
           feedback: Not quite - Try again!
         ans5:
@@ -129,7 +130,7 @@ myst:
           correct: false
           feedback: Not quite - Try again!
         ans6:
-          value: lift
+          value: displacement
           correct: false
           feedback: Not quite - Try again!
 

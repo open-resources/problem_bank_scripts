@@ -1,9 +1,9 @@
-import random; random.seed(111)
+import random
 import pandas as pd
 import problem_bank_helpers as pbh
 
 def imports(data):
-    import random; random.seed(111)
+    import random
     import pandas as pd
     import problem_bank_helpers as pbh
     
@@ -55,7 +55,7 @@ def generate(data):
             data2["params"]["part1"][choice]["value"] = scalars.pop()
             data2["params"]["part1"][choice]["correct"] = True
             data2["params"]["part1"][choice]["feedback"] = "Correct! Nice work"
-            
+    
         for i in range(num_vectors):
             choice = ans_choices.pop(0)
             data2["params"]["part1"][choice]["value"] = vectors.pop()

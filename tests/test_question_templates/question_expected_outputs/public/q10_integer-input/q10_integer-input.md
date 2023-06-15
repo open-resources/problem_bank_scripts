@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -31,11 +32,11 @@ part1:
     allow-blank: true
 myst:
   substitutions:
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
+    params_vars_name: Ximena
+    params_vars_vehicle: a skateboard
     params_vars_title: Integer Math
     params_vars_units: m/s
-    params_n: 65
+    params_n: 48
 ---
 # {{ params_vars_title }}
 

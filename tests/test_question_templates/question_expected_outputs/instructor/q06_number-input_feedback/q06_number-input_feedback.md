@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 19.2.3.0
 - 19.2.3.1
@@ -36,7 +37,7 @@ tags:
 assets: null
 server:
   imports: |
-    from numpy.random import RandomState; random = RandomState(111)
+    import random
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -111,9 +112,9 @@ part1:
 myst:
   substitutions:
     params:
-      n: '30'
-      r: '2.20'
-      v: '3.00'
+      n: '10'
+      r: '1.40'
+      v: '1.00'
       p: '4'
     correct_answers:
       part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
@@ -132,8 +133,8 @@ myst:
         - -1
         - 0
       - !!binary |
-        k+xi9h/fYD8=
-      part1_ans_str: '2.06e-03'
+        oCoJOjKDaj8=
+      part1_ans_str: '3.24e-03'
 
 ---
 # {{ params.vars.title }}
