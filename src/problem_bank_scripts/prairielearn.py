@@ -1,6 +1,7 @@
 # This file has been copied directly from the PL repo: https://github.com/PrairieLearn/PrairieLearn/blob/master/lib/python_helper_sympy.py
 
 import sympy
+
 # import ast
 # import sys
 
@@ -8,9 +9,11 @@ import sympy
 # import html
 # import to_precision
 import numpy as np
+
 # import uuid
 # import sympy
 import pandas
+
 # from python_helper_sympy import convert_string_to_sympy
 # from python_helper_sympy import sympy_to_json
 # from python_helper_sympy import json_to_sympy
@@ -22,44 +25,46 @@ import pandas
 # import os
 import collections
 
+
 # Create a new instance of this class to access the member dictionaries. This
 # is to avoid accidentally modifying these dictionaries.
 class _Constants:
     def __init__(self):
         self.helpers = {
-            '_Integer': sympy.Integer,
+            "_Integer": sympy.Integer,
         }
         self.variables = {
-            'pi': sympy.pi,
-            'e': sympy.E,
+            "pi": sympy.pi,
+            "e": sympy.E,
         }
         self.hidden_variables = {
-            '_Exp1': sympy.E,
+            "_Exp1": sympy.E,
         }
         self.complex_variables = {
-            'i': sympy.I,
-            'j': sympy.I,
+            "i": sympy.I,
+            "j": sympy.I,
         }
         self.hidden_complex_variables = {
-            '_ImaginaryUnit': sympy.I,
+            "_ImaginaryUnit": sympy.I,
         }
         self.functions = {
             # These are shown to the student
-            'cos': sympy.cos,
-            'sin': sympy.sin,
-            'tan': sympy.tan,
-            'arccos': sympy.acos,
-            'arcsin': sympy.asin,
-            'arctan': sympy.atan,
-            'acos': sympy.acos,
-            'asin': sympy.asin,
-            'atan': sympy.atan,
-            'arctan2': sympy.atan2,
-            'atan2': sympy.atan2,
-            'exp': sympy.exp,
-            'log': sympy.log,
-            'sqrt': sympy.sqrt,
+            "cos": sympy.cos,
+            "sin": sympy.sin,
+            "tan": sympy.tan,
+            "arccos": sympy.acos,
+            "arcsin": sympy.asin,
+            "arctan": sympy.atan,
+            "acos": sympy.acos,
+            "asin": sympy.asin,
+            "atan": sympy.atan,
+            "arctan2": sympy.atan2,
+            "atan2": sympy.atan2,
+            "exp": sympy.exp,
+            "log": sympy.log,
+            "sqrt": sympy.sqrt,
         }
+
 
 # # Safe evaluation of user input to convert from string to sympy expression.
 # #
@@ -276,6 +281,7 @@ class _Constants:
 #     w_right = min(ind+w, len(s)) - ind
 #     return s[ind-w_left:ind+w_right] + '\n' + ' '*w_left + '^' + ' '*w_right
 
+
 def sympy_to_json(a, allow_complex=True):
     const = _Constants()
 
@@ -289,14 +295,22 @@ def sympy_to_json(a, allow_complex=True):
     for k in reserved.keys():
         for v in variables:
             if k == v:
-                raise ValueError('sympy expression has a variable with a reserved name: {:s}'.format(k))
+                raise ValueError(
+                    "sympy expression has a variable with a reserved name: {:s}".format(k)
+                )
 
     # Apply substitutions for hidden variables
     a = a.subs([(const.hidden_variables[key], key) for key in const.hidden_variables.keys()])
     if allow_complex:
-        a = a.subs([(const.hidden_complex_variables[key], key) for key in const.hidden_complex_variables.keys()])
+        a = a.subs(
+            [
+                (const.hidden_complex_variables[key], key)
+                for key in const.hidden_complex_variables.keys()
+            ]
+        )
 
-    return {'_type': 'sympy', '_value': str(a), '_variables': variables}
+    return {"_type": "sympy", "_value": str(a), "_variables": variables}
+
 
 # def json_to_sympy(a, allow_complex=True):
 #     if not '_type' in a:
@@ -309,6 +323,7 @@ def sympy_to_json(a, allow_complex=True):
 #         a['_variables'] = None
 
 #     return convert_string_to_sympy(a['_value'], a['_variables'], allow_hidden=True, allow_complex=allow_complex)
+
 
 # Added to_json() from this file: https://github.com/PrairieLearn/PrairieLearn/blob/master/question-servers/freeformPythonLib/prairielearn.py
 def to_json(v):
@@ -328,12 +343,16 @@ def to_json(v):
     returned without change.
     """
     if np.isscalar(v) and np.iscomplexobj(v):
-        return {'_type': 'complex', '_value': {'real': v.real, 'imag': v.imag}}
+        return {"_type": "complex", "_value": {"real": v.real, "imag": v.imag}}
     elif isinstance(v, np.ndarray):
         if np.isrealobj(v):
-            return {'_type': 'ndarray', '_value': v.tolist(), '_dtype': str(v.dtype)}
+            return {"_type": "ndarray", "_value": v.tolist(), "_dtype": str(v.dtype)}
         elif np.iscomplexobj(v):
-            return {'_type': 'complex_ndarray', '_value': {'real': v.real.tolist(), 'imag': v.imag.tolist()}, '_dtype': str(v.dtype)}
+            return {
+                "_type": "complex_ndarray",
+                "_value": {"real": v.real.tolist(), "imag": v.imag.tolist()},
+                "_dtype": str(v.dtype),
+            }
     elif isinstance(v, sympy.Expr):
         return sympy_to_json(v)
     elif isinstance(v, sympy.Matrix) or isinstance(v, sympy.ImmutableMatrix):
@@ -345,8 +364,20 @@ def to_json(v):
             for j in range(0, num_cols):
                 row.append(str(v[i, j]))
             M.append(row)
-        return {'_type': 'sympy_matrix', '_value': M, '_variables': s, '_shape': [num_rows, num_cols]}
+        return {
+            "_type": "sympy_matrix",
+            "_value": M,
+            "_variables": s,
+            "_shape": [num_rows, num_cols],
+        }
     elif isinstance(v, pandas.DataFrame):
-        return {'_type': 'dataframe', '_value': {'index': list(v.index), 'columns': list(v.columns), 'data': v.values.tolist()}}
+        return {
+            "_type": "dataframe",
+            "_value": {
+                "index": list(v.index),
+                "columns": list(v.columns),
+                "data": v.values.tolist(),
+            },
+        }
     else:
         return v
