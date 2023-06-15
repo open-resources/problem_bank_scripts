@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 # python >= 3.8 doesn't support subscripting builtin collections
@@ -15,7 +16,7 @@ from problem_bank_scripts import __version__, process_question_pl, process_quest
 
 
 def test_version():
-    assert __version__ == "0.5.0"
+    assert __version__ == "0.6.0"
 
 
 # TODO: excluding symbolic questions, needs to be fixed because of how sympy objects are handled
