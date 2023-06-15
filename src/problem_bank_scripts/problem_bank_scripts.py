@@ -27,6 +27,9 @@ import mdformat
 ## Dealing with YAML
 import yaml
 
+## Loading files : https://stackoverflow.com/a/60687710
+import importlib.resources
+
 # Start of reading/parsing functions
 
 
@@ -766,7 +769,8 @@ def process_attribution(attribution):
         string (str): returns the html of the attribution
     """
 
-    possible_attributions = json.load(open('attributions.json'))
+    with importlib.resources.open_text("problem_bank_scripts", "attributions.json") as file:
+        possible_attributions = json.load(file)  
 
     try:
         attribution_text = possible_attributions[attribution]
