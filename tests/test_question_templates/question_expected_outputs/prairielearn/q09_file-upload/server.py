@@ -1,17 +1,13 @@
-pass
+import problem_bank_helpers as pbh
 
 def imports(data):
-    pass
+    import problem_bank_helpers as pbh
     
 def generate(data):
-    pass
+    data2 = pbh.create_data2()
     
-def prepare(data):
-    pass
+    data2["params"]["vars"]["title"] = "File Upload"
     
-def parse(data):
-    pass
-    
-def grade(data):
-    pass
+    # Update the data object with a new dict
+    data.update(data2)
     

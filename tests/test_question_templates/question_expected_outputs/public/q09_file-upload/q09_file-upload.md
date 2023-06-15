@@ -8,6 +8,7 @@ attribution: standard
 partialCredit: true
 singleVariant: false
 gradingMethod: Manual
+showCorrectAnswer: false
 outcomes: null
 difficulty:
 - undefined
@@ -27,9 +28,10 @@ part1:
   pl-customizations:
     file-names: file.png, file.jpg, file.pdf, filename space.png
 myst:
-  substitutions: {}
+  substitutions:
+    params_vars_title: File Upload
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 

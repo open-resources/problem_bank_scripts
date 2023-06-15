@@ -8,6 +8,7 @@ attribution: standard
 partialCredit: true
 singleVariant: false
 gradingMethod: Manual
+showCorrectAnswer: false
 outcomes:
 difficulty:
 - undefined
@@ -22,17 +23,16 @@ length:
 tags:
 - unknown
 assets:
-server: 
+server:
     imports: |
-        pass
+        import problem_bank_helpers as pbh
     generate: |
-        pass
-    prepare: |
-        pass
-    parse: |
-        pass
-    grade: |
-        pass
+        data2 = pbh.create_data2()
+
+        data2["params"]["vars"]["title"] = "File Upload"
+
+        # Update the data object with a new dict
+        data.update(data2)
 part1:
   type: file-upload
   pl-customizations:
@@ -43,7 +43,7 @@ part1:
 ## Question Text
 
 A block sits on an incline plane of angle 30 degrees to the horizontal.
-Draw a free body diagram for the block by hand, take a picture, and upload it. 
+Draw a free body diagram for the block by hand, take a picture, and upload it.
 Your file must be a png, jpg, or pdf.
 
 ### Answer Section
@@ -71,4 +71,3 @@ This should never be revealed to students.
 ## Comments
 
 These are random comments associated with this question.
-
