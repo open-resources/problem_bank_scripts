@@ -43,7 +43,7 @@ jobs:
         id: check-schema
         run: |
           echo "schema=latestSchema.json" >> "$GITHUB_OUTPUT"
-          diff latestSchema.json test/infoSchema.json
+          diff latestSchema.json tests/infoSchema.json
           if [ $? -eq 0 ]; then
             echo "valid=true" >> "$GITHUB_OUTPUT"
             exit 0
