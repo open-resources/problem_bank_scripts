@@ -28,7 +28,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -40,13 +40,13 @@ server:
 
     # store phrases etc
     data2["params"]["vars"]["title"] = 'Kinematics'
-    data2["params"]["vars"]["name"] = random.choice(names)
-    data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+    data2["params"]["vars"]["name"] = rd.choice(names)
+    data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
     data2["params"]["vars"]["units"] = "m/s"
 
     # Randomize Variables
-    v = random.randint(2,7)
-    t = random.randint(5,10)
+    v = rd.randint(2,7)
+    t = rd.randint(5,10)
 
     # store the variables in the dictionary "params"
     data2["params"]["v"] = v
@@ -97,10 +97,10 @@ myst:
     params:
       vars:
         title: Kinematics
-        name: Aliyah
-        vehicle: a skateboard
+        name: Maya
+        vehicle: a unicycle
         units: m/s
-      v: 4
+      v: 5
       t: 6
       part1:
         ans1:
@@ -109,25 +109,25 @@ myst:
           feedback: This is a random number, you probably selected this choice by
             mistake! Try again please!
         ans2:
-          value: 24
+          value: 30
           correct: true
           feedback: Great! You got it.
         ans3:
-          value: 10
+          value: 11
           correct: false
           feedback: Hmm, does it make sense to add a velocity and a time? Check the
             units!
         ans4:
-          value: 0.6666666666666666
+          value: 0.8333333333333334
           correct: false
           feedback: 'Hmm, check the units of the resulting answer: v/t.'
         ans5:
-          value: -2
+          value: -1
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!
         ans6:
-          value: -2.6
+          value: -1.3
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!

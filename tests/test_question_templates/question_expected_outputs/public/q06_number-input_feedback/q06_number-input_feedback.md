@@ -47,9 +47,9 @@ part1:
 myst:
   substitutions:
     params_n: '15'
-    params_r: '2.50'
-    params_v: '1.60'
-    params_p: '5'
+    params_r: '2.00'
+    params_v: '2.50'
+    params_p: '4'
 ---
 # {{ params_vars.title }}
 

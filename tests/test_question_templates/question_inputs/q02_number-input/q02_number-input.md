@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -23,9 +24,9 @@ length:
 tags:
 - unknown
 assets:
-server: 
+server:
     imports: |
-        import random; random.seed(111)
+        import random as rd; rd.seed(111)
         import pandas as pd
         import problem_bank_helpers as pbh
     generate: |
@@ -36,14 +37,14 @@ server:
         manual_vehicles = pbh.manual_vehicles.copy()
 
         # store phrases etc
-        data2["params"]["vars"]["name"] = random.choice(names)
-        data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+        data2["params"]["vars"]["name"] = rd.choice(names)
+        data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
         data2["params"]["vars"]["title"] = "Distance travelled"
         data2["params"]["vars"]["units"] = "m/s"
 
         # define bounds of the variables
-        v = random.randint(2,7)
-        t = random.randint(5,10)
+        v = rd.randint(2,7)
+        t = rd.randint(5,10)
 
         # store the variables in the dictionary "params"
         data2["params"]["v"] = v
@@ -52,7 +53,7 @@ server:
         # define correct answers
         data2["correct_answers"]["part1_ans"] = v*t
         data2["correct_answers"]["part2_ans"] = v*t
-        
+
         # Update the data object with a new dict
         data.update(data2)
     prepare: |

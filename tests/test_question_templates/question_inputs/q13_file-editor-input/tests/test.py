@@ -8,7 +8,7 @@ class Test(PLTestCase):
     total_iters = 5
     def setUp(self):
         self.output = eval("self.st." + self.data["params"]["fname"])
-        
+
         def test_function_args(func):
             argspec = inspect.getfullargspec(func)
             args = argspec.args
@@ -19,7 +19,7 @@ class Test(PLTestCase):
             if len(args) != 1:
                 raise TypeError(f"{func.__name__}() takes 1 positional arguments, but {len(args)} were given")
         self.test_function_args = test_function_args
-    
+
     @points(1/total_iters)
     @name("correct input parameters (only 1 parameter, no *args or **kwargs)")
     def test_0(self):
@@ -28,7 +28,7 @@ class Test(PLTestCase):
             Feedback.set_score(1)
         except:
             Feedback.set_score(0)
-        
+
     @points(1)
     @name("random input")
     def test_1(self):
@@ -40,7 +40,7 @@ class Test(PLTestCase):
 
         else:
             Feedback.set_score(0)
-    
+
     @points(2/total_iters)
     @name("edge case #1")
     def test_2(self):
@@ -51,7 +51,7 @@ class Test(PLTestCase):
 
         else:
             Feedback.set_score(0)
-    
+
     @points(2/total_iters)
     @name("edge case #2")
     def test_3(self):

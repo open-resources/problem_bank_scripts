@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -23,9 +24,9 @@ length:
 tags:
 - unknown
 assets:
-server: 
+server:
     imports: |
-        from numpy.random import RandomState; random = RandomState(111)
+        import random as rd; rd.seed(111)
         import pandas as pd
         import sympy as sp
         import prairielearn as pl
@@ -41,10 +42,10 @@ server:
 
         # Describe the solution equation
         F = m*v**2/r
-        
+
         # Answer to fill in the blank input stored as JSON.
         data2['correct_answers']['part1_ans'] = pl.to_json(F)
-        
+
         # Update the data object with a new dict
         data.update(data2)
     prepare: |

@@ -26,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl

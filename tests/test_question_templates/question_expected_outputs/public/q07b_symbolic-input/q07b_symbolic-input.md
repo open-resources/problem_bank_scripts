@@ -34,7 +34,7 @@ part1:
 myst:
   substitutions:
     params_vars_title: Symbolic Input 2 - Trig
-    params_vars_name: Abbas
+    params_vars_name: Maya
     params_vars_vehicle: van
 ---
 # {{ params_vars_title }}

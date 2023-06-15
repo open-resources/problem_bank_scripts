@@ -26,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -37,14 +37,14 @@ server:
     manual_vehicles = pbh.manual_vehicles.copy()
 
     # store phrases etc
-    data2["params"]["vars"]["name"] = random.choice(names)
-    data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+    data2["params"]["vars"]["name"] = rd.choice(names)
+    data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
     data2["params"]["vars"]["title"] = "Distance travelled"
     data2["params"]["vars"]["units"] = "m/s"
 
     # define bounds of the variables
-    v = random.randint(2,7)
-    t = random.randint(5,10)
+    v = rd.randint(2,7)
+    t = rd.randint(5,10)
 
     # store the variables in the dictionary "params"
     data2["params"]["v"] = v
@@ -89,11 +89,11 @@ myst:
         vehicle: a unicycle
         title: Distance travelled
         units: m/s
-      v: 4
-      t: 8
+      v: 5
+      t: 6
     correct_answers:
-      part1_ans: 32
-      part2_ans: 32
+      part1_ans: 30
+      part2_ans: 30
 
 ---
 # {{ params.vars.title }}

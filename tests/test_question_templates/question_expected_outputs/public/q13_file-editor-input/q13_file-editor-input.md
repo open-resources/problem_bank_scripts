@@ -43,22 +43,22 @@ part1:
     source-file-name: tests/starter_code.py
 myst:
   substitutions:
-    params_question: 4th root
-    params_num: 0.25
-    params_fname: crab
-    params_input0: 9
-    params_output0: 1.7320508075688772
-    params_input1: 8
-    params_output1: 1.681792830507429
-    params_input2: 6
-    params_output2: 1.5650845800732873
+    params_question: 7th power
+    params_num: 7
+    params_fname: warthog
+    params_input0: 8
+    params_output0: 2097152.0
+    params_input1: 9
+    params_output1: 4782969.0
+    params_input2: 4
+    params_output2: 16384.0
     params_names_for_user:
     - name: x
       description: A random input number
       type: int
     params_names_from_user:
-    - name: crab
-      description: receives a single numerical input, returns its 4th root
+    - name: warthog
+      description: receives a single numerical input, returns its 7th power
       type: function
 ---
 # {{ params.vars.title }}

@@ -25,7 +25,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -42,10 +42,10 @@ server:
     data2 = pbh.create_data2()
 
     # Sample random numbers
-    L = random.choice(np.linspace(7, 15, num = 9))
-    q = random.choice(np.linspace(1, 9, num = 41))
-    p = random.choice(np.linspace(-10, -6, num = 5))
-    d = random.choice(np.linspace(0.5, 2.5, num = 21))
+    L = rd.choice(np.linspace(7, 15, num = 9))
+    q = rd.choice(np.linspace(1, 9, num = 41))
+    p = rd.choice(np.linspace(-10, -6, num = 5))
+    d = rd.choice(np.linspace(0.5, 2.5, num = 21))
 
     # Put these numbers into data['params']
     data2["params"]["L"] = "{:.0f}".format(L)
@@ -108,10 +108,10 @@ part2:
 myst:
   substitutions:
     params:
-      L: '13'
-      q: '2.4'
-      p: '-8'
-      d: '1.4'
+      L: '10'
+      q: '5.0'
+      p: '-7'
+      d: '1.1'
       part2:
         ans1:
           value: points towards the negative plate
@@ -123,8 +123,8 @@ myst:
           value: points parallel to the plates
           correct: false
     correct_answers:
-      part1_ans: 160465.3495135894
-      part1_ans_str: 160000.0
+      part1_ans: 5649717.514124292
+      part1_ans_str: 5650000.0
 
 ---
 # {{ params.vars.title }}

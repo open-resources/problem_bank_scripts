@@ -37,7 +37,7 @@ externalGradingOptions:
   entrypoint: /python_autograder/run.sh
 server:
   imports: |
-    import random as rd
+    import random as rd; rd.seed(111)
     import math
     import problem_bank_helpers as pbh
   generate: |
@@ -94,22 +94,22 @@ part1:
 myst:
   substitutions:
     params:
-      question: 4th power
-      num: 4
-      fname: giraffe
-      input0: 5
-      output0: 625.0
-      input1: 7
-      output1: 2401.0
+      question: 7th power
+      num: 7
+      fname: warthog
+      input0: 8
+      output0: 2097152.0
+      input1: 9
+      output1: 4782969.0
       input2: 4
-      output2: 256.0
+      output2: 16384.0
       names_for_user:
       - name: x
         description: A random input number
         type: int
       names_from_user:
-      - name: giraffe
-        description: receives a single numerical input, returns its 4th power
+      - name: warthog
+        description: receives a single numerical input, returns its 7th power
         type: function
 
 ---

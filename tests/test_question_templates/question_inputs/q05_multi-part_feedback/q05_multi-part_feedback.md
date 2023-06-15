@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - undefined
 difficulty:
@@ -24,7 +25,7 @@ tags:
 assets:
 server:
     imports: |
-        from numpy.random import RandomState; random = RandomState(111)
+        import random as rd; rd.seed(111)
         import numpy as np
         import pandas as pd
         import problem_bank_helpers as pbh
@@ -37,15 +38,15 @@ server:
                          'stringData': ['E'],
                          'units': ['$~\mathrm{N}/\mathrm{C}$']
                          }
-        
+
     generate: |
         data2 = pbh.create_data2()
 
         # Sample random numbers
-        L = random.choice(np.linspace(7, 15, num = 9))
-        q = random.choice(np.linspace(1, 9, num = 41))
-        p = random.choice(np.linspace(-10, -6, num = 5))
-        d = random.choice(np.linspace(0.5, 2.5, num = 21))
+        L = rd.choice(np.linspace(7, 15, num = 9))
+        q = rd.choice(np.linspace(1, 9, num = 41))
+        p = rd.choice(np.linspace(-10, -6, num = 5))
+        d = rd.choice(np.linspace(0.5, 2.5, num = 21))
 
         # Put these numbers into data['params']
         data2["params"]["L"] = "{:.0f}".format(L)

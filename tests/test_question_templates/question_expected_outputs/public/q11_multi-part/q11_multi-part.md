@@ -42,18 +42,18 @@ part2:
     weight: 1
 myst:
   substitutions:
-    params_vars_name: Mateo
-    params_vars_vehicle: ice skates
+    params_vars_name: Maya
+    params_vars_vehicle: a unicycle
     params_vars_title: Distance travelled
     params_vars_units: m/s
-    params_v: 2
-    params_t: 8
+    params_v: 5
+    params_t: 6
     params_part2_ans1_value: 42
-    params_part2_ans2_value: 16
-    params_part2_ans3_value: 10
-    params_part2_ans4_value: 0.25
-    params_part2_ans5_value: -6
-    params_part2_ans6_value: -7.800000000000001
+    params_part2_ans2_value: 30
+    params_part2_ans3_value: 11
+    params_part2_ans4_value: 0.8333333333333334
+    params_part2_ans5_value: -1
+    params_part2_ans6_value: -1.3
 ---
 # {{ params_vars_title }}
 This part of the question is common to both Parts 1 and 2.

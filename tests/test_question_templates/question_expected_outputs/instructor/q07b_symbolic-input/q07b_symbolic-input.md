@@ -26,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -40,8 +40,8 @@ server:
 
     # store phrases etc
     data2["params"]["vars"]["title"] = 'Symbolic Input 2 - Trig'
-    data2["params"]["vars"]["name"] = random.choice(names)
-    data2["params"]["vars"]["vehicle"] = random.choice(vehicles)
+    data2["params"]["vars"]["name"] = rd.choice(names)
+    data2["params"]["vars"]["vehicle"] = rd.choice(vehicles)
 
     # Declare math symbols to be used by sympy
     mu_s, g , theta = sp.symbols('mu_s g theta')
@@ -83,8 +83,8 @@ myst:
         _value: g*(mu_s*cos(theta) - sin(theta))
         _variables:
         - g
-        - theta
         - mu_s
+        - theta
 
 ---
 # {{ params.vars.title }}

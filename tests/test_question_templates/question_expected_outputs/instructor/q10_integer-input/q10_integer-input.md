@@ -26,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -37,13 +37,13 @@ server:
     manual_vehicles = pbh.manual_vehicles.copy()
 
     # store phrases etc
-    data2["params"]["vars"]["name"] = random.choice(names)
-    data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+    data2["params"]["vars"]["name"] = rd.choice(names)
+    data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
     data2["params"]["vars"]["title"] = "Integer Math"
     data2["params"]["vars"]["units"] = "m/s"
 
     # define bounds of the variables
-    n = random.randint(2,100)
+    n = rd.randint(2,100)
 
     # store the variables in the dictionary "params"
     data2["params"]["n"] = n
@@ -72,13 +72,13 @@ myst:
   substitutions:
     params:
       vars:
-        name: Lorenzo
-        vehicle: rollerblades
+        name: Maya
+        vehicle: a unicycle
         title: Integer Math
         units: m/s
-      n: 63
+      n: 65
     correct_answers:
-      part1_ans: 630
+      part1_ans: 650
 
 ---
 # {{ params.vars.title }}

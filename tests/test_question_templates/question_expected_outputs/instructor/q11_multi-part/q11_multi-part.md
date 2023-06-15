@@ -28,7 +28,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random
+    import random as rd; rd.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |
@@ -39,14 +39,14 @@ server:
     manual_vehicles = pbh.manual_vehicles.copy()
 
     # store phrases etc
-    data2["params"]["vars"]["name"] = random.choice(names)
-    data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+    data2["params"]["vars"]["name"] = rd.choice(names)
+    data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
     data2["params"]["vars"]["title"] = "Distance travelled"
     data2["params"]["vars"]["units"] = "m/s"
 
     # define bounds of the variables
-    v = random.randint(2,7)
-    t = random.randint(5,10)
+    v = rd.randint(2,7)
+    t = rd.randint(5,10)
 
     # store the variables in the dictionary "params"
     data2["params"]["v"] = v
@@ -107,33 +107,33 @@ myst:
   substitutions:
     params:
       vars:
-        name: Savannah
+        name: Maya
         vehicle: a unicycle
         title: Distance travelled
         units: m/s
-      v: 6
-      t: 10
+      v: 5
+      t: 6
       part2:
         ans1:
           value: 42
           correct: false
         ans2:
-          value: 60
+          value: 30
           correct: true
         ans3:
-          value: 16
+          value: 11
           correct: false
         ans4:
-          value: 0.6
+          value: 0.8333333333333334
           correct: false
         ans5:
-          value: -4
+          value: -1
           correct: false
         ans6:
-          value: -5.2
+          value: -1.3
           correct: false
     correct_answers:
-      part1_ans: 60
+      part1_ans: 30
 
 ---
 # {{ params.vars.title }}

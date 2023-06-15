@@ -37,7 +37,7 @@ externalGradingOptions:
   entrypoint: "/python_autograder/run.sh"
 server:
     imports: |
-        import random as rd
+        import random as rd; rd.seed(111)
         import math
         import problem_bank_helpers as pbh
     generate: |
@@ -51,23 +51,23 @@ server:
         }
         question_list = list(question_dict.keys())
         question = rd.choice(question_list)
-        
+
         data["params"]["question"] = question
         data["params"]["num"] = question_dict[question]
-        
-        
+
+
         # randomized variable names
         name_list = ["giraffe", "warthog", "dog", "crab"]
         function_name = rd.choice(name_list)
         data["params"]["fname"] = function_name
-        
-        
+
+
         # create some example inputs and outputs
         for i in range(3):
             input = numbers.pop(0)
             data["params"]["input" + str(i)] = input
             data["params"]["output" + str(i)] = math.pow(input, question_dict[question])
-        
+
         # variables detected by autograder
         ## list of variables provided to students
         data["params"]["names_for_user"] = [

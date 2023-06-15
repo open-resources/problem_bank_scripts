@@ -28,7 +28,7 @@ server:
         import problem_bank_helpers as pbh
     generate: |
         data2 = pbh.create_data2()
-        
+
         data2["params"]["vars"]["title"] = "Describe an Experiment"
 
         # Update the data object with a new dict

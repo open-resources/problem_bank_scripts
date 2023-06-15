@@ -40,10 +40,10 @@ part2:
     weight: 1
 myst:
   substitutions:
-    params_L: '14'
-    params_q: '4.4'
-    params_p: '-8'
-    params_d: '0.5'
+    params_L: '10'
+    params_q: '5.0'
+    params_p: '-7'
+    params_d: '1.1'
     params_part2_ans1_value: points towards the negative plate
     params_part2_ans2_value: points towards the positive plate
     params_part2_ans3_value: points parallel to the plates
