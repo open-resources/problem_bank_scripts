@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 19.2.3.0
 - 19.2.3.1
@@ -34,13 +35,13 @@ tags:
 - centripetal acceleration
 - circular motion
 assets:
-server: 
+server:
     imports: |
-        import random; random.seed(111)
+        import random as rd; rd.seed(111)
         import numpy as np
         import pandas as pd
         import problem_bank_helpers as pbh
-        
+
         # Feedback params
         rtol = 0.03
         errorCheck = 'True'
@@ -49,15 +50,15 @@ server:
                          'stringData': ['I'],
                          'units': ['$~\mathrm{A}$']
                          }
-        
+
     generate: |
         data2 = pbh.create_data2()
 
         # define bounds of the variables
-        n = random.choice(np.linspace(10, 35, num = 6)) # cm^-1
-        r = random.choice(np.linspace(1, 3, num = 21)) # cm
-        v = random.choice(np.linspace(1, 3, num = 21))
-        p = random.choice([4, 5, 6])
+        n = rd.choice(np.linspace(10, 35, num = 6)) # cm^-1
+        r = rd.choice(np.linspace(1, 3, num = 21)) # cm
+        v = rd.choice(np.linspace(1, 3, num = 21))
+        p = rd.choice([4, 5, 6])
 
         # store the variables in the dictionary "params"
         data2["params"]["n"] = "{:.0f}".format(n)
@@ -69,21 +70,21 @@ server:
         n = n*100 # m^-1
         r = r/100 # m
         v = v*10**p # m/s
-        
+
         # define some constants
         mu0 = 4e-7*np.pi
         m = 9.11e-31 # kg
         q = 1.6e-19 # C
-        
+
         # calculate the correct
         I = m*v/(mu0*n*q*r) # A
 
         # define correct answers
         data2["correct_answers"]["part1_ans"] = I
-        
+
         # Write the solution formatted using scientific notation while keeping 3 sig figs.
         data2["correct_answers"]["part1_ans_str"] = "{:.2e}".format(I)
-        
+
         # Update the data object with a new dict
         data.update(data2)
     prepare: |

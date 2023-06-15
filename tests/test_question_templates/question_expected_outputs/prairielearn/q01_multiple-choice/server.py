@@ -1,9 +1,9 @@
-import random; random.seed(111)
+import random as rd; rd.seed(111)
 import pandas as pd
 import problem_bank_helpers as pbh
 
 def imports(data):
-    import random; random.seed(111)
+    import random as rd; rd.seed(111)
     import pandas as pd
     import problem_bank_helpers as pbh
     
@@ -16,13 +16,13 @@ def generate(data):
     
     # store phrases etc
     data2["params"]["vars"]["title"] = 'Kinematics'
-    data2["params"]["vars"]["name"] = random.choice(names)
-    data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+    data2["params"]["vars"]["name"] = rd.choice(names)
+    data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
     data2["params"]["vars"]["units"] = "m/s"
     
     # Randomize Variables
-    v = random.randint(2,7)
-    t = random.randint(5,10)
+    v = rd.randint(2,7)
+    t = rd.randint(5,10)
     
     # store the variables in the dictionary "params"
     data2["params"]["v"] = v

@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -29,24 +30,23 @@ part1:
   pl-customizations:
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Integer Math
-      units: m/s
-    n: 65
+myst:
+  substitutions:
+    params_vars_name: Maya
+    params_vars_vehicle: a unicycle
+    params_vars_title: Integer Math
+    params_vars_units: m/s
+    params_n: 65
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 
-{{ params.vars.name }} is on a {{ params.vars.vehicle }} trying to calculate the result of 10 x {{ params.n }} {{ params.vars.units }}.
+{{ params_vars_name }} is on a {{ params_vars_vehicle }} trying to calculate the result of 10 x {{ params_n }} {{ params_vars_units }}.
 
 ### Answer Section
 
-Please enter an integer value in {{ params.vars.units }}.
+Please enter an integer value in {{ params_vars_units }}.
 
 ### pl-submission-panel
 

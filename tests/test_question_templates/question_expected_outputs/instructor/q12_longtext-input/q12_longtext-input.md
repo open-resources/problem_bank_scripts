@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes: null
 difficulty:
 - undefined
@@ -29,6 +30,8 @@ server:
   generate: |
     data2 = pbh.create_data2()
 
+    data2["params"]["vars"]["title"] = "Describe an Experiment"
+
     # Update the data object with a new dict
     data.update(data2)
 part1:
@@ -40,7 +43,12 @@ part1:
     quill-theme: snow
     directory: clientFilesQuestion
     source-file-name: sample.html
-substitutions: {}
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Describe an Experiment
+
 ---
 # {{ params.vars.title }}
 

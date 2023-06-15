@@ -1,9 +1,9 @@
-import random as rd
+import random as rd; rd.seed(111)
 import math
 import problem_bank_helpers as pbh
 
 def imports(data):
-    import random as rd
+    import random as rd; rd.seed(111)
     import math
     import problem_bank_helpers as pbh
     

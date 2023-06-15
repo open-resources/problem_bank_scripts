@@ -3,5 +3,7 @@
             "title": "File Upload",
             "topic": "Template",
             "tags":  ["file-upload"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "gradingMethod": "Manual",
+		"partialCredit":true
+}

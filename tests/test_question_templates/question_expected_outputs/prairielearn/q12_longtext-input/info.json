@@ -3,5 +3,6 @@
             "title": "Describe an Experiment",
             "topic": "Template",
             "tags":  ["longtext"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}

@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -30,22 +31,21 @@ part1:
     variables: mu_s, g , theta
     weight: 1
     allow-blank: true
-substitutions:
-  params:
-    vars:
-      title: Symbolic Input 2 - Trig
-      name: Maya
-      vehicle: van
+myst:
+  substitutions:
+    params_vars_title: Symbolic Input 2 - Trig
+    params_vars_name: Maya
+    params_vars_vehicle: van
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 
-{{ params.vars.name }} is driving a {{ params.vars.vehicle }} up a slope of angle $\theta$.
+{{ params_vars_name }} is driving a {{ params_vars_vehicle }} up a slope of angle $\theta$.
 
-There is a wooden crate in the back of the {{ params.vars.vehicle }} and the coefficients of static and kinetic friction between the crate and the {{ params.vars.vehicle }} are $\mu_s$ and $\mu_k$ respectively.
+There is a wooden crate in the back of the {{ params_vars_vehicle }} and the coefficients of static and kinetic friction between the crate and the {{ params_vars_vehicle }} are $\mu_s$ and $\mu_k$ respectively.
 
-If the {{ params.vars.vehicle }} starts moving, what is the maximum acceleration the {{ params.vars.vehicle }} can have without the crate slipping? You should provide a symbolic answer in terms of the following variables: $\mu_s$, $\mu_k$, $g$, and $\theta$.
+If the {{ params_vars_vehicle }} starts moving, what is the maximum acceleration the {{ params_vars_vehicle }} can have without the crate slipping? You should provide a symbolic answer in terms of the following variables: $\mu_s$, $\mu_k$, $g$, and $\theta$.
 
 Note that it may not be necessary to use every variable. Use the following table as a reference for using each variable:
 

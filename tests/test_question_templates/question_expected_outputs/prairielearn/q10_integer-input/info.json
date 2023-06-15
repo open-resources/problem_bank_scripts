@@ -3,5 +3,6 @@
             "title": "Integer Math",
             "topic": "Template",
             "tags":  ["number-input"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}

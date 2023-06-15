@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 difficulty:
 - undefined
@@ -22,11 +23,13 @@ tags:
 - unknown
 assets:
 - sample.html
-server: 
+server:
     imports: |
         import problem_bank_helpers as pbh
     generate: |
         data2 = pbh.create_data2()
+
+        data2["params"]["vars"]["title"] = "Describe an Experiment"
 
         # Update the data object with a new dict
         data.update(data2)

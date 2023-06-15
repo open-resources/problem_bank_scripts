@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 19.2.3.0
 - 19.2.3.1
@@ -36,7 +37,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    import random as rd; rd.seed(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -53,10 +54,10 @@ server:
     data2 = pbh.create_data2()
 
     # define bounds of the variables
-    n = random.choice(np.linspace(10, 35, num = 6)) # cm^-1
-    r = random.choice(np.linspace(1, 3, num = 21)) # cm
-    v = random.choice(np.linspace(1, 3, num = 21))
-    p = random.choice([4, 5, 6])
+    n = rd.choice(np.linspace(10, 35, num = 6)) # cm^-1
+    r = rd.choice(np.linspace(1, 3, num = 21)) # cm
+    v = rd.choice(np.linspace(1, 3, num = 21))
+    p = rd.choice([4, 5, 6])
 
     # store the variables in the dictionary "params"
     data2["params"]["n"] = "{:.0f}".format(n)
@@ -108,31 +109,33 @@ part1:
     show-correct-answer: false
     label: $I= $
     suffix: $\rm\ A$
-substitutions:
-  params:
-    n: '15'
-    r: '2.00'
-    v: '2.50'
-    p: '4'
-  correct_answers:
-    part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
-    - !!python/object/apply:numpy.dtype
-      args:
-      - f8
-      - false
-      - true
-      state: !!python/tuple
-      - 3
-      - <
-      - null
-      - null
-      - null
-      - -1
-      - -1
-      - 0
-    - !!binary |
-      ZVy1Q2Xubj8=
-    part1_ans_str: '3.78e-03'
+myst:
+  substitutions:
+    params:
+      n: '15'
+      r: '2.00'
+      v: '2.50'
+      p: '4'
+    correct_answers:
+      part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
+      - !!python/object/apply:numpy.dtype
+        args:
+        - f8
+        - false
+        - true
+        state: !!python/tuple
+        - 3
+        - <
+        - null
+        - null
+        - null
+        - -1
+        - -1
+        - 0
+      - !!binary |
+        ZVy1Q2Xubj8=
+      part1_ans_str: '3.78e-03'
+
 ---
 # {{ params.vars.title }}
 

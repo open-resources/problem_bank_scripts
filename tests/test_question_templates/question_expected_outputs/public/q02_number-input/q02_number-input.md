@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -39,26 +40,25 @@ part2:
     allow-blank: true
     label: $d= $
     suffix: m
-substitutions:
-  params:
-    vars:
-      name: Maya
-      vehicle: a unicycle
-      title: Distance travelled
-      units: m/s
-    v: 5
-    t: 6
+myst:
+  substitutions:
+    params_vars_name: Maya
+    params_vars_vehicle: a unicycle
+    params_vars_title: Distance travelled
+    params_vars_units: m/s
+    params_v: 5
+    params_t: 6
 ---
-# {{ params.vars.title }}
-{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+# {{ params_vars_title }}
+{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
 
 ## Part 1
 
-How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params.vars.units }}.
+Please enter in a numeric value in {{ params_vars_units }}.
 
 ### pl-submission-panel
 
@@ -74,11 +74,11 @@ Please remove this section if it is not application for this question.
 
 ## Part 2
 
-How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params.vars.units }}.
+Please enter in a numeric value in {{ params_vars_units }}.
 
 ### pl-submission-panel
 

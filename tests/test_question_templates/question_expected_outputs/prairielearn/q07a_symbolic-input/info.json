@@ -3,5 +3,6 @@
             "title": "Centripetal Motion",
             "topic": "Template",
             "tags":  ["symbolic-input"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}

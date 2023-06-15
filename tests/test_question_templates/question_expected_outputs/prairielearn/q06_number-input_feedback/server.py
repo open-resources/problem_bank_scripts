@@ -1,4 +1,4 @@
-import random; random.seed(111)
+import random as rd; rd.seed(111)
 import numpy as np
 import pandas as pd
 import problem_bank_helpers as pbh
@@ -13,7 +13,7 @@ feedback_dict = {'vars': ['part1_ans'],
                  }
 
 def imports(data):
-    import random; random.seed(111)
+    import random as rd; rd.seed(111)
     import numpy as np
     import pandas as pd
     import problem_bank_helpers as pbh
@@ -31,10 +31,10 @@ def generate(data):
     data2 = pbh.create_data2()
     
     # define bounds of the variables
-    n = random.choice(np.linspace(10, 35, num = 6)) # cm^-1
-    r = random.choice(np.linspace(1, 3, num = 21)) # cm
-    v = random.choice(np.linspace(1, 3, num = 21))
-    p = random.choice([4, 5, 6])
+    n = rd.choice(np.linspace(10, 35, num = 6)) # cm^-1
+    r = rd.choice(np.linspace(1, 3, num = 21)) # cm
+    v = rd.choice(np.linspace(1, 3, num = 21))
+    p = rd.choice([4, 5, 6])
     
     # store the variables in the dictionary "params"
     data2["params"]["n"] = "{:.0f}".format(n)

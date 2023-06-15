@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -30,12 +31,11 @@ part1:
     variables: m, v, r
     weight: 1
     allow-blank: false
-substitutions:
-  params:
-    vars:
-      title: Centripetal Motion
+myst:
+  substitutions:
+    params_vars_title: Centripetal Motion
 ---
-# {{ params.vars.title }}
+# {{ params_vars_title }}
 
 ## Question Text
 

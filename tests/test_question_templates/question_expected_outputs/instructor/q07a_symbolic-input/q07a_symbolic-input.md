@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,7 +26,7 @@ tags:
 assets: null
 server:
   imports: |
-    import random; random.seed(111)
+    import random as rd; rd.seed(111)
     import pandas as pd
     import sympy as sp
     import problem_bank_scripts.prairielearn as pl
@@ -63,18 +64,20 @@ part1:
     variables: m, v, r
     weight: 1
     allow-blank: false
-substitutions:
-  params:
-    vars:
-      title: Centripetal Motion
-  correct_answers:
-    part1_ans:
-      _type: sympy
-      _value: m*v**2/r
-      _variables:
-      - v
-      - r
-      - m
+myst:
+  substitutions:
+    params:
+      vars:
+        title: Centripetal Motion
+    correct_answers:
+      part1_ans:
+        _type: sympy
+        _value: m*v**2/r
+        _variables:
+        - m
+        - v
+        - r
+
 ---
 # {{ params.vars.title }}
 

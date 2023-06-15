@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: standard
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -23,9 +24,9 @@ length:
 tags:
 - unknown
 assets:
-server: 
+server:
     imports: |
-        import random; random.seed(111)
+        import random as rd; rd.seed(111)
         import pandas as pd
         import sympy as sp
         import prairielearn as pl
@@ -39,8 +40,8 @@ server:
 
         # store phrases etc
         data2["params"]["vars"]["title"] = 'Symbolic Input 2 - Trig'
-        data2["params"]["vars"]["name"] = random.choice(names)
-        data2["params"]["vars"]["vehicle"] = random.choice(vehicles)
+        data2["params"]["vars"]["name"] = rd.choice(names)
+        data2["params"]["vars"]["vehicle"] = rd.choice(vehicles)
 
         # Declare math symbols to be used by sympy
         mu_s, g , theta = sp.symbols('mu_s g theta')
@@ -50,7 +51,7 @@ server:
 
         # Answer to fill in the blank input -- must be stored as JSON.
         data2['correct_answers']['part1_ans'] = pl.to_json(amax)
-        
+
         # Update the data object with a new dict
         data.update(data2)
     prepare: |
@@ -71,9 +72,9 @@ part1:
 
 ## Question Text
 
-{{ params.vars.name }} is driving a {{ params.vars.vehicle }} up a slope of angle $\theta$. 
+{{ params.vars.name }} is driving a {{ params.vars.vehicle }} up a slope of angle $\theta$.
 
-There is a wooden crate in the back of the {{ params.vars.vehicle }} and the coefficients of static and kinetic friction between the crate and the {{ params.vars.vehicle }} are $\mu_s$ and $\mu_k$ respectively. 
+There is a wooden crate in the back of the {{ params.vars.vehicle }} and the coefficients of static and kinetic friction between the crate and the {{ params.vars.vehicle }} are $\mu_s$ and $\mu_k$ respectively.
 
 If the {{ params.vars.vehicle }} starts moving, what is the maximum acceleration the {{ params.vars.vehicle }} can have without the crate slipping? You should provide a symbolic answer in terms of the following variables: $\mu_s$, $\mu_k$, $g$, and $\theta$.
 

@@ -7,6 +7,7 @@ template_version: 1.4
 attribution: openstax-physics-vol2
 partialCredit: true
 singleVariant: false
+showCorrectAnswer: false
 outcomes:
 - 6.1.1.0
 - 6.1.1.1
@@ -25,9 +26,9 @@ tags:
 assets:
 - test1.png
 - test2.png
-server: 
+server:
     imports: |
-        import random; random.seed(111)
+        import random as rd; rd.seed(111)
         import pandas as pd
         import problem_bank_helpers as pbh
     generate: |
@@ -39,13 +40,13 @@ server:
 
         # store phrases etc
         data2["params"]["vars"]["title"] = 'Kinematics'
-        data2["params"]["vars"]["name"] = random.choice(names)
-        data2["params"]["vars"]["vehicle"] = random.choice(manual_vehicles)
+        data2["params"]["vars"]["name"] = rd.choice(names)
+        data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
         data2["params"]["vars"]["units"] = "m/s"
 
         # Randomize Variables
-        v = random.randint(2,7)
-        t = random.randint(5,10)
+        v = rd.randint(2,7)
+        t = rd.randint(5,10)
 
         # store the variables in the dictionary "params"
         data2["params"]["v"] = v
@@ -103,11 +104,11 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 
 ### Answer Section
 
-- {{ params.part1.ans1.value }} {{ params.vars.units}} 
-- {{ params.part1.ans2.value }} {{ params.vars.units}} 
-- {{ params.part1.ans3.value }} {{ params.vars.units}} 
-- {{ params.part1.ans4.value }} {{ params.vars.units}} 
-- {{ params.part1.ans5.value }} {{ params.vars.units}} 
+- {{ params.part1.ans1.value }} {{ params.vars.units}}
+- {{ params.part1.ans2.value }} {{ params.vars.units}}
+- {{ params.part1.ans3.value }} {{ params.vars.units}}
+- {{ params.part1.ans4.value }} {{ params.vars.units}}
+- {{ params.part1.ans5.value }} {{ params.vars.units}}
 - {{ params.part1.ans6.value }} {{ params.vars.units}}
 
 ### pl-submission-panel
