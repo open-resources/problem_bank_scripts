@@ -3,5 +3,6 @@
             "title": "Symbolic Input 2 - Trig",
             "topic": "Template",
             "tags":  ["symbolic-input"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}

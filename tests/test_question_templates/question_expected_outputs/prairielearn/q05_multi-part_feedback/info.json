@@ -3,5 +3,6 @@
             "title": "Electric Field and Direction",
             "topic": "Template",
             "tags":  ["multi_part", "number-input", "dropdown"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}

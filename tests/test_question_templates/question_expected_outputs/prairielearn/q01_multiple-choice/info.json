@@ -3,5 +3,6 @@
             "title": "Distance travelled",
             "topic": "Template",
             "tags":  ["multiple-choice"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}

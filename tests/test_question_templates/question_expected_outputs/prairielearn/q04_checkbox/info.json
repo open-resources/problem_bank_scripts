@@ -3,5 +3,6 @@
             "title": "Vectors and Scalars",
             "topic": "Template",
             "tags":  ["checkbox"],
-            "type": "v3"
-        }
+            "type": "v3",
+            "partialCredit":true
+}
