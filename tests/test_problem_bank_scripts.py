@@ -3,9 +3,11 @@ from __future__ import annotations
 # python >= 3.8 doesn't support subscripting builtin collections
 
 import filecmp
+import json
 import os
 import pathlib
 
+import fastjsonschema
 import pandas as pd
 import pytest
 
@@ -48,6 +50,38 @@ def paths():
     }
     return p
 
+@pytest.fixture(scope="session")
+def validate_info_json():
+    """Generates a schema validator for info.json files.
+
+    Returns:
+        Nothing, it's a fixture that is run before every test.
+    """
+    with open("tests/infoSchema.json") as file:
+        schema = fastjsonschema.compile(json.load(file))
+    return schema
+
+_tested_questions = set()
+
+def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
+    """Helper function that runs the PrairieLearn generator on a question.
+
+    This allows us to deduplicate the code for running the generator.
+
+    Args:
+        paths (dict): definition of the output and input paths
+        question (str): the name of the question to test, set by the parametrize decorator
+    """
+    if question in _tested_questions:
+        return # don't parse the same question twice
+    _tested_questions.add(question)
+    outputPath = paths["outputDest"].joinpath("prairielearn/")
+
+    baseFile = paths["inputDest"] / question / f"{question}.md"
+    folder = baseFile.parent.stem
+    outputFolder = outputPath.joinpath(folder)
+    process_question_pl(baseFile, outputFolder.joinpath(baseFile.name))
+
 
 @pytest.mark.parametrize(
     "question",
@@ -65,16 +99,14 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
 
     Args:
         paths (dict): set by the fixture paths()
+        question (str): the name of the question to test, set by the parametrize decorator
     """
-    if question != "q13_file-editor-input":
-        return
+    run_prairie_learn_generator(paths, question)
+    
     outputPath = paths["outputDest"].joinpath("prairielearn/")
     comparePath = paths["compareDest"].joinpath("prairielearn/")
-
-    baseFile = paths["inputDest"] / question / f"{question}.md"
+    baseFile = paths["inputDest"].joinpath(f"{question}/{question}.md")
     folder = baseFile.parent.stem
-    outputFolder = outputPath.joinpath(folder)
-    process_question_pl(baseFile, outputFolder.joinpath(baseFile.name))
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
         isFile = os.path.isfile(file)
@@ -114,11 +146,47 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
         for file in files
     ],
 )
+def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_json):
+    """Tests the PrairieLearn `process_question_pl()` info.json file
+    
+    Args:
+        paths (dict): set by the fixture paths()
+        question (str): the name of the question to test, set by the parametrize decorator
+    """
+    run_prairie_learn_generator(paths, question)
+    output_info_json = paths["outputDest"].joinpath(f"prairielearn/{question}/info.json")
+    compare_info_json = paths["compareDest"].joinpath(f"prairielearn/{question}/info.json")
+    generated_json = json.load(open(output_info_json))
+    expected_json = json.load(open(compare_info_json))
+    validate_info_json(generated_json)
+    del generated_json["uuid"] # uuid is randomly generated, so we can't compare it
+    del expected_json["uuid"]
+    for key in expected_json:
+        generated = generated_json[key]
+        if isinstance(generated, list):
+            generated = sorted(generated)
+        expected = expected_json[key]
+        if isinstance(expected, list):
+            expected = sorted(expected)
+        assert expected == generated, f"info.json key {key} for {question} did not match with expected output."
+
+@pytest.mark.parametrize(
+    "question",
+    [
+        pytest.param(
+            file,
+            id=file,
+            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+        )
+        for file in files
+    ],
+)
 def test_public(paths: dict[str, pathlib.Path], question: str):
     """Tests the PrairieLearn `process_question_md()`
 
     Args:
         paths (dict): set by the fixture paths()
+        question (str): the name of the question to test, set by the parametrize decorator
     """
     outputPath = paths["outputDest"].joinpath("public/")
     comparePath = paths["compareDest"].joinpath("public/")
@@ -158,6 +226,7 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
 
     Args:
         paths (dict): set by the fixture paths()
+        question (str): the name of the question to test, set by the parametrize decorator
     """
     outputPath = paths["outputDest"].joinpath(
         "instructor/"
