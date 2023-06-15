@@ -8,6 +8,7 @@ attribution: standard
 partialCredit: true
 singleVariant: false
 gradingMethod: Manual
+showCorrectAnswer: false
 outcomes: null
 difficulty:
 - undefined
@@ -23,27 +24,25 @@ tags:
 - unknown
 assets: null
 server:
-  imports: 'pass
+  imports: 'import problem_bank_helpers as pbh
 
     '
-  generate: 'pass
+  generate: |
+    data2 = pbh.create_data2()
 
-    '
-  prepare: 'pass
+    data2["params"]["vars"]["title"] = "File Upload"
 
-    '
-  parse: 'pass
-
-    '
-  grade: 'pass
-
-    '
+    # Update the data object with a new dict
+    data.update(data2)
 part1:
   type: file-upload
   pl-customizations:
     file-names: file.png, file.jpg, file.pdf, filename space.png
 myst:
-  substitutions: {}
+  substitutions:
+    params:
+      vars:
+        title: File Upload
 
 ---
 # {{ params.vars.title }}
