@@ -32,6 +32,7 @@ files = sorted(
     ]
 )
 
+files = [f for f in files if f != '.DS_Store']
 
 @pytest.fixture(scope="session")
 def paths():
