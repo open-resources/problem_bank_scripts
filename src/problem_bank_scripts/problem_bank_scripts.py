@@ -547,7 +547,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
                 feedback = f"Feedback for this choice is not available yet."
 
             correctness = f"|@ params.{part_name}.{a}.correct @|"
-            value = f"|@ params.{part_name}.{a}.value @|"
+            value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
             ## Hack to remove feedback for Dropdown questions
             if parsed_question["header"][part_name]['type'] == 'dropdown':
