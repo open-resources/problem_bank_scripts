@@ -823,7 +823,7 @@ def process_attribution(attribution):
     """
 
     with importlib.resources.open_text("problem_bank_scripts", "attributions.json") as file:
-        possible_attributions = json.load(file)  
+        possible_attributions = json.load(file)
 
     try:
         attribution_text = possible_attributions[attribution]
