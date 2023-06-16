@@ -30,6 +30,9 @@ import yaml
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
 
+# Test Manipulation
+import textwrap
+
 # Start of reading/parsing functions
 
 
@@ -416,21 +419,16 @@ def write_info_json(output_path, parsed_question):
     """
 
     # Deal with optional tags in info.json
-    optional = ""
+    # optional = ""
 
-    if parsed_question["header"].get("gradingMethod"):
-        optional += """\"gradingMethod": \"""" + parsed_question['header']['gradingMethod'] + """\",\n\t\t"""
-    if parsed_question["header"].get("partialCredit"):
-        optional += """\"partialCredit":""" + str(parsed_question['header']['partialCredit']).lower() + """,\n\t\t"""
-    if parsed_question["header"].get("dependencies"):
-        optional += """\"dependencies": """ + parsed_question['header']['dependencies'] + """,\n\t\t"""
-    if parsed_question["header"].get("singleVariant"):
-        optional += """\"singleVariant": """ + str(parsed_question['header']['singleVariant']).lower() + """,\n\t\t"""
-    if parsed_question["header"].get("showCorrectAnswer"):
-        optional += """\"showCorrectAnswer": """ + str(parsed_question['header']['showCorrectAnswer']).lower() + """,\n\t\t"""
-    if parsed_question["header"].get("externalGradingOptions"):
-        optional += """\"externalGradingOptions": """ + json.dumps(parsed_question['header']['externalGradingOptions']) + """,\n\t\t"""
-    optional = optional[:-4] + """\n"""
+    optional_keys = {
+        "gradingMethod",
+        "partialCredit",
+        "dependencies",
+        "singleVariant",
+        "showCorrectAnswer",
+        "externalGradingOptions",
+    }
 
     # Add tags based on part type
     q_types = []
@@ -447,29 +445,23 @@ def write_info_json(output_path, parsed_question):
     auto_tags.extend(parsed_question["header"]["tags"])
     auto_tags = [v for v in auto_tags if v != "unknown"]
 
-    # End add tags
-
-    pathlib.Path(output_path / "info.json").write_text(
-        """{
-            "uuid": \""""
-        + str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path)))
-        + """\",
-            "title": \""""
-        + parsed_question["header"]["title"]
-        + """\",
-            "topic": \""""
-        + parsed_question["header"]["topic"]
-        + """\",
-            "tags":  """
-        + json.dumps(auto_tags)
-        + """,
-            "type": "v3\""""
-        + ((""",
-            """
-        + optional) if (optional) else ("""\n"""))
-        + """}""",
-        encoding="utf8",
+    info_json = {
+        "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path))),
+        "title": parsed_question["header"]["title"],
+        "topic": parsed_question["header"]["topic"],
+        "tags": auto_tags,
+        "type": "v3",
+    }
+    info_json.update(
+        {
+            key: parsed_question["header"][key]
+            for key in parsed_question["header"].keys() & optional_keys
+        }
     )
+
+    # End add tags
+    with pathlib.Path(output_path / "info.json").open("w") as output_file:
+        json.dump(info_json, output_file, indent=4)
 
 
 def assemble_server_py(parsed_question, location):
