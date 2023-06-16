@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 # python >= 3.8 doesn't support subscripting builtin collections
@@ -35,7 +34,8 @@ files = sorted(
     ]
 )
 
-files = [f for f in files if f != '.DS_Store']
+files = [f for f in files if f != ".DS_Store"]
+
 
 @pytest.fixture(scope="session")
 def paths():
@@ -51,6 +51,7 @@ def paths():
     }
     return p
 
+
 @pytest.fixture(scope="session")
 def validate_info_json():
     """Generates a schema validator for info.json files.
@@ -62,7 +63,9 @@ def validate_info_json():
         schema = fastjsonschema.compile(json.load(file))
     return schema
 
+
 _tested_questions = set()
+
 
 def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
     """Helper function that runs the PrairieLearn generator on a question.
@@ -74,7 +77,7 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
         question (str): the name of the question to test, set by the parametrize decorator
     """
     if question in _tested_questions:
-        return # don't parse the same question twice
+        return  # don't parse the same question twice
     _tested_questions.add(question)
     outputPath = paths["outputDest"].joinpath("prairielearn/")
 
@@ -103,7 +106,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
         question (str): the name of the question to test, set by the parametrize decorator
     """
     run_prairie_learn_generator(paths, question)
-    
+
     outputPath = paths["outputDest"].joinpath("prairielearn/")
     comparePath = paths["compareDest"].joinpath("prairielearn/")
     baseFile = paths["inputDest"].joinpath(f"{question}/{question}.md")
@@ -115,14 +118,13 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
         assetFile = not file.name.endswith(
             (".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store")
         )
-        excludedFile = not file.parent.name in exclude_question
 
         print(hiddenFile, ~(hiddenFile))
 
         # TODO: Find a way to separately test info.json files
         infoJSON = not file.name.endswith("info.json")
 
-        if isFile and hiddenFile and assetFile and excludedFile and infoJSON:
+        if isFile and hiddenFile and assetFile and infoJSON:
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
 
@@ -149,7 +151,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
 )
 def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_json):
     """Tests the PrairieLearn `process_question_pl()` info.json file
-    
+
     Args:
         paths (dict): set by the fixture paths()
         question (str): the name of the question to test, set by the parametrize decorator
@@ -160,7 +162,7 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_
     generated_json = json.load(open(output_info_json))
     expected_json = json.load(open(compare_info_json))
     validate_info_json(generated_json)
-    del generated_json["uuid"] # uuid is randomly generated, so we can't compare it
+    del generated_json["uuid"]  # uuid is randomly generated, so we can't compare it
     del expected_json["uuid"]
     for key in expected_json:
         generated = generated_json[key]
@@ -245,9 +247,8 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
         isFile = os.path.isfile(file)
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
-        notExcludedFile = not (file.parent.name in exclude_question)
 
-        if isFile and notHiddenFile and notImageFile and notExcludedFile:
+        if isFile and notHiddenFile and notImageFile:
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
             assert filecmp.cmp(
