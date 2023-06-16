@@ -1,4 +1,3 @@
-
 name: Tests
 
 on:
@@ -102,5 +101,5 @@ jobs:
       #   with:
       #     # Needed for private repos, publi repos don't, but it is a good
       #     #  fallback for if codecov fails to identify it properly as public
-      #     # token: ${{ secrets.CODECOV_TOKEN }} 
+      #     # token: ${{ secrets.CODECOV_TOKEN }}
       #     files: ./coverage1.xml

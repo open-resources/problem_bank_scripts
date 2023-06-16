@@ -1,5 +1,4 @@
-
-name: Tests
+name: Formatting
 
 on:
   push:
@@ -14,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  tests:
+  black:
     runs-on: ubuntu-latest
     concurrency:
       group: lint-${{ github.ref }}
@@ -28,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: "3.8"
+          python-version: "3.9"
           cache: poetry
       - name: Install dependencies
         run: |
@@ -38,5 +37,4 @@ jobs:
         with:
           options: "--check"
           src: "."
-          version: "~= 23" # Black version to use for formatting, since yearly they change the style, this keeps it stable
-
+          version: "23" # Black version to use for formatting, since yearly they change the style, this keeps it stable
