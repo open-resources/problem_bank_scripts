@@ -1,0 +1,42 @@
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: lint-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python -
+          echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+          cache: poetry
+      - name: Install dependencies
+        run: |
+          poetry install --with dev
+      - name: Run black
+        uses: psf/black@stable
+        with:
+          options: "--check"
+          src: "."
+          version: "~= 23" # Black version to use for formatting, since yearly they change the style, this keeps it stable
+

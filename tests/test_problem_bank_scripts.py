@@ -15,7 +15,7 @@ from problem_bank_scripts import __version__, process_question_pl, process_quest
 
 
 def test_version():
-    assert __version__ == "0.6.0"
+    assert __version__ == "0.6.1"
 
 
 # TODO: excluding symbolic questions, needs to be fixed because of how sympy objects are handled
@@ -26,12 +26,7 @@ exclude_question = (
 
 # Generate a list of all problems in the test problems directory
 files = sorted(
-    [
-        file.name
-        for file in pathlib.Path(
-            "tests/test_question_templates/question_inputs/"
-        ).iterdir()
-    ]
+    [file.name for file in pathlib.Path("tests/test_question_templates/question_inputs/").iterdir()]
 )
 
 files = [f for f in files if f != ".DS_Store"]
@@ -93,7 +88,11 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            marks=(
+                [pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")]
+                if file in exclude_question
+                else []
+            ),
         )
         for file in files
     ],
@@ -115,9 +114,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
         isFile = os.path.isfile(file)
         hiddenFile = not file.name.startswith(".")
-        assetFile = not file.name.endswith(
-            (".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store")
-        )
+        assetFile = not file.name.endswith((".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store"))
 
         print(hiddenFile, ~(hiddenFile))
 
@@ -131,7 +128,9 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
             try:
                 filecmp.cmp(file, str(file).replace(str(comparePath), str(outputPath)))
             except FileNotFoundError:
-                print(file, folder, outputFolder, str(file).replace(str(comparePath), str(outputPath)))
+                print(
+                    file, folder, outputFolder, str(file).replace(str(comparePath), str(outputPath))
+                )
 
             assert filecmp.cmp(
                 file, str(file).replace(str(comparePath), str(outputPath))
@@ -144,7 +143,11 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            marks=(
+                [pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")]
+                if file in exclude_question
+                else []
+            ),
         )
         for file in files
     ],
@@ -171,7 +174,10 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_
         expected = expected_json[key]
         if isinstance(expected, list):
             expected = sorted(expected)
-        assert expected == generated, f"info.json key {key} for {question} did not match with expected output."
+        assert (
+            expected == generated
+        ), f"info.json key {key} for {question} did not match with expected output."
+
 
 @pytest.mark.parametrize(
     "question",
@@ -179,7 +185,11 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            marks=(
+                [pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")]
+                if file in exclude_question
+                else []
+            ),
         )
         for file in files
     ],
@@ -197,9 +207,7 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
     baseFile = paths["inputDest"] / question / f"{question}.md"
     folder = baseFile.parent.stem
     outputFolder = outputPath.joinpath(folder)
-    process_question_md(
-        baseFile, outputFolder.joinpath(baseFile.name), instructor=False
-    )
+    process_question_md(baseFile, outputFolder.joinpath(baseFile.name), instructor=False)
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
         isFile = os.path.isfile(file)
@@ -219,7 +227,11 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            marks=(
+                [pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")]
+                if file in exclude_question
+                else []
+            ),
         )
         for file in files
     ],

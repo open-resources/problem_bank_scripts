@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "problem_bank_scripts"
-version = "0.6.0"
+version = "0.6.1"
 description = "A package with useful functions to convert between different problem bank formats."
 authors = ["Open Problem Bank Team"]
 license = "MIT"
@@ -31,6 +31,7 @@ pytest = "^6.2.4"
 myst-nb = "^0.15"
 myst-parser = "^0.17"
 pytest-cov = "^4.1.0"
+black = {extras = ["jupyter"], version = "^23.3.0"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -39,3 +40,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 filterwarnings = ["ignore::DeprecationWarning"]
 addopts = "--cov=src/problem_bank_scripts --cov-report=term --cov-branch"
+
+[tool.black]
+required_version = "23" # Black version to use for formatting, since yearly they change the style
+force-exclude = "/tests/test_question_templates"
+line-length = 100

@@ -6,9 +6,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u"Problem Bank Scripts"
-copyright = u"2021, Open Problem Bank Team"
-author = u"Open Problem Bank Team"
+project = "Problem Bank Scripts"
+copyright = "2021, Open Problem Bank Team"
+author = "Open Problem Bank Team"
 
 # -- General configuration ---------------------------------------------------
 
