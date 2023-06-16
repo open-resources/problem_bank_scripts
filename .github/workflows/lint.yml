@@ -37,4 +37,4 @@ jobs:
         with:
           options: "--check"
           src: "."
-          version: "23" # Black version to use for formatting, since yearly they change the style, this keeps it stable
+          version: "23.3.0" # Black version to use for formatting, since yearly they change the style, this keeps it stable
