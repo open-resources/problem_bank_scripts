@@ -1,0 +1,9 @@
+-   id: lint-opb-question-server
+    name: Lint OPB Markdown Question Server Headers
+    description: This hook reformats the server code headers of the markdown files for OPB problems using a standard black configuration.
+    entry: lint_server # TODO: Create entrypoint
+    language: python
+    stages: [pre-commit, pre-merge-commit, pre-push, manual]
+    # default_install_hook_types: [pre-commit, pre-merge-commit, pre-push, manual]
+    types: [markdown]
+    pass_filenames: true
