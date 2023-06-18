@@ -1123,3 +1123,26 @@ def pl_image_path(html):
     )  # works
 
     return res[0]
+
+def backticks_to_code_tags(html):
+    """
+    Converts backticks to <code> tags, and code fences to <pl-code> tags.
+
+    Args:
+        html (str): The HTML to convert.
+
+    """
+    html = re.sub(
+        r"```(?P<language>\w+)?(?(language)(\{(?P<highlighting>[\d,-]*)\})?|)(?P<Code>[^`]+)```",
+        r'<pl-code language="\g<language>" highlight-lines="\g<highlighting>">\g<Code></pl-code>',
+        html,
+        flags=re.MULTILINE,
+    )
+    html = html.replace(' language=""', "")  # Remove empty language attributes
+    html = html.replace(
+        ' highlight-lines=""', ""
+    )  # Remove empty highlight-lines attributes
+    html = re.sub(r"(?<!\\)`(?P<Code>[^`]+)`", r"<code>\g<Code></code>", html)
+    html = html.replace("\\`", "`")  # Replace escaped backticks
+    return html
+
