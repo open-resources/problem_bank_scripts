@@ -29,27 +29,27 @@ def generate(data):
     data2["params"]["t"] = t
     
     # define possible answers
-    data2["params"]["part1"]["ans1"]["value"] = pbh.roundp(42)
+    data2["params"]["part1"]["ans1"]["value"] = f"<code>{pbh.roundp(42)}</code>"
     data2["params"]["part1"]["ans1"]["correct"] = False
     data2["params"]["part1"]["ans1"]["feedback"] = "This is a random number, you probably selected this choice by mistake! Try again please!"
     
-    data2["params"]["part1"]["ans2"]["value"] = pbh.roundp(v*t)
+    data2["params"]["part1"]["ans2"]["value"] = f"<code>{pbh.roundp(v*t)}</code>"
     data2["params"]["part1"]["ans2"]["correct"] = True
     data2["params"]["part1"]["ans2"]["feedback"] = "Great! You got it."
     
-    data2["params"]["part1"]["ans3"]["value"] = pbh.roundp(v+t)
+    data2["params"]["part1"]["ans3"]["value"] = f"<code>{pbh.roundp(v+t)}</code>"
     data2["params"]["part1"]["ans3"]["correct"] = False
     data2["params"]["part1"]["ans3"]["feedback"] = "Hmm, does it make sense to add a velocity and a time? Check the units!"
     
-    data2["params"]["part1"]["ans4"]["value"] = pbh.roundp(v/t)
+    data2["params"]["part1"]["ans4"]["value"] = f"<code>{pbh.roundp(v/t)}</code>"
     data2["params"]["part1"]["ans4"]["correct"] = False
     data2["params"]["part1"]["ans4"]["feedback"] = "Hmm, check the units of the resulting answer: v/t."
     
-    data2["params"]["part1"]["ans5"]["value"] = pbh.roundp(v-t)
+    data2["params"]["part1"]["ans5"]["value"] = f"<code>{pbh.roundp(v-t)}</code>"
     data2["params"]["part1"]["ans5"]["correct"] = False
     data2["params"]["part1"]["ans5"]["feedback"] = "Hmm, does it make sense to subtract a velocity and a time? Check the units!"
     
-    data2["params"]["part1"]["ans6"]["value"] = pbh.roundp(1.3*(v-t))
+    data2["params"]["part1"]["ans6"]["value"] = f"<code>{pbh.roundp(1.3*(v-t))}</code>"
     data2["params"]["part1"]["ans6"]["correct"] = False
     data2["params"]["part1"]["ans6"]["feedback"] = "Hmm, does it make sense to subtract a velocity and a time? Check the units!"
     
