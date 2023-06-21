@@ -941,7 +941,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
     if files_to_copy:
         pl_path = output_path / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy if not(instructor and fl=="test.py")]
+        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy if (instructor or fl=="starter_code.py")]
 
 
 def process_question_pl(source_filepath, output_path=None):
