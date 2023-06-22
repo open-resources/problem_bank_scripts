@@ -207,7 +207,7 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
             assert filecmp.cmp(
-                file, outputFolder.joinpath(file.name), shallow=False
+                file, str(file).replace(str(comparePath), str(outputPath)), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
@@ -251,5 +251,5 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
             assert filecmp.cmp(
-                file, outputFolder.joinpath(file.name), shallow=False
+                file, str(file).replace(str(comparePath), str(outputPath)), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
