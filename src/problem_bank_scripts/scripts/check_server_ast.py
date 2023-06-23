@@ -15,6 +15,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
+    impl = platform.python_implementation()
+    version = sys.version.split()[0]
 
     retval = 0
     for filename in args.filenames:
@@ -25,8 +27,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             ast.parse(code, filename=f"<{Path(filename).stem}:server.py>", type_comments=True)
         except SyntaxError:
-            impl = platform.python_implementation()
-            version = sys.version.split()[0]
             print(f'{filename}: failed parsing with {impl} {version}:')
             tb = '    ' + traceback.format_exc().replace('\n', '\n    ')
             print(f'\n{tb}')
