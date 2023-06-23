@@ -14,7 +14,7 @@ from black.mode import Mode, TargetVersion
 
 import yaml
 
-from .problem_bank_scripts import read_md_problem
+from ..problem_bank_scripts import read_md_problem
 
 
 # Adapted from https://stackoverflow.com/a/8641732 - allows us to use literal blocks in yaml for the server.py sections
