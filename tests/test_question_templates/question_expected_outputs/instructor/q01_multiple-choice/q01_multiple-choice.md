@@ -104,30 +104,30 @@ myst:
       t: 6
       part1:
         ans1:
-          value: <code>42</code>
+          value: '`42`'
           correct: false
           feedback: This is a random number, you probably selected this choice by
             mistake! Try again please!
         ans2:
-          value: <code>30</code>
+          value: '`30`'
           correct: true
           feedback: Great! You got it.
         ans3:
-          value: <code>11</code>
+          value: '`11`'
           correct: false
           feedback: Hmm, does it make sense to add a velocity and a time? Check the
             units!
         ans4:
-          value: <code>0.8333333333333334</code>
+          value: '`0.8333333333333334`'
           correct: false
           feedback: 'Hmm, check the units of the resulting answer: v/t.'
         ans5:
-          value: <code>-1</code>
+          value: '`-1`'
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!
         ans6:
-          value: <code>-1.3</code>
+          value: '`-1.3`'
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!

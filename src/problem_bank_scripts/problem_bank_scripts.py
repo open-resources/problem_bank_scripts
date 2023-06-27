@@ -490,14 +490,6 @@ def assemble_server_py(parsed_question, location):
     except:
         raise
 
-    server_py = re.sub(
-        r"(data2?\[(?P<Quote1>\"|\')params(?P=Quote1)\]\[(?P<Quote2>\"|\')part\d+(?P=Quote2)\]"
-        + r"\[(?P<Quote3>\"|\')ans\d+(?P=Quote3)\]\[(?P<Quote4>\"|\')value(?P=Quote4)\] ?= "
-        + r"?f?(?P<Opening>\"{3}|\'{3}|\"|\'|).*?(?P=Opening)$)",
-        lambda match: backticks_to_code_tags(match.expand(r"\1")),
-        server_py,
-        flags=re.MULTILINE | re.DOTALL,
-    )
     return server_py
 
 
@@ -514,6 +506,15 @@ def write_server_py(output_path, parsed_question):
 
     # Deal with path differences when using PL
     server_file = server_file.replace('read_csv("', 'read_csv(data["options"]["client_files_course_path"]+"/')
+
+    server_file = re.sub(
+        r"(data2?\[(?P<Quote1>\"|\')params(?P=Quote1)\]\[(?P<Quote2>\"|\')part\d+(?P=Quote2)\]"
+        + r"\[(?P<Quote3>\"|\')ans\d+(?P=Quote3)\]\[(?P<Quote4>\"|\')value(?P=Quote4)\] ?= "
+        + r"?f?(?P<Opening>\"{3}|\'{3}|\"|\'|).*?(?P=Opening)$)",
+        lambda match: backticks_to_code_tags(match.expand(r"\1")),
+        server_file,
+        flags=re.MULTILINE | re.DOTALL,
+    )
 
     # Write server.py
     (output_path / "server.py").write_text(server_file, encoding="utf8")
