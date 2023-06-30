@@ -26,9 +26,8 @@ tags:
 assets: null
 part1:
   type: string-input
-  gradingMethod: Manual
   pl-customizations:
-    answers-name: ans1
+    answers-name: ans
     display: block
     placeholder: '...'
     ignore-case: true

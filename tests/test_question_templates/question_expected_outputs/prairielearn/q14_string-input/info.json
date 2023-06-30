@@ -6,7 +6,7 @@
         "string-input"
     ],
     "type": "v3",
-    "partialCredit": true,
     "singleVariant": false,
+    "partialCredit": true,
     "showCorrectAnswer": false
 }

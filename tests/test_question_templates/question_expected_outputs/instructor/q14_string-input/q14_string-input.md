@@ -35,15 +35,27 @@ server:
     data2["params"]["vars"]["title"] = "Code Output"
     data2["params"]["vars"]["a"] = a
     data2["params"]["vars"]["stringname"] = stringname
-    data2["correct_answers"]["ans1"] = a * stringname
+    data2["correct_answers"]["ans"] = a * stringname
+    # we can also add alternate correct answers, which will we can grade as correct
+    # lets say we want to accept "Love" as an correct answer as an example, we can do:
+    data2["params"]["part1"]["alternate_correct_ans"] = a * "Love"
 
     # Update the data object with a new dict
     data.update(data2)
+  grade: "# Since we want an alternate correct answer, we can check for it here, and\
+    \ override the automatic \n# score if it is correct\nif data[\"submitted_answers\"\
+    ][\"ans\"] == data[\"params\"][\"part1\"][\"alternate_correct_ans\"]:\n    data[\"\
+    partial_scores\"][\"ans\"] = { \"score\": 1 }\n"
+  prepare: 'pass
+
+    '
+  parse: 'pass
+
+    '
 part1:
   type: string-input
-  gradingMethod: Manual
   pl-customizations:
-    answers-name: ans1
+    answers-name: ans
     display: block
     placeholder: '...'
     ignore-case: true
@@ -54,8 +66,10 @@ myst:
         title: Code Output
         a: 2
         stringname: love
+      part1:
+        alternate_correct_ans: LoveLove
     correct_answers:
-      ans1: lovelove
+      ans: lovelove
 
 ---
 # {{ params.vars.title }}
