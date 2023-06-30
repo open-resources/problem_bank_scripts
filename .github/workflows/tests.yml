@@ -71,7 +71,7 @@ jobs:
     strategy:
       matrix:
         # Minimum supported; Maybe add in some newer version to test things won't break if used on newer versions of python?
-        python_version: ["3.8"] #, "3.x"] 
+        python_version: ["3.9"] #, "3.x"] 
     concurrency:
       group: tests-${{ github.ref }}-${{ matrix.python_version }}
       cancel-in-progress: true
