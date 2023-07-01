@@ -127,12 +127,12 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
             outputFolder = outputPath.joinpath(folder)
 
             try:
-                filecmp.cmp(file, str(file).replace(str(comparePath), str(outputPath)))
+                filecmp.cmp(file, outputPath / file.relative_to(comparePath))
             except FileNotFoundError:
-                print(file, folder, outputFolder, str(file).replace(str(comparePath), str(outputPath)))
+                print(file, folder, outputFolder, outputPath / file.relative_to(comparePath))
 
             assert filecmp.cmp(
-                file, str(file).replace(str(comparePath), str(outputPath))
+                file, outputPath / file.relative_to(comparePath)
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
@@ -207,7 +207,7 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
             assert filecmp.cmp(
-                file, outputFolder.joinpath(file.name), shallow=False
+                file, outputPath / file.relative_to(comparePath), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
@@ -251,5 +251,5 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
             assert filecmp.cmp(
-                file, outputFolder.joinpath(file.name), shallow=False
+                file, outputPath / file.relative_to(comparePath), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
