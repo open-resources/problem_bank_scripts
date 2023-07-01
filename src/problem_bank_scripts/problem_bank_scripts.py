@@ -667,7 +667,6 @@ def process_matching(part_name, parsed_question, data_dict):
         str: Matching question is returned as a string with PL-compliant syntax.
     """
     print("Processing matching question...")
-    print(f"parsed_question: {parsed_question}")
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
@@ -702,8 +701,10 @@ def process_matching(part_name, parsed_question, data_dict):
             matches_with = f"|@ params.{part_name}.{a}.matches @|"
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            if matches_with not in data_dict["params"][f"{part_name}"]:
-                raise Exception(f"Matching Error: Statement {a} does not have a corresponding option in {part_name}")
+            # if matches_with not in data_dict["params"][f"{part_name}"]:
+            #     print("matches_with",matches_with)
+            #     print( 'keys',data_dict["params"][f"{part_name}"].keys())
+            #     raise Exception(f"Matching Error: Statement {a} does not have a corresponding option in {part_name}")
 
             ## Hack to remove feedback for Dropdown questions
             statements += f"\t<pl-statement match= '{matches_with}' > {value} {units} </pl-statement>\n"
