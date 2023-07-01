@@ -74,7 +74,7 @@ server:
     grade: |
         pass
 part1:
-  type: dropdown
+  type: matching
   pl-customizations:
     weight: 1
     blank: "true"

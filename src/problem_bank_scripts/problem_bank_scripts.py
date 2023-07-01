@@ -666,6 +666,8 @@ def process_matching(part_name, parsed_question, data_dict):
     Returns:
         str: Matching question is returned as a string with PL-compliant syntax.
     """
+    print("Processing matching question...")
+    print(f"parsed_question: {parsed_question}")
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
@@ -1096,6 +1098,8 @@ def process_question_pl(source_filepath, output_path=None):
             question_html += process_file_upload(part, parsed_q, data2)
         elif "file-editor" in q_type:
             question_html += process_file_editor(part, parsed_q, data2)
+        elif "matching" in q_type:
+            question_html += process_matching(part, parsed_q, data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
