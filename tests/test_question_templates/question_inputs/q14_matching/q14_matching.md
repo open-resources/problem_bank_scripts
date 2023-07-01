@@ -88,11 +88,6 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 
 ### Answer Section
 
-- {{ params.part1.ans1}} {{ params.vars.units}}
-- {{ params.part1.ans2}} {{ params.vars.units}}
-- {{ params.part1.ans3}} {{ params.vars.units}}
-- {{ params.part1.ans4}} {{ params.vars.units}}
-- {{ params.part1.ans5}} {{ params.vars.units}}
 
 ### pl-submission-panel
 
