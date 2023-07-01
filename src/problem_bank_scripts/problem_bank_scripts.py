@@ -657,14 +657,14 @@ def process_longtext(part_name, parsed_question, data_dict):
 
 
 def process_matching(part_name, parsed_question, data_dict):
-    """Processes markdown format multiple-choice questions and returns PL HTML
+    """Processes markdown format matching questions and returns PL HTML
     Args:
         output_path (Path): [description]
         parsed_question (dict): [description]
         data_dict (dict)
 
     Returns:
-        str: Multiple choice question is returned as a string with PL-compliant syntax.
+        str: Matching question is returned as a string with PL-compliant syntax.
     """
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
