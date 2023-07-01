@@ -674,7 +674,7 @@ def process_matching(part_name, parsed_question, data_dict):
     pl_customizations = " ".join(
         [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
     )  # PL-customizations
-    html += f"""<pl-matching answers-name="{part_name}_ans" {pl_customizations} >\n"""
+    html += f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
 
     # TODO: not sure how units work
     ###### LOOKHERE
@@ -704,7 +704,7 @@ def process_matching(part_name, parsed_question, data_dict):
                 raise Exception(f"Matching Error: Statement {a} does not have a corresponding option in {part_name}")
 
             ## Hack to remove feedback for Dropdown questions
-            statements += f"\t<pl-statement match= {matches_with} > {value} {units} </pl-statement>\n"
+            statements += f"\t<pl-statement match= '{matches_with}' > {value} {units} </pl-statement>\n"
 
     # Check that all of statements has an option in options
 
