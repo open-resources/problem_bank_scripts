@@ -706,6 +706,25 @@ def process_file_editor(part_name, parsed_question, data_dict):
 
     return replace_tags(html)
 
+def process_string_input(part_name, parsed_question, data_dict):
+    """Processes markdown format of string-input questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    pl_customizations = " ".join(
+        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+    )  # PL-customizations
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-string-input { pl_customizations } ></pl-string-input>"""
+
+    return replace_tags(html)
 
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
@@ -1043,6 +1062,8 @@ def process_question_pl(source_filepath, output_path=None):
             question_html += process_file_upload(part, parsed_q, data2)
         elif "file-editor" in q_type:
             question_html += process_file_editor(part, parsed_q, data2)
+        elif "string-input" in q_type:
+            question_html += process_string_input(part, parsed_q, data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
