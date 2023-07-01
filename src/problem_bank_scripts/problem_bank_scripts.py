@@ -694,22 +694,13 @@ def process_matching(part_name, parsed_question, data_dict):
         if "option" in a:
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            ## Hack to remove feedback for Dropdown questions
             options += f"\t<pl-option name= '{a}' > {value} {units} </pl-option>\n"
 
         if "statement" in a:
             matches_with = f"|@ params.{part_name}.{a}.matches @|"
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            # if matches_with not in data_dict["params"][f"{part_name}"]:
-            #     print("matches_with",matches_with)
-            #     print( 'keys',data_dict["params"][f"{part_name}"].keys())
-            #     raise Exception(f"Matching Error: Statement {a} does not have a corresponding option in {part_name}")
-
-            ## Hack to remove feedback for Dropdown questions
             statements += f"\t<pl-statement match= '{matches_with}' > {value} {units} </pl-statement>\n"
-
-    # Check that all of statements has an option in options
 
     html += statements
     html += options
