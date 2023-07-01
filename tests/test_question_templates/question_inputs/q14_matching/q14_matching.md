@@ -51,18 +51,18 @@ server:
         data2["params"]["t"] = t
 
         # define all options for right side of matching
-        data2["params"]["part1"]["right1"]["value"] = 1
-        data2["params"]["part1"]["right2"]["value"] = 2
-        data2["params"]["part1"]["right3"]["value"] = 3
+        data2["params"]["part1"]["option1"]["value"] = 1
+        data2["params"]["part1"]["option2"]["value"] = 2
+        data2["params"]["part1"]["option3"]["value"] = 3
 
-        data2["params"]["part1"]["left1"]["value"] = pbh.roundp(42)
-        data2["params"]["part1"]["left1"]["matches"] = "right1"
-        data2["params"]["part1"]["left2"]["value"] = pbh.roundp(v*t)
-        data2["params"]["part1"]["left2"]["matches"] = "right1"
-        data2["params"]["part1"]["left3"]["value"] = pbh.roundp(v+t)
-        data2["params"]["part1"]["left3"]["matches"] = "right2"
-        data2["params"]["part1"]["left4"]["value"] = pbh.roundp(v/t)
-        data2["params"]["part1"]["left4"]["matches"] = "right3"
+        data2["params"]["part1"]["statement1"]["value"] = pbh.roundp(42)
+        data2["params"]["part1"]["statement1"]["matches"] = "option1"
+        data2["params"]["part1"]["statement2"]["value"] = pbh.roundp(v*t)
+        data2["params"]["part1"]["statement2"]["matches"] = "option1"
+        data2["params"]["part1"]["statement3"]["value"] = pbh.roundp(v+t)
+        data2["params"]["part1"]["statement3"]["matches"] = "option2"
+        data2["params"]["part1"]["statement4"]["value"] = pbh.roundp(v/t)
+        data2["params"]["part1"]["statement4"]["matches"] = "option3"
 
         # Update the data object with a new dict
         data.update(data2)
