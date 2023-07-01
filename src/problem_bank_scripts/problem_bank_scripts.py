@@ -670,21 +670,10 @@ def process_matching(part_name, parsed_question, data_dict):
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
-    # ----- DONE UNTIL HERE -----
-
     pl_customizations = " ".join(
         [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
     )  # PL-customizations
     html += f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
-
-    # TODO: not sure how units work
-    ###### LOOKHERE
-    if (data_dict["params"][f"vars"]["units"]) and (
-        "units" in parsed_question["body_parts_split"][part_name]["answer"]
-    ):
-        units = f"|@ params.vars.units @|"
-    else:
-        units = ""
 
     options = ''
     statements = ''
@@ -694,13 +683,13 @@ def process_matching(part_name, parsed_question, data_dict):
         if "option" in a:
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            options += f"\t<pl-option name= '{a}' > {value} {units} </pl-option>\n"
+            options += f"\t<pl-option name= '{a}' > {value} </pl-option>\n"
 
         if "statement" in a:
             matches_with = f"|@ params.{part_name}.{a}.matches @|"
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            statements += f"\t<pl-statement match= '{matches_with}' > {value} {units} </pl-statement>\n"
+            statements += f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
 
     html += statements
     html += options
