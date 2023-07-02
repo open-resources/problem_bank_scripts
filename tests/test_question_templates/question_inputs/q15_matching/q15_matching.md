@@ -1,7 +1,7 @@
 ---
 title: Distance travelled
 topic: Template
-author: Firas Moosvi
+author: Christina Yang
 source: original
 template_version: 1.4
 attribution: standard
