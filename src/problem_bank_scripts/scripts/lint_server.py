@@ -7,22 +7,10 @@ from textwrap import indent
 from typing import Sequence
 
 # Supporting 3.8 means we can't use from collections.abc import Sequence
-
-
 from black import format_str
 from black.mode import Mode, TargetVersion
 
-import yaml
-
 from ..problem_bank_scripts import read_md_problem
-
-
-# Adapted from https://stackoverflow.com/a/8641732 - allows us to use literal blocks in yaml for the server.py sections
-def str_presenter(dumper, data):
-    return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
-
-
-yaml.add_representer(str, str_presenter)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -68,9 +56,9 @@ def main(argv: Sequence[str] | None = None) -> int:
                 retval = 1
                 print(f"Reformatted sections of {filename}: {reformatted_sections}")
                 file["header"]["server"] = server_dict
-                server_yml = yaml.dump(
-                    server_dict, sort_keys=False, allow_unicode=True, indent=4
-                )
+                server_yml = ""
+                for section, code in server_dict.items():
+                    server_yml += f"{section}: |\n{indent(code, '    ')}\n"
                 path = Path(filename)
                 contents = path.read_text()
                 pre_server, server, post_server = contents.partition("server:\n")
