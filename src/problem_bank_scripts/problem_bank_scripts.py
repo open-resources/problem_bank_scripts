@@ -1039,7 +1039,7 @@ def process_question_pl(source_filepath, output_path=None):
     # Single and Multi-part question construction
 
     for pnum in range(1, parsed_q["num_parts"] + 1):
-        part = "part" + f"{pnum}"
+        part = f"part{pnum}"
         q_type = parsed_q["header"][part]["type"]
 
         question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
