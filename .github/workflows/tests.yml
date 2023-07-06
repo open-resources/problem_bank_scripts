@@ -86,7 +86,7 @@ jobs:
           poetry install --with dev
       - name: Run tests
         run: |
-          poetry run pytest --cov-report=xml:coverage.xml -rxX tests/
+          poetry run pytest --cov-report=xml:coverage.xml -rFxX tests/
       - name: Upload generated files
         if: failure()
         uses: actions/upload-artifact@v3
