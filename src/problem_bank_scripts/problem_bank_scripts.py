@@ -507,6 +507,15 @@ def write_server_py(output_path, parsed_question):
     # Deal with path differences when using PL
     server_file = server_file.replace('read_csv("', 'read_csv(data["options"]["client_files_course_path"]+"/')
 
+    server_file = re.sub(
+        r"(data2?\[(?P<Quote1>\"|\')params(?P=Quote1)\]\[(?P<Quote2>\"|\')part\d+(?P=Quote2)\]"
+        + r"\[(?P<Quote3>\"|\')ans\d+(?P=Quote3)\]\[(?P<Quote4>\"|\')value(?P=Quote4)\] ?= "
+        + r"?f?(?P<Opening>\"{3}|\'{3}|\"|\'|).*?(?P=Opening)$)",
+        lambda match: backticks_to_code_tags(match.expand(r"\1")),
+        server_file,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+
     # Write server.py
     (output_path / "server.py").write_text(server_file, encoding="utf8")
 
@@ -547,7 +556,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
                 feedback = f"Feedback for this choice is not available yet."
 
             correctness = f"|@ params.{part_name}.{a}.correct @|"
-            value = f"|@ params.{part_name}.{a}.value @|"
+            value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
             ## Hack to remove feedback for Dropdown questions
             if parsed_question["header"][part_name]['type'] == 'dropdown':
@@ -1151,3 +1160,26 @@ def pl_image_path(html):
     )  # works
 
     return res[0]
+
+def backticks_to_code_tags(html):
+    """
+    Converts backticks to <code> tags, and code fences to <pl-code> tags.
+
+    Args:
+        html (str): The HTML to convert.
+
+    """
+    html = re.sub(
+        r"```(?P<language>\w+)?(?(language)(\{(?P<highlighting>[\d,-]*)\})?|)(?P<Code>[^`]+)```",
+        r'<pl-code language="\g<language>" highlight-lines="\g<highlighting>">\g<Code></pl-code>',
+        html,
+        flags=re.MULTILINE,
+    )
+    html = html.replace(' language=""', "")  # Remove empty language attributes
+    html = html.replace(
+        ' highlight-lines=""', ""
+    )  # Remove empty highlight-lines attributes
+    html = re.sub(r"(?<!\\)`(?P<Code>[^`]+)`", r"<code>\g<Code></code>", html)
+    html = html.replace("\\`", "`")  # Replace escaped backticks
+    return html
+

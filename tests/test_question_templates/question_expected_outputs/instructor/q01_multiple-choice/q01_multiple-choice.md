@@ -53,27 +53,27 @@ server:
     data2["params"]["t"] = t
 
     # define possible answers
-    data2["params"]["part1"]["ans1"]["value"] = pbh.roundp(42)
+    data2["params"]["part1"]["ans1"]["value"] = f"`{pbh.roundp(42)}`"
     data2["params"]["part1"]["ans1"]["correct"] = False
     data2["params"]["part1"]["ans1"]["feedback"] = "This is a random number, you probably selected this choice by mistake! Try again please!"
 
-    data2["params"]["part1"]["ans2"]["value"] = pbh.roundp(v*t)
+    data2["params"]["part1"]["ans2"]["value"] = f"`{pbh.roundp(v*t)}`"
     data2["params"]["part1"]["ans2"]["correct"] = True
     data2["params"]["part1"]["ans2"]["feedback"] = "Great! You got it."
 
-    data2["params"]["part1"]["ans3"]["value"] = pbh.roundp(v+t)
+    data2["params"]["part1"]["ans3"]["value"] = f"`{pbh.roundp(v+t)}`"
     data2["params"]["part1"]["ans3"]["correct"] = False
     data2["params"]["part1"]["ans3"]["feedback"] = "Hmm, does it make sense to add a velocity and a time? Check the units!"
 
-    data2["params"]["part1"]["ans4"]["value"] = pbh.roundp(v/t)
+    data2["params"]["part1"]["ans4"]["value"] = f"`{pbh.roundp(v/t)}`"
     data2["params"]["part1"]["ans4"]["correct"] = False
     data2["params"]["part1"]["ans4"]["feedback"] = "Hmm, check the units of the resulting answer: v/t."
 
-    data2["params"]["part1"]["ans5"]["value"] = pbh.roundp(v-t)
+    data2["params"]["part1"]["ans5"]["value"] = f"`{pbh.roundp(v-t)}`"
     data2["params"]["part1"]["ans5"]["correct"] = False
     data2["params"]["part1"]["ans5"]["feedback"] = "Hmm, does it make sense to subtract a velocity and a time? Check the units!"
 
-    data2["params"]["part1"]["ans6"]["value"] = pbh.roundp(1.3*(v-t))
+    data2["params"]["part1"]["ans6"]["value"] = f"`{pbh.roundp(1.3*(v-t))}`"
     data2["params"]["part1"]["ans6"]["correct"] = False
     data2["params"]["part1"]["ans6"]["feedback"] = "Hmm, does it make sense to subtract a velocity and a time? Check the units!"
 
@@ -104,30 +104,30 @@ myst:
       t: 6
       part1:
         ans1:
-          value: 42
+          value: '`42`'
           correct: false
           feedback: This is a random number, you probably selected this choice by
             mistake! Try again please!
         ans2:
-          value: 30
+          value: '`30`'
           correct: true
           feedback: Great! You got it.
         ans3:
-          value: 11
+          value: '`11`'
           correct: false
           feedback: Hmm, does it make sense to add a velocity and a time? Check the
             units!
         ans4:
-          value: 0.8333333333333334
+          value: '`0.8333333333333334`'
           correct: false
           feedback: 'Hmm, check the units of the resulting answer: v/t.'
         ans5:
-          value: -1
+          value: '`-1`'
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!
         ans6:
-          value: -1.3
+          value: '`-1.3`'
           correct: false
           feedback: Hmm, does it make sense to subtract a velocity and a time? Check
             the units!
