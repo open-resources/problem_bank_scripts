@@ -1,4 +1,5 @@
 # This file has been copied directly from the PL repo: https://github.com/PrairieLearn/PrairieLearn/blob/master/lib/python_helper_sympy.py
+# This has now been updated to: https://github.com/PrairieLearn/PrairieLearn/blob/master/apps/prairielearn/python/python_helper_sympy.py
 
 import sympy
 # import ast
