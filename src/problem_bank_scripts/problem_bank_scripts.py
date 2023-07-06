@@ -435,7 +435,8 @@ def write_info_json(output_path, parsed_question):
         auto_tags.append("multi_part")
     auto_tags.extend(list(set(q_types)))
 
-    auto_tags.extend(parsed_question["header"]["tags"])
+    # tags is technically an optional key for a question author to specify
+    auto_tags.extend(parsed_question["header"].get("tags", []))
     auto_tags = [v for v in auto_tags if v != "unknown"]
 
     info_json = {
@@ -1011,7 +1012,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy if (instructor or fl=="starter_code.py")]
 
 
-def process_question_pl(source_filepath, output_path=None):
+def process_question_pl(source_filepath, output_path=None, dev=False):
 
     try:
         pathlib.Path(source_filepath)
@@ -1049,6 +1050,11 @@ def process_question_pl(source_filepath, output_path=None):
 
     server.generate(data2)
     #################################################################################
+
+    if dev:
+        tags = parsed_q["header"].get("tags", [])
+        tags.append("DEV")
+        parsed_q["header"]["tags"] = tags
 
     # Write info.json file
     write_info_json(output_path, parsed_q)
