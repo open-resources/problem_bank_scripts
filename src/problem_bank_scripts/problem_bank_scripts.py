@@ -665,6 +665,49 @@ def process_longtext(part_name, parsed_question, data_dict):
     return replace_tags(html)
 
 
+def process_matching(part_name, parsed_question, data_dict):
+    """Processes markdown format matching questions and returns PL HTML
+    Args:
+        output_path (Path): [description]
+        parsed_question (dict): [description]
+        data_dict (dict)
+
+    Returns:
+        str: Matching question is returned as a string with PL-compliant syntax.
+    """
+    print("Processing matching question...")
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    pl_customizations = " ".join(
+        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+    )  # PL-customizations
+    html += f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
+
+    options = ''
+    statements = ''
+    ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
+    for a in data_dict["params"][f"{part_name}"].keys():
+
+        if "option" in a:
+            value = f"|@ params.{part_name}.{a}.value @|"
+
+            options += f"\t<pl-option name= '{a}' > {value} </pl-option>\n"
+
+        if "statement" in a:
+            matches_with = f"|@ params.{part_name}.{a}.matches @|"
+            value = f"|@ params.{part_name}.{a}.value @|"
+
+            statements += f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
+
+    html += statements
+    html += options
+
+    html += "</pl-matching>\n"
+
+    return replace_tags(html)
+
+
 def process_file_upload(part_name, parsed_question, data_dict):
     """Processes markdown format of file-upload questions and returns PL HTML
     Args:
@@ -1073,6 +1116,8 @@ def process_question_pl(source_filepath, output_path=None):
             question_html += process_file_editor(part, parsed_q, data2)
         elif "string-input" in q_type:
             question_html += process_string_input(part, parsed_q, data2)
+        elif "matching" in q_type:
+            question_html += process_matching(part, parsed_q, data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
