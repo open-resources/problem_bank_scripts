@@ -277,27 +277,50 @@ class _Constants:
 #     w_right = min(ind+w, len(s)) - ind
 #     return s[ind-w_left:ind+w_right] + '\n' + ' '*w_left + '^' + ' '*w_right
 
-def sympy_to_json(a, allow_complex=True):
+def sympy_to_json(
+    a: sympy.Expr, *, allow_complex: bool = True, allow_trig_functions: bool = True
+) -> SympyJson:
     const = _Constants()
 
     # Get list of variables in the sympy expression
-    variables = [str(v) for v in a.free_symbols]
+    variables = list(map(str, a.free_symbols))
 
-    # Check that variables do not conflict with reserved names
-    reserved = {**const.helpers, **const.variables, **const.hidden_variables, **const.functions}
+    # Get reserved variables for custom function parsing
+    reserved = (
+        const.helpers.keys()
+        | const.variables.keys()
+        | const.hidden_variables.keys()
+        | const.functions.keys()
+    )
     if allow_complex:
-        reserved = {**reserved, **const.complex_variables, **const.hidden_complex_variables}
-    for k in reserved.keys():
-        for v in variables:
-            if k == v:
-                raise ValueError('sympy expression has a variable with a reserved name: {:s}'.format(k))
+        reserved |= (
+            const.complex_variables.keys() | const.hidden_complex_variables.keys()
+        )
+    if allow_trig_functions:
+        reserved |= const.trig_functions.keys()
 
     # Apply substitutions for hidden variables
-    a = a.subs([(const.hidden_variables[key], key) for key in const.hidden_variables.keys()])
+    a_sub = a.subs([(val, key) for key, val in const.hidden_variables.items()])
     if allow_complex:
-        a = a.subs([(const.hidden_complex_variables[key], key) for key in const.hidden_complex_variables.keys()])
+        a_sub = a_sub.subs(
+            [(val, key) for key, val in const.hidden_complex_variables.items()]
+        )
 
-    return {'_type': 'sympy', '_value': str(a), '_variables': variables}
+    assumptions_dict = {
+        str(variable): variable.assumptions0 for variable in a.free_symbols
+    }
+
+    # Don't check for conflicts here, that happens in parsing.
+    functions_set = {str(func_obj.func) for func_obj in a.atoms(sympy.Function)}
+    custom_functions = list(functions_set - reserved)
+
+    return {
+        "_type": "sympy",
+        "_value": str(a_sub),
+        "_variables": variables,
+        "_assumptions": assumptions_dict,
+        "_custom_functions": custom_functions,
+    }
 
 # def json_to_sympy(a, allow_complex=True):
 #     if not '_type' in a:
@@ -312,29 +335,66 @@ def sympy_to_json(a, allow_complex=True):
 #     return convert_string_to_sympy(a['_value'], a['_variables'], allow_hidden=True, allow_complex=allow_complex)
 
 # Added to_json() from this file: https://github.com/PrairieLearn/PrairieLearn/blob/master/question-servers/freeformPythonLib/prairielearn.py
-def to_json(v):
+# July 6 2023 - Now moved to: https://github.com/PrairieLearn/PrairieLearn/blob/master/apps/prairielearn/python/prairielearn.py
+
+def to_json(v, *, df_encoding_version=1, np_encoding_version=1):
     """to_json(v)
+
     If v has a standard type that cannot be json serialized, it is replaced with
     a {'_type':..., '_value':...} pair that can be json serialized:
-        complex -> '_type': 'complex'
+
+        If np_encoding_version is set to 2, will serialize numpy scalars as follows:
+
+        numpy scalar -> '_type': 'np_scalar'
+
+        If df_encoding_version is set to 2, will serialize pandas DataFrames as follows:
+
+        pandas.DataFrame -> '_type': 'dataframe_v2'
+
+        Otherwise, the following mappings are used:
+
+        any complex scalar (including numpy) -> '_type': 'complex'
         non-complex ndarray (assumes each element can be json serialized) -> '_type': 'ndarray'
         complex ndarray -> '_type': 'complex_ndarray'
         sympy.Expr (i.e., any scalar sympy expression) -> '_type': 'sympy'
         sympy.Matrix -> '_type': 'sympy_matrix'
+        pandas.DataFrame -> '_type': 'dataframe'
+        any networkx graph type -> '_type': 'networkx_graph'
+
+    Note that the 'dataframe_v2' encoding allows for missing and date time values whereas
+    the 'dataframe' (default) does not. However, the 'dataframe' encoding allows for complex
+    numbers while 'dataframe_v2' does not.
+
     If v is an ndarray, this function preserves its dtype (by adding '_dtype' as
     a third field in the dictionary).
+
     This function does not try to preserve information like the assumptions on
     variables in a sympy expression.
+
     If v can be json serialized or does not have a standard type, then it is
     returned without change.
     """
+    if np_encoding_version not in {1, 2}:
+        raise ValueError(f"Invaild np_encoding {np_encoding_version}, must be 1 or 2.")
+
+    if np_encoding_version == 2 and isinstance(v, np.number):
+        return {
+            "_type": "np_scalar",
+            "_concrete_type": type(v).__name__,
+            "_value": str(v),
+        }
+
     if np.isscalar(v) and np.iscomplexobj(v):
-        return {'_type': 'complex', '_value': {'real': v.real, 'imag': v.imag}}
+        return {"_type": "complex", "_value": {"real": v.real, "imag": v.imag}}
     elif isinstance(v, np.ndarray):
         if np.isrealobj(v):
-            return {'_type': 'ndarray', '_value': v.tolist(), '_dtype': str(v.dtype)}
+            return {"_type": "ndarray", "_value": v.tolist(), "_dtype": str(v.dtype)}
         elif np.iscomplexobj(v):
-            return {'_type': 'complex_ndarray', '_value': {'real': v.real.tolist(), 'imag': v.imag.tolist()}, '_dtype': str(v.dtype)}
+            return {
+                "_type": "complex_ndarray",
+                "_value": {"real": v.real.tolist(), "imag": v.imag.tolist()},
+                "_dtype": str(v.dtype),
+            }
     elif isinstance(v, sympy.Expr):
         return sympy_to_json(v)
     elif isinstance(v, sympy.Matrix) or isinstance(v, sympy.ImmutableMatrix):
@@ -346,8 +406,49 @@ def to_json(v):
             for j in range(0, num_cols):
                 row.append(str(v[i, j]))
             M.append(row)
-        return {'_type': 'sympy_matrix', '_value': M, '_variables': s, '_shape': [num_rows, num_cols]}
+        return {
+            "_type": "sympy_matrix",
+            "_value": M,
+            "_variables": s,
+            "_shape": [num_rows, num_cols],
+        }
     elif isinstance(v, pandas.DataFrame):
-        return {'_type': 'dataframe', '_value': {'index': list(v.index), 'columns': list(v.columns), 'data': v.values.tolist()}}
+        if df_encoding_version == 1:
+            return {
+                "_type": "dataframe",
+                "_value": {
+                    "index": list(v.index),
+                    "columns": list(v.columns),
+                    "data": v.values.tolist(),
+                },
+            }
+
+        elif df_encoding_version == 2:
+            # The next lines of code are required to address the JSON table-orient
+            # generating numeric keys instead of strings for an index sequence with
+            # only numeric values (c.f. pandas-dev/pandas#46392)
+            df_modified_names = v.copy()
+
+            if df_modified_names.columns.dtype in (np.float64, np.int64):
+                df_modified_names.columns = df_modified_names.columns.astype("string")
+
+            # For version 2 storing a data frame, we use the table orientation alongside of
+            # enforcing a date format to allow for passing datetime and missing (`pd.NA`/`np.nan`) values
+            # Details: https://pandas.pydata.org/docs/reference/api/pandas.read_json.html
+            # Convert to JSON string with escape characters
+            encoded_json_str_df = df_modified_names.to_json(
+                orient="table", date_format="iso"
+            )
+            # Export to native JSON structure
+            pure_json_df = json.loads(encoded_json_str_df)
+
+            return {"_type": "dataframe_v2", "_value": pure_json_df}
+
+        else:
+            raise ValueError(
+                f"Invalid df_encoding_version: {df_encoding_version}. Must be 1 or 2"
+            )
+    elif isinstance(v, (nx.Graph, nx.DiGraph, nx.MultiGraph, nx.MultiDiGraph)):
+        return {"_type": "networkx_graph", "_value": nx.adjacency_data(v)}
     else:
         return v
