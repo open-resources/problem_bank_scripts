@@ -1,4 +1,3 @@
-
 name: Tests
 
 on:
@@ -68,12 +67,8 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Minimum supported; Maybe add in some newer version to test things won't break if used on newer versions of python?
-        python_version: ["3.9"] #, "3.x"] 
     concurrency:
-      group: tests-${{ github.ref }}-${{ matrix.python_version }}
+      group: tests-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
@@ -81,22 +76,30 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Set up Python ${{ matrix.python_version }}
+      - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: "3.9"
           cache: poetry
       - name: Install dependencies
         run: |
           poetry install --with dev
       - name: Run tests
         run: |
-          poetry run pytest tests
+          poetry run pytest --cov-report=xml:coverage.xml -rFxX tests/
       - name: Upload generated files
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: test-generated-files-${{ github.event_name }}-${{ matrix.python_version }}
+          name: test-generated-files-${{ github.event_name }}
           path: tests/test_question_templates/question_generated_outputs/
           if-no-files-found: ignore
           retention-days: 5
+      # - name: Upload coverage report to codecov
+      #   if: always()
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     # Needed for private repos, publi repos don't, but it is a good
+      #     #  fallback for if codecov fails to identify it properly as public
+      #     # token: ${{ secrets.CODECOV_TOKEN }}
+      #     files: ./coverage1.xml

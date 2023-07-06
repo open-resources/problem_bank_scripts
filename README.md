@@ -3,6 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.9-blue)]()
 [![codecov](https://codecov.io/gh/open-resources/problem_bank_scripts/branch/main/graph/badge.svg)](https://codecov.io/gh/open-resources/problem_bank_scripts)
 [![Documentation Status](https://readthedocs.org/projects/problem_bank_scripts/badge/?version=latest)](https://problem_bank_scripts.readthedocs.io/en/latest/?badge=latest)
+[![Tests](https://github.com/open-resources/problem_bank_scripts/actions/workflows/tests.yml/badge.svg)](https://github.com/open-resources/problem_bank_scripts/actions/workflows/tests.yml)
 
 
 ## Installation
