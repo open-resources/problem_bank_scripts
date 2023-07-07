@@ -268,7 +268,7 @@ def read_md_problem(filepath):
     # Deal with YAML header
     header_text = mdtext.rsplit("---\n")[1]
     header = yaml.safe_load("---\n" + header_text)
-
+    validate_header(header)
     # Deal with Markdown Body
     body = mdtext.rsplit("---\n")[2]
 
@@ -442,7 +442,7 @@ def write_info_json(output_path, parsed_question):
     info_json = {
         "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path))),
         "title": parsed_question["header"]["title"],
-        "topic": parsed_question["header"]["topic"],
+        "topic": valid_topic(parsed_question["header"]["topic"]),
         "tags": auto_tags,
         "type": "v3",
     }
@@ -1230,3 +1230,10 @@ def backticks_to_code_tags(html):
     html = html.replace("\\`", "`")  # Replace escaped backticks
     return html
 
+def validate_header(header_dict):
+    url = "https://github.com/open-resources/learning_outcomes/blob/main/Masterlist.csv"
+    learning_outcomes = pd.read_csv(url)
+    topic_list = learning_outcomes["Topic"].tolist()
+    # check if header is sanctioned
+    if header_dict["topic"] not in topic_list:
+        raise Exception(f"the topic '{header_dict['topic']}' is not listed in the learning outcomes")
