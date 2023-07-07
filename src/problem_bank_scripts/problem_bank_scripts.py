@@ -442,7 +442,7 @@ def write_info_json(output_path, parsed_question):
     info_json = {
         "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, str(output_path))),
         "title": parsed_question["header"]["title"],
-        "topic": valid_topic(parsed_question["header"]["topic"]),
+        "topic": parsed_question["header"]["topic"],
         "tags": auto_tags,
         "type": "v3",
     }
