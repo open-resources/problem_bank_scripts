@@ -1,0 +1,49 @@
+name: Push Updated Problem Bank Scripts to Dependent Repos
+
+on: 
+  release:
+    types: [published]
+
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    env:
+      TAG_NAME: ${{ github.event.release.tag_name }}
+    outputs:
+        ver: ${{ steps.version_name.outputs.version }}
+    steps:
+      - name: Strip leading 'v' from tag and return as output
+        id: version_name
+        run: echo "version=$(echo ${TAG_NAME/#v/})" >> $GITHUB_OUTPUT
+  push-to-dependents:
+    needs: get-version
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # if one repo fails, continue with the others, it might be unrelated
+      matrix:
+        repo: [PrairieLearnUBC/pl-ubc-opb000, PrairieLearnUBC/pl-ubc-opb100] # add more repos here
+        # if the token needs to be different per repo, add a token matrix using the extend matrix syntax
+        # as shown here: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs#example-expanding-configurations
+    steps:
+      - name: Checkout ${{ matrix.repo }}
+        uses: actions/checkout@v3 
+        with: # checks out default branch
+          repository: ${{ matrix.repo }}
+          token: ${{ secrets.PAT_GITHUB_PRAIRIELEARN }}
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          # saves pip cache between runs, in case a run is ever finished before some runs are started and it can be reused somehow
+          cache: 'pip'
+      - name: Update PBS version in serverFilesCourse
+        run: |
+          rm -rf serverFilesCourse/problem_bank_* # cleanup/remove old versions
+          pip install --upgrade problem_bank_scripts --target serverFilesCourse
+      - name: Commit and push updated serverFilesCourse
+        run: |
+          git config --global user.name 'fmoosvi'
+          git config --global user.email 'firas.moosvi@ubc.ca'
+          git add serverFilesCourse
+          git commit -am "Update problem_bank_scripts to ${{ needs.get-version.outputs.ver }}"
+          git push
