@@ -23,43 +23,76 @@ import pandas
 # import os
 import collections
 
+from typing import Callable, Union
+
+SympyMapT = dict[str, Union[Callable, sympy.Basic]]
+
 # Create a new instance of this class to access the member dictionaries. This
 # is to avoid accidentally modifying these dictionaries.
 class _Constants:
-    def __init__(self):
+    helpers: SympyMapT
+    variables: SympyMapT
+    hidden_variables: SympyMapT
+    complex_variables: SympyMapT
+    hidden_complex_variables: SympyMapT
+    functions: SympyMapT
+    trig_functions: SympyMapT
+
+    def __init__(self) -> None:
         self.helpers = {
-            '_Integer': sympy.Integer,
+            "_Integer": sympy.Integer,
         }
-        self.variables = {
-            'pi': sympy.pi,
-            'e': sympy.E,
-        }
+
+        self.variables = {"pi": sympy.pi, "e": sympy.E, "infty": sympy.oo}
+
         self.hidden_variables = {
-            '_Exp1': sympy.E,
+            "_Exp1": sympy.E,
         }
+
         self.complex_variables = {
-            'i': sympy.I,
-            'j': sympy.I,
+            "i": sympy.I,
+            "j": sympy.I,
         }
+
         self.hidden_complex_variables = {
-            '_ImaginaryUnit': sympy.I,
+            "_ImaginaryUnit": sympy.I,
         }
+
         self.functions = {
-            # These are shown to the student
-            'cos': sympy.cos,
-            'sin': sympy.sin,
-            'tan': sympy.tan,
-            'arccos': sympy.acos,
-            'arcsin': sympy.asin,
-            'arctan': sympy.atan,
-            'acos': sympy.acos,
-            'asin': sympy.asin,
-            'atan': sympy.atan,
-            'arctan2': sympy.atan2,
-            'atan2': sympy.atan2,
-            'exp': sympy.exp,
-            'log': sympy.log,
-            'sqrt': sympy.sqrt,
+            "exp": sympy.exp,
+            "log": sympy.log,
+            "ln": sympy.log,
+            "sqrt": sympy.sqrt,
+            "factorial": sympy.factorial,
+            "abs": sympy.Abs,
+            "sgn": sympy.sign,
+            "max": sympy.Max,
+            "min": sympy.Min,
+            # Extra aliases to make parsing work correctly
+            "sign": sympy.sign,
+            "Abs": sympy.Abs,
+            "Max": sympy.Max,
+            "Min": sympy.Min,
+        }
+
+        self.trig_functions = {
+            "cos": sympy.cos,
+            "sin": sympy.sin,
+            "tan": sympy.tan,
+            "sec": sympy.sec,
+            "cot": sympy.cot,
+            "csc": sympy.csc,
+            "arccos": sympy.acos,
+            "arcsin": sympy.asin,
+            "arctan": sympy.atan,
+            "acos": sympy.acos,
+            "asin": sympy.asin,
+            "atan": sympy.atan,
+            "arctan2": sympy.atan2,
+            "atan2": sympy.atan2,
+            "atanh": sympy.atanh,
+            "acosh": sympy.acosh,
+            "asinh": sympy.asinh,
         }
 
 # # Safe evaluation of user input to convert from string to sympy expression.
@@ -279,7 +312,7 @@ class _Constants:
 
 def sympy_to_json(
     a: sympy.Expr, *, allow_complex: bool = True, allow_trig_functions: bool = True
-) -> SympyJson:
+):
     const = _Constants()
 
     # Get list of variables in the sympy expression
