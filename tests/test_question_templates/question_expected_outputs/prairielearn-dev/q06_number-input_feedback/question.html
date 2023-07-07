@@ -1,0 +1,28 @@
+
+<!-- ######## Start of Part 1 ######## -->
+
+<pl-question-panel>
+	<markdown>A solenoid with ${{ params.n }}$ turns per centimter carries a current $I$. An electron moves within the solenoid in a circle of radius ${{ params.r}}\\textrm{ cm}$.
+The plane of the circular motion is perpendicular to the axis of the solenoid.  The speed of the electron is ${{ params.v }}\\times 10^{ {{ params.p }} }\\textrm{ m/s}$.
+What is the current $I$ in the solenoid?
+	</markdown>
+</pl-question-panel>
+
+<pl-number-input answers-name="part1_ans" rtol = "0.05" weight = "1" allow-blank = "False" show-correct-answer = "False" label = "$I= $" suffix = "$\rm\ A$" ></pl-number-input>
+
+<pl-submission-panel>{{ submitted_answers.part1_ans_str }}
+
+{{ feedback.part1_ans }}
+ </pl-submission-panel>
+
+<pl-answer-panel>$I=$ {{ correct_answers.part1_ans_str }} $\textrm{ A}$
+ </pl-answer-panel>
+
+<!-- ######## End of Part 1 ######## -->
+
+<pl-question-panel>
+<markdown>
+---
+Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)
+</markdown>
+</pl-question-panel>
