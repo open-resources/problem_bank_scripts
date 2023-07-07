@@ -1,0 +1,13 @@
+{
+    "uuid": "27a933a3-bdfa-365d-965f-779542664d44",
+    "title": "Integer Math",
+    "topic": "Template",
+    "tags": [
+        "number-input",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
+}

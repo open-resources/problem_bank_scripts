@@ -16,7 +16,7 @@ from problem_bank_scripts import __version__, process_question_pl, process_quest
 
 
 def test_version():
-    assert __version__ == "0.6.2"
+    assert __version__ == "0.7.0"
 
 
 # TODO: excluding symbolic questions, needs to be fixed because of how sympy objects are handled
@@ -32,10 +32,9 @@ files = sorted(
         for file in pathlib.Path(
             "tests/test_question_templates/question_inputs/"
         ).iterdir()
+        if file.name != ".DS_Store"
     ]
 )
-
-files = [f for f in files if f != '.DS_Store']
 
 @pytest.fixture(scope="session")
 def paths():
@@ -64,7 +63,7 @@ def validate_info_json():
 
 _tested_questions = set()
 
-def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
+def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str, devmode: bool):
     """Helper function that runs the PrairieLearn generator on a question.
 
     This allows us to deduplicate the code for running the generator.
@@ -72,40 +71,42 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
     Args:
         paths (dict): definition of the output and input paths
         question (str): the name of the question to test, set by the parametrize decorator
+        devmode (bool): whether to run the generator in devmode
     """
-    if question in _tested_questions:
+    if (question, devmode) in _tested_questions:
         return # don't parse the same question twice
-    _tested_questions.add(question)
-    outputPath = paths["outputDest"].joinpath("prairielearn/")
+    _tested_questions.add((question, devmode))
+    outputPath = paths["outputDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/")
 
     baseFile = paths["inputDest"] / question / f"{question}.md"
     folder = baseFile.parent.stem
     outputFolder = outputPath.joinpath(folder)
-    process_question_pl(baseFile, outputFolder.joinpath(baseFile.name))
+    process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
 
 
 @pytest.mark.parametrize(
-    "question",
+    "question,devmode",
     [
         pytest.param(
             file,
-            id=file,
-            # marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            dev,
+            id=(f"nodev-{file}" if dev else f"dev-{file}"),
+            #marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
-        for file in files
+        for file in files for dev in [False, True]
     ],
 )
-def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
+def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: bool):
     """Tests the PrairieLearn `process_question_pl()`
 
     Args:
         paths (dict): set by the fixture paths()
         question (str): the name of the question to test, set by the parametrize decorator
+        devmode (bool): whether to run the generator in devmode
     """
-    run_prairie_learn_generator(paths, question)
-    
-    outputPath = paths["outputDest"].joinpath("prairielearn/")
-    comparePath = paths["compareDest"].joinpath("prairielearn/")
+    run_prairie_learn_generator(paths, question, devmode)
+    outputPath = paths["outputDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/")
+    comparePath = paths["compareDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/")
     baseFile = paths["inputDest"].joinpath(f"{question}/{question}.md")
     folder = baseFile.parent.stem
 
@@ -136,31 +137,34 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
+
 @pytest.mark.parametrize(
-    "question",
+    "question,devmode",
     [
         pytest.param(
             file,
-            id=file,
-            # marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            dev,
+            id=(f"nodev-{file}" if dev else f"dev-{file}"),
+            #marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
-        for file in files
+        for file in files for dev in [False, True]
     ],
 )
-def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_json):
+def test_info_json(paths: dict[str, pathlib.Path], question: str , devmode: bool, validate_info_json):
     """Tests the PrairieLearn `process_question_pl()` info.json file
     
     Args:
         paths (dict): set by the fixture paths()
         question (str): the name of the question to test, set by the parametrize decorator
+        devmode (bool): whether to run the generator in devmode
     """
-    run_prairie_learn_generator(paths, question)
-    output_info_json = paths["outputDest"].joinpath(f"prairielearn/{question}/info.json")
-    compare_info_json = paths["compareDest"].joinpath(f"prairielearn/{question}/info.json")
+    run_prairie_learn_generator(paths, question, devmode)
+    output_info_json = paths["outputDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/{question}/info.json")
+    compare_info_json = paths["compareDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/{question}/info.json")
     generated_json = json.load(open(output_info_json))
     expected_json = json.load(open(compare_info_json))
     validate_info_json(generated_json)
-    del generated_json["uuid"] # uuid is randomly generated, so we can't compare it
+    del generated_json["uuid"] # uuid is semi-randomly generated, so we can't compare reliably it
     del expected_json["uuid"]
     for key in expected_json:
         generated = generated_json[key]
