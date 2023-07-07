@@ -1231,9 +1231,9 @@ def backticks_to_code_tags(html):
     return html
 
 def validate_header(header_dict):
-    url = "https://github.com/open-resources/learning_outcomes/blob/main/Masterlist.csv"
+    url = "https://raw.githubusercontent.com/open-resources/learning_outcomes/main/Masterlist.csv"
     learning_outcomes = pd.read_csv(url)
-    topic_list = learning_outcomes["Topic"].tolist()
     # check if header is sanctioned
+    topic_list = learning_outcomes["Topic"].unique().tolist()
     if header_dict["topic"] not in topic_list:
         raise Exception(f"the topic '{header_dict['topic']}' is not listed in the learning outcomes")
