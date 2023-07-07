@@ -90,7 +90,7 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str):
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            # marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
         for file in files
     ],
@@ -142,7 +142,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str):
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            # marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
         for file in files
     ],
@@ -177,7 +177,7 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, validate_info_
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            # marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
         for file in files
     ],
@@ -217,7 +217,7 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
         pytest.param(
             file,
             id=file,
-            marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
+            # marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
         for file in files
     ],
