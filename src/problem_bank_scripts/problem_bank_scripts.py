@@ -1236,4 +1236,5 @@ def validate_header(header_dict):
     # check if header is sanctioned
     topic_list = learning_outcomes["Topic"].unique().tolist()
     if header_dict["topic"] not in topic_list:
-        raise Exception(f"the topic '{header_dict['topic']}' is not listed in the learning outcomes")
+        raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
+        
