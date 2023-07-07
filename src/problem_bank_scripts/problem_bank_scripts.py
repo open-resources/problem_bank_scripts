@@ -1235,6 +1235,6 @@ def validate_header(header_dict):
     learning_outcomes = pd.read_csv(url)
     # check if header is sanctioned
     topic_list = learning_outcomes["Topic"].unique().tolist()
-    if header_dict["topic"] not in topic_list:
+    if header_dict["topic"] not in topic_list and header_dict["topic"] != "Template":
         raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
         
