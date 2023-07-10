@@ -19,6 +19,7 @@ import codecs
 import importlib.util
 import problem_bank_helpers as pbh
 import pandas as pd
+import warnings
 
 ## Parse Markdown
 import markdown_it
@@ -30,9 +31,16 @@ import yaml
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
 
-## learning outcomes
+## Topic Validation
 topic_list = set()
-for subject in ["physics", "datascience", "stats"]:
+try:
+    path = pathlib.Path().resolve()
+    subjects = [path.split('instructor_')[1].split('_bank')[0]]
+except:
+    warnings.warn("there may be a problem with subject specific topics, topics from all subjects have been loaded.")
+    subjects = ["physics", "datascience", "stats"]
+
+for subject in subjects:
     url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
     learning_outcomes = pd.read_csv(url)
     topic_list |= set(learning_outcomes["Topic"])
@@ -1238,7 +1246,7 @@ def backticks_to_code_tags(html):
     return html
 
 def validate_header(header_dict):
-    # check if header is sanctioned
+    # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
     if header_dict["topic"] not in topic_list and header_dict["topic"] != "Template":
         raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
         
