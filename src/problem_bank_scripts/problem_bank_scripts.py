@@ -30,6 +30,13 @@ import yaml
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
 
+## learning outcomes
+topic_list = set()
+for subject in ["physics", "datascience", "stats"]:
+    url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
+    learning_outcomes = pd.read_csv(url)
+    topic_list |= set(learning_outcomes["Topic"])
+
 # Start of reading/parsing functions
 
 
@@ -1231,11 +1238,6 @@ def backticks_to_code_tags(html):
     return html
 
 def validate_header(header_dict):
-    topic_list = set()
-    for subject in ["physics", "datascience", "statistics"]:
-        url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
-        learning_outcomes = pd.read_csv(url)
-        topic_list |= set(learning_outcomes["Topic"])
     # check if header is sanctioned
     if header_dict["topic"] not in topic_list and header_dict["topic"] != "Template":
         raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
