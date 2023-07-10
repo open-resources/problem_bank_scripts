@@ -33,11 +33,11 @@ import importlib.resources
 
 ## Topic Validation
 topic_list = set()
+path = pathlib.Path().resolve()
 try:
-    path = pathlib.Path().resolve()
     subjects = [path.split('instructor_')[1].split('_bank')[0]]
 except:
-    warnings.warn("there may be a problem with subject specific topics, topics from all subjects have been loaded.")
+    warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
     subjects = ["physics", "datascience", "stats"]
 
 for subject in subjects:
