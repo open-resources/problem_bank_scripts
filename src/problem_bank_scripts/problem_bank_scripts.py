@@ -1232,8 +1232,8 @@ def backticks_to_code_tags(html):
 
 def validate_header(header_dict):
     topic_list = set()
-    for subject in ["physics",] #"datasience", "statistics"]
-        url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/{subject}.csv"
+    for subject in ["physics", "datascience", "statistics"]:
+        url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
         learning_outcomes = pd.read_csv(url)
         topic_list |= set(learning_outcomes["Topic"])
     # check if header is sanctioned
