@@ -1231,10 +1231,12 @@ def backticks_to_code_tags(html):
     return html
 
 def validate_header(header_dict):
-    url = "https://raw.githubusercontent.com/open-resources/learning_outcomes/main/Masterlist.csv"
-    learning_outcomes = pd.read_csv(url)
+    topic_list = set()
+    for subject in ["physics",] #"datasience", "statistics"]
+        url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/{subject}.csv"
+        learning_outcomes = pd.read_csv(url)
+        topic_list |= set(learning_outcomes["Topic"])
     # check if header is sanctioned
-    topic_list = learning_outcomes["Topic"].unique().tolist()
     if header_dict["topic"] not in topic_list and header_dict["topic"] != "Template":
         raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
         
