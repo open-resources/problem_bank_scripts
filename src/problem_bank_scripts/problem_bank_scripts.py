@@ -19,6 +19,7 @@ import codecs
 import importlib.util
 import problem_bank_helpers as pbh
 import pandas as pd
+import warnings
 
 ## Parse Markdown
 import markdown_it
@@ -29,6 +30,20 @@ import yaml
 
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
+
+## Topic Validation
+topic_list = set()
+path = pathlib.Path().resolve()
+try:
+    subjects = [path.split('instructor_')[1].split('_bank')[0]]
+except:
+    warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
+    subjects = ["physics", "datascience", "stats"]
+
+for subject in subjects:
+    url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
+    learning_outcomes = pd.read_csv(url)
+    topic_list |= set(learning_outcomes["Topic"])
 
 # Start of reading/parsing functions
 
@@ -268,7 +283,7 @@ def read_md_problem(filepath):
     # Deal with YAML header
     header_text = mdtext.rsplit("---\n")[1]
     header = yaml.safe_load("---\n" + header_text)
-
+    validate_header(header)
     # Deal with Markdown Body
     body = mdtext.rsplit("---\n")[2]
 
@@ -1230,3 +1245,8 @@ def backticks_to_code_tags(html):
     html = html.replace("\\`", "`")  # Replace escaped backticks
     return html
 
+def validate_header(header_dict):
+    # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
+    if header_dict["topic"] not in topic_list and header_dict["topic"] != "Template":
+        raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
+        
