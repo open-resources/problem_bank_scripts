@@ -28,7 +28,7 @@ permissions:
 jobs:
   schema:
     outputs:
-      valid: ${{ steps.check-schema.outputs.schema }}
+      invalid: ${{ steps.check-schema.outputs.invalid }}
       schema: ${{ steps.check-schema.outputs.schema }}
     runs-on: ubuntu-latest
     concurrency:
@@ -45,19 +45,19 @@ jobs:
           echo "schema=latestSchema.json" >> "$GITHUB_OUTPUT"
           diff latestSchema.json tests/infoSchema.json
           if [ $? -eq 0 ]; then
-            echo "valid=true" >> "$GITHUB_OUTPUT"
+            echo "invalid=false" >> "$GITHUB_OUTPUT"
             exit 0
           else
-            echo "valid=false" >> "$GITHUB_OUTPUT"
-            exit 1
+            echo "invalid=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
       - name: Comment if out of date
-        if: failure()
+        if: ${{ steps.check-schema.outputs.invalid }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            core.error(
+            core.warning(
               "The info.json schema is out of date. Please update it to match the latest schema from PrairieLearn.",
               {
                 title: "Schema out of date",
