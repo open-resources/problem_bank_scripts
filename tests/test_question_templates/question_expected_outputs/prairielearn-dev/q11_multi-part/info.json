@@ -1,11 +1,11 @@
 {
     "uuid": "3fd804a1-96de-3996-9547-9b5893265a9a",
     "title": "Multi-part Question",
-    "topic": "Template",
+    "topic": "000.Template",
     "tags": [
         "multi_part",
-        "number-input",
         "multiple-choice",
+        "number-input",
         "DEV"
     ],
     "type": "v3",
