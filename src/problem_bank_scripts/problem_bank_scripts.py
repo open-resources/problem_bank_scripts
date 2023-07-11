@@ -33,7 +33,7 @@ import importlib.resources
 
 ## Topic Validation
 topic_list = set()
-path = pathlib.Path().resolve()
+path = pathlib.Path().resolve().as_posix()
 
 try:
     subjects = [path.split('instructor_')[1].split('_bank')[0]]
