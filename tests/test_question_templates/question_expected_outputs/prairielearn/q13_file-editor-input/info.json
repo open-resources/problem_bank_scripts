@@ -1,11 +1,19 @@
 {
-            "uuid": "cb29dcd0-1146-3467-ba85-7fb441fe8ae3",
-            "title": "Python Powers",
-            "topic": "Template",
-            "tags":  ["file-editor", "nothing"],
-            "type": "v3",
-            "gradingMethod": "External",
-		"partialCredit":true,
-		"singleVariant": true,
-		"externalGradingOptions": {"enabled": true, "image": "prairielearn/grader-python", "entrypoint": "/python_autograder/run.sh"}
+    "uuid": "6cd28d44-eb4d-319f-b494-63cc9dc5a80c",
+    "title": "Python Powers",
+    "topic": "000.Template",
+    "tags": [
+        "file-editor",
+        "nothing"
+    ],
+    "type": "v3",
+    "partialCredit": true,
+    "externalGradingOptions": {
+        "enabled": true,
+        "image": "prairielearn/grader-python",
+        "entrypoint": "/python_autograder/run.sh"
+    },
+    "gradingMethod": "External",
+    "showCorrectAnswer": false,
+    "singleVariant": true
 }

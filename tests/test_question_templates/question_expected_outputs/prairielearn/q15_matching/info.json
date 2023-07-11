@@ -1,12 +1,12 @@
 {
-    "uuid": "7cdb04d4-c142-388e-bf88-3b81f03e34b3",
+    "uuid": "00749b3e-7e36-31dd-837c-fd925a223b2e",
     "title": "Distance travelled",
-    "topic": "Template",
+    "topic": "000.Template",
     "tags": [
         "matching"
     ],
     "type": "v3",
+    "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true,
-    "singleVariant": false
+    "partialCredit": true
 }

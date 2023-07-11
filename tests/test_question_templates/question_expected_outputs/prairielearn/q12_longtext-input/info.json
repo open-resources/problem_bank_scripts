@@ -1,8 +1,12 @@
 {
-            "uuid": "215ff9af-b1ac-3a5d-8ec6-5244e07e9d9f",
-            "title": "Describe an Experiment",
-            "topic": "Template",
-            "tags":  ["longtext"],
-            "type": "v3",
-            "partialCredit":true
+    "uuid": "10374096-5e7e-3c7a-b965-6b94ef713c9c",
+    "title": "Describe an Experiment",
+    "topic": "000.Template",
+    "tags": [
+        "longtext"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
 }

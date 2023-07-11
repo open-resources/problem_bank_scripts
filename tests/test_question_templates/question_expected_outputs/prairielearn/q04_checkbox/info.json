@@ -1,8 +1,12 @@
 {
-            "uuid": "299775d5-c824-3b3d-a3f7-5f5113420a1b",
-            "title": "Vectors and Scalars",
-            "topic": "Template",
-            "tags":  ["checkbox"],
-            "type": "v3",
-            "partialCredit":true
+    "uuid": "ed6e8f8d-a166-37ce-8b67-ba97a9ff44f8",
+    "title": "Vectors and Scalars",
+    "topic": "000.Template",
+    "tags": [
+        "checkbox"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
 }
