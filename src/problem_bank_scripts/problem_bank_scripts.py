@@ -32,8 +32,9 @@ import yaml
 import importlib.resources
 
 ## Topic Validation
-topic_list = set()
+
 path = pathlib.Path().resolve().as_posix()
+topics = {"Template": "000.Template"}  # Start with special cased topics
 
 try:
     subjects = [path.split('instructor_')[1].split('_bank')[0]]
@@ -44,7 +45,7 @@ except:
 for subject in subjects:
     url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
     learning_outcomes = pd.read_csv(url)
-    topic_list |= set(learning_outcomes["Topic"])
+    topics |= {topic: f"{i:03}.{topic}" for i, topic in enumerate(learning_outcomes["Topic"].unique(), start=1)}
 
 # Start of reading/parsing functions
 
@@ -1049,6 +1050,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
     # Parse the MD file
     parsed_q = read_md_problem(source_filepath)
+    parsed_q["header"]["topic"] = topics[parsed_q["header"]["topic"]] # Add integer topic id, this is safe because we validated the header in read_md_problem
 
     # Create output dir if it doesn't exist
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1248,6 +1250,6 @@ def backticks_to_code_tags(html):
 
 def validate_header(header_dict):
     # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
-    if header_dict["topic"] not in topic_list and header_dict["topic"] != "Template":
-        raise ValueError(f"topic '{header_dict['topic']}' is not listed in the learning outcomes")
-        
+    
+    if topics.get(topic := header_dict["topic"], None) is None:
+        raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
