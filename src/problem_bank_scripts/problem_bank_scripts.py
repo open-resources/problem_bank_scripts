@@ -32,8 +32,10 @@ import yaml
 import importlib.resources
 
 ## Topic Validation
-path = pathlib.Path().resolve()
+
+path = pathlib.Path().resolve().as_posix()
 topics = {"Template": "000.Template"}  # Start with special cased topics
+
 try:
     subjects = [path.split('instructor_')[1].split('_bank')[0]]
 except:
@@ -1251,4 +1253,3 @@ def validate_header(header_dict):
     
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
-        
