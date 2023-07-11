@@ -37,17 +37,17 @@ server:
         data2["params"]["vars"]["title"] = "Code Output"
         data2["params"]["vars"]["a"] = a
         data2["params"]["vars"]["stringname"] = stringname
-        data2["correct_answers"]["ans"] = a * stringname
+        data2["correct_answers"]["ans"] = ""
         # we can also add alternate correct answers, which will we can grade as correct
         # lets say we want to accept "Love" as an correct answer as an example, we can do:
-        data2["params"]["part1"]["alternate_correct_ans"] = a * "Love"
+        data2["params"]["part1"]["alternate_correct_ans"] = [a * stringname, a * "Love"]
 
         # Update the data object with a new dict
         data.update(data2)
     grade: |
         # Since we want an alternate correct answer, we can check for it here, and override the automatic 
         # score if it is correct
-        if data["submitted_answers"]["ans"] == data["params"]["part1"]["alternate_correct_ans"]:
+        if data["submitted_answers"]["ans"] in data["params"]["part1"]["alternate_correct_ans"]:
             data["partial_scores"]["ans"] = { "score": 1 }
     prepare: |
         pass
