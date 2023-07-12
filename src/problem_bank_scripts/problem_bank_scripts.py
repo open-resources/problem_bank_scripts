@@ -107,7 +107,7 @@ def parse_body_part(pnum, md_text):
         content = mdformat.renderer.MDRenderer().render(
                 tokens[3 : get_next_headerloc(3, tokens, 3)], mdit.options, env
             )  # Note the 3 is there to exclude header start,header content,header end tokens
-        nested_dict[part]["content"] = content
+        nested_dict[part]["content"] = content.replace(r"\\", "\\")
     except IndexError:
         print("It looks like there is an empty section of header level 2 in your md file.")
         raise
@@ -349,7 +349,7 @@ def read_md_problem(filepath):
 
     for k, v in blocks.items():
 
-        rendered_part = mdformat.renderer.MDRenderer().render(tokens[v[0] : v[1]], mdit.options, env)
+        rendered_part = mdformat.renderer.MDRenderer().render(tokens[v[0] : v[1]], mdit.options, env).replace(r"\\", "\\")
 
         if k == "title":
             body_parts["title"] = rendered_part
@@ -954,7 +954,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             "---\n"
             + header_yml
             + "---\n"
-            + text.replace(r"\\", "\\")
+            + text
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),
             encoding="utf8",
@@ -1008,9 +1008,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             "---\n"
             + header_yml
             + "\n---\n"
-            + dict_to_md(
-                body_parts,
-            ).replace(r"\\", "\\")
+            + dict_to_md(body_parts)
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),
             encoding="utf8",
