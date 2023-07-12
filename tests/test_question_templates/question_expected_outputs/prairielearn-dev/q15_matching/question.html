@@ -8,12 +8,12 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 </pl-question-panel>
 
 <pl-matching answers-name="part1_matching" weight = "1" blank = "true" >
-	<pl-statement match= '{{ params.part1.statement1.matches }}' > {{ params.part1.statement1.value }} </pl-statement>
-	<pl-statement match= '{{ params.part1.statement2.matches }}' > {{ params.part1.statement2.value }} </pl-statement>
-	<pl-statement match= '{{ params.part1.statement3.matches }}' > {{ params.part1.statement3.value }} </pl-statement>
-	<pl-statement match= '{{ params.part1.statement4.matches }}' > {{ params.part1.statement4.value }} </pl-statement>
-	<pl-option name= 'option1' > {{ params.part1.option1.value }} </pl-option>
-	<pl-option name= 'option2' > {{ params.part1.option2.value }} </pl-option>
+	<pl-statement match= '{{ params.part1.statement1.matches }}' > {{{ params.part1.statement1.value }}} </pl-statement>
+	<pl-statement match= '{{ params.part1.statement2.matches }}' > {{{ params.part1.statement2.value }}} </pl-statement>
+	<pl-statement match= '{{ params.part1.statement3.matches }}' > {{{ params.part1.statement3.value }}} </pl-statement>
+	<pl-statement match= '{{ params.part1.statement4.matches }}' > {{{ params.part1.statement4.value }}} </pl-statement>
+	<pl-option> {{{ params.part1.option1.value }}} </pl-option>
+	<pl-option> {{{ params.part1.option2.value }}} </pl-option>
 </pl-matching>
 
 <pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
