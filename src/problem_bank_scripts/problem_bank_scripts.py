@@ -706,7 +706,7 @@ def process_matching(part_name, parsed_question, data_dict):
         if "option" in a:
             value = f"|@ params.{part_name}.{a}.value @|"
 
-            options += f"\t<pl-option name= '{a}' > {value} </pl-option>\n"
+            options += f"\t<pl-option> {value} </pl-option>\n"
 
         if "statement" in a:
             matches_with = f"|@ params.{part_name}.{a}.matches @|"
