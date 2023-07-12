@@ -39,7 +39,7 @@ topics = {"Template": "000.Template"}  # Start with special cased topics
 try:
     subjects = [path.split('instructor_')[1].split('_bank')[0]]
 except:
-    warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
+    # warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
     subjects = ["physics", "datascience", "stats"]
 
 for subject in subjects:
