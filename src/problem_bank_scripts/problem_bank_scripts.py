@@ -704,13 +704,13 @@ def process_matching(part_name, parsed_question, data_dict):
     for a in data_dict["params"][f"{part_name}"].keys():
 
         if "option" in a:
-            value = f"|@ params.{part_name}.{a}.value @|"
+            value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
             options += f"\t<pl-option> {value} </pl-option>\n"
 
         if "statement" in a:
             matches_with = f"|@ params.{part_name}.{a}.matches @|"
-            value = f"|@ params.{part_name}.{a}.value @|"
+            value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
             statements += f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
 
