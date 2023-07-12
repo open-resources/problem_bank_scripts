@@ -52,7 +52,7 @@ jobs:
             exit 0
           fi
       - name: Comment if out of date
-        if: ${{ steps.check-schema.outputs.invalid }}
+        if: ${{ steps.check-schema.outputs.invalid == 'true' }}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -68,12 +68,8 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Minimum supported; Maybe add in some newer version to test things won't break if used on newer versions of python?
-        python_version: ["3.9"] #, "3.x"] 
     concurrency:
-      group: tests-${{ github.ref }}-${{ matrix.python_version }}
+      group: tests-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
@@ -81,10 +77,10 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Set up Python ${{ matrix.python_version }}
-        uses: actions/setup-python@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: "3.10"
           cache: poetry
       - name: Install dependencies
         run: |
@@ -96,7 +92,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: test-generated-files-${{ github.event_name }}-${{ matrix.python_version }}
+          name: test-generated-files-${{ github.event_name }}
           path: tests/test_question_templates/question_generated_outputs/
           if-no-files-found: ignore
           retention-days: 5

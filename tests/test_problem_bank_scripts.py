@@ -90,7 +90,7 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str, d
         pytest.param(
             file,
             dev,
-            id=(f"nodev-{file}" if dev else f"dev-{file}"),
+            id=(f"dev-{file}" if dev else f"nodev-{file}"),
             marks=([pytest.mark.xfail(reason="Problem specified in the `exclude_question` list")] if file in exclude_question else []),
         )
         for file in files for dev in [False, True]
@@ -113,8 +113,8 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
         isFile = os.path.isfile(file)
         hiddenFile = not file.name.startswith(".")
-        assetFile = not file.name.endswith(
-            (".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store")
+        assetFile = (
+            file.name == "question.html" or not file.name.endswith((".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store"))
         )
         excludedFile = not file.parent.name in exclude_question
 
