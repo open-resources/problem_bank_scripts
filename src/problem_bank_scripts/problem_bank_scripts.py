@@ -499,8 +499,12 @@ def assemble_server_py(parsed_question, location):
     try:
         for function, code in server_dict.items():
             indented_code = code.replace("\n", "\n    ")
-            if code:
-                server_py += f"def {function}(data):\n    {indented_code}\n"
+            # With the custom header, add functions to server.py as-is
+            if function == "custom":
+                server_py += f"{code}"
+            else:
+                if code:
+                    server_py += f"def {function}(data):\n    {indented_code}\n"
     except:
         raise
 
