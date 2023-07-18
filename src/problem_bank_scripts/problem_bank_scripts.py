@@ -1055,7 +1055,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         pl_path = output_path.parent / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
         for file in files_to_copy:
-            if file == "starter_code.py" and not instructor:
+            if file != "starter_code.py" and not instructor:
                 continue
             try:
                 copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
