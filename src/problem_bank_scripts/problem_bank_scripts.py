@@ -804,6 +804,32 @@ def process_string_input(part_name, parsed_question, data_dict):
 
     return replace_tags(html)
 
+
+def process_workspace(part_name, parsed_question, data_dict):
+    """Processes markdown format of workspace questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    if "pl-customizations" in parsed_question["header"][part_name]:
+        if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
+            raise ValueError("pl-customizations are not supported for workspace questions")
+
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-workspace></pl-workspace>"""
+
+    if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
+        html += f"""<pl-submission-panel>\n\t<pl-external-grader-results></pl-external-grader-results>\n\t<pl-file-preview></pl-file-preview></pl-submission-panel>"""
+
+    return replace_tags(html)
+
+
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
 
@@ -1187,6 +1213,8 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += process_string_input(part, parsed_q, data2)
         elif "matching" in q_type:
             question_html += process_matching(part, parsed_q, data2)
+        elif "workspace" in q_type:
+            question_html += process_workspace(part, parsed_q, data2)
         else:
             raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
 
