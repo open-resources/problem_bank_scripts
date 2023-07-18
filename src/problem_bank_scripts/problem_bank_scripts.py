@@ -438,6 +438,7 @@ def write_info_json(output_path, parsed_question):
         "singleVariant",
         "showCorrectAnswer",
         "externalGradingOptions",
+        "workspaceOptions"
     }
 
     # Add tags based on part type
@@ -469,6 +470,13 @@ def write_info_json(output_path, parsed_question):
             for key in parsed_question["header"].keys() & optional_keys
         }
     )
+
+    if "workspaceOptions" in info_json: # validate workspaceOptions contains the required keys if it exists
+        image = "image" in info_json["workspaceOptions"]
+        port = "port" in info_json["workspaceOptions"]
+        home = "home" in info_json["workspaceOptions"]
+        if not (image and port and home):
+            raise SyntaxError("workspaceOptions must contain image, port, and home keys")
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
