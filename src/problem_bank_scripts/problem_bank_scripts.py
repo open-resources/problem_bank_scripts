@@ -477,6 +477,8 @@ def write_info_json(output_path, parsed_question):
         home = "home" in info_json["workspaceOptions"]
         if not (image and port and home):
             raise SyntaxError("workspaceOptions must contain image, port, and home keys")
+        if not isinstance(info_json["workspaceOptions"]["port"], int):
+            raise TypeError(f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead")
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
