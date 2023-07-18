@@ -1026,17 +1026,56 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             encoding="utf8",
         )
 
-    # Move image assets
+    # Create the file errors list
+    os_errors = []
+
+    # Move client assets (generally images)
     files_to_copy = header.get("assets")
     if files_to_copy:
-        [copy2(pathlib.Path(source_filepath).parent / fl, output_path.parent) for fl in files_to_copy]
+        pl_path = output_path.parent
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    # Move server assets
+    files_to_copy = header.get("serverFiles")
+    if files_to_copy and instructor:
+        pl_path = output_path.parent
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     # Move autograde py test files
     files_to_copy = header.get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path.parent / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy if (instructor or fl=="starter_code.py")]
+        for file in files_to_copy:
+            if file == "starter_code.py" and not instructor:
+                continue
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = header.get("workspaceFiles")
+    if files_to_copy:
+        pl_path = output_path.parent / "workspace"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    if os_errors:
+        error_msg = "\n    ".join(os_errors)
+        raise GenerationError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
@@ -1186,19 +1225,56 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Write server.py file
     write_server_py(output_path, parsed_q)
 
-    # Move image assets
+    # Create the file errors list
+    os_errors = []
+
+    # Move client assets (generally images)
     files_to_copy = parsed_q["header"].get("assets")
     if files_to_copy:
         pl_path = output_path / "clientFilesQuestion"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    # Move server assets
+    files_to_copy = parsed_q["header"].get("serverFiles")
+    if files_to_copy:
+        pl_path = output_path / "serverFilesQuestion"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     # Move autograde py test files
     files_to_copy = parsed_q["header"].get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy]
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = parsed_q["header"].get("workspaceFiles")
+    if files_to_copy:
+        pl_path = output_path / "workspace"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    if os_errors:
+        error_msg = "\n    ".join(os_errors)
+        raise GenerationError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def pl_image_path(html):
@@ -1263,3 +1339,8 @@ def validate_header(header_dict):
     
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+
+
+class GenerationError(Exception):
+    """Raised when there is an error generating the question."""
+    pass
