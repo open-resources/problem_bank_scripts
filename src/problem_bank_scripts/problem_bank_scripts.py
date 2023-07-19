@@ -1083,9 +1083,12 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     preamble = parsed_q["body_parts"].get("preamble", None)
     #TODO: Remove Debugging print statement
     #print(f"premable: {preamble}")
-    
+
+    disable_latex_class = ' class="mathjax_ignore"'
+    latex = parsed_q['header'].get('latex', {})
+
     if preamble:
-        question_html = f"<pl-question-panel>\n<markdown>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
+        question_html = f"<pl-question-panel>\n<markdown{'' if latex.get('preamble', True) else disable_latex_class}>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
     else:
         question_html = f""
 
@@ -1110,10 +1113,16 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Single and Multi-part question construction
 
     for pnum in range(1, parsed_q["num_parts"] + 1):
-        part = "part" + f"{pnum}"
+        part = f"part{pnum}"
         q_type = parsed_q["header"][part]["type"]
 
         question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
+
+        latex_part = latex.get(part, {})
+        allow_latex = latex_part.get("question", True)
+
+        if not allow_latex:
+            question_html += '<div class="mathjax_ignore">\n'
 
         if parsed_q["num_parts"] > 1:
             question_html += f"""<div class="card my-2">
@@ -1146,14 +1155,17 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         if parsed_q["num_parts"] > 1:
             question_html += "</div>\n</div>\n"
 
+        if not allow_latex:
+            question_html += "</div>\n"
+
         # Add pl-submission-panel and pl-answer-panel (if they exist)
         subm_panel = parsed_q["body_parts_split"][part].get("pl-submission-panel", None)
         q_panel = parsed_q["body_parts_split"][part].get("pl-answer-panel", None)
 
         if subm_panel:
-            question_html += f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
+            question_html += f"\n<pl-submission-panel{'' if latex_part.get('submission', True) else disable_latex_class}>{ subm_panel } </pl-submission-panel>\n"
         if q_panel:
-            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
+            question_html += f"\n<pl-answer-panel{'' if latex_part.get('answer', True) else disable_latex_class}>{ q_panel } </pl-answer-panel>\n"
 
         # TODO: Add support for other panels here as well !
 
