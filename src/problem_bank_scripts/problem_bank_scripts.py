@@ -1103,7 +1103,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
-        raise GenerationError(f"Error(s) copying specified files:\n    {error_msg}")
+        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
@@ -1304,7 +1304,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
-        raise GenerationError(f"Error(s) copying specified files:\n    {error_msg}")
+        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def pl_image_path(html):
@@ -1370,7 +1370,3 @@ def validate_header(header_dict):
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
 
-
-class GenerationError(Exception):
-    """Raised when there is an error generating the question."""
-    pass
