@@ -52,16 +52,18 @@ server:
 
     # define all options for right side of matching
     data2["params"]["part1"]["option1"]["value"] = True
+    data2["params"]["part1"]["option1"]["name"] = "True"
     data2["params"]["part1"]["option2"]["value"] = False
+    data2["params"]["part1"]["option2"]["name"] = "False"
 
     data2["params"]["part1"]["statement1"]["value"] = pbh.roundp(42)
-    data2["params"]["part1"]["statement1"]["matches"] = "option2"
+    data2["params"]["part1"]["statement1"]["matches"] = "False"
     data2["params"]["part1"]["statement2"]["value"] = pbh.roundp(v*t)
-    data2["params"]["part1"]["statement2"]["matches"] = "option1"
+    data2["params"]["part1"]["statement2"]["matches"] = "True"
     data2["params"]["part1"]["statement3"]["value"] = pbh.roundp(v+t)
-    data2["params"]["part1"]["statement3"]["matches"] = "option2"
+    data2["params"]["part1"]["statement3"]["matches"] = "False"
     data2["params"]["part1"]["statement4"]["value"] = pbh.roundp(v/t)
-    data2["params"]["part1"]["statement4"]["matches"] = "option2"
+    data2["params"]["part1"]["statement4"]["matches"] = "False"
 
     # Update the data object with a new dict
     data.update(data2)
@@ -92,20 +94,22 @@ myst:
       part1:
         option1:
           value: true
+          name: 'True'
         option2:
           value: false
+          name: 'False'
         statement1:
           value: 42
-          matches: option2
+          matches: 'False'
         statement2:
           value: 30
-          matches: option1
+          matches: 'True'
         statement3:
           value: 11
-          matches: option2
+          matches: 'False'
         statement4:
           value: 0.8333333333333334
-          matches: option2
+          matches: 'False'
 
 ---
 # {{ params.vars.title }}
