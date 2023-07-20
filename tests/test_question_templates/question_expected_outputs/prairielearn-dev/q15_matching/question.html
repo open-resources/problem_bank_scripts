@@ -12,8 +12,8 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 	<pl-statement match= '{{ params.part1.statement2.matches }}' > {{{ params.part1.statement2.value }}} </pl-statement>
 	<pl-statement match= '{{ params.part1.statement3.matches }}' > {{{ params.part1.statement3.value }}} </pl-statement>
 	<pl-statement match= '{{ params.part1.statement4.matches }}' > {{{ params.part1.statement4.value }}} </pl-statement>
-	<pl-option> {{{ params.part1.option1.value }}} </pl-option>
-	<pl-option> {{{ params.part1.option2.value }}} </pl-option>
+	<pl-option name='True' > {{{ params.part1.option1.value }}} </pl-option>
+	<pl-option name='False' > {{{ params.part1.option2.value }}} </pl-option>
 </pl-matching>
 
 <pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
