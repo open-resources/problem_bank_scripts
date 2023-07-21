@@ -28,6 +28,10 @@ workspaceFiles:
     - file1.txt
     - file2.txt
     - filebad.txt
+serverFiles:
+    - file1.txt
+    - file2.txt
+    - filebad.txt
 workspaceOptions:
     image: prairielearn/workspace-xtermjs
     port: 8080

@@ -8,6 +8,7 @@
     ],
     "type": "v3",
     "singleVariant": false,
+    "partialCredit": true,
     "workspaceOptions": {
         "image": "prairielearn/workspace-xtermjs",
         "port": 8080,
@@ -20,6 +21,5 @@
             "newdir/file2_new.txt"
         ]
     },
-    "showCorrectAnswer": false,
-    "partialCredit": true
+    "showCorrectAnswer": false
 }
