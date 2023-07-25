@@ -37,7 +37,7 @@ path = pathlib.Path().resolve().as_posix()
 topics = {"Template": "000.Template"}  # Start with special cased topics
 
 try:
-    subjects = [path.split('instructor_')[1].split('_bank')[0]]
+    subjects = [path.split("instructor_")[1].split("_bank")[0]]
 except:
     # warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
     subjects = ["physics", "datascience", "stats"]
@@ -45,7 +45,10 @@ except:
 for subject in subjects:
     url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
     learning_outcomes = pd.read_csv(url)
-    topics |= {topic: f"{i:03}.{topic}" for i, topic in enumerate(learning_outcomes["Topic"].unique(), start=1)}
+    topics |= {
+        topic: f"{i:03}.{topic}"
+        for i, topic in enumerate(learning_outcomes["Topic"].unique(), start=1)
+    }
 
 # Start of reading/parsing functions
 
@@ -91,7 +94,9 @@ def parse_body_part(pnum, md_text):
     tokens = mdit.parse(md_text, env)
 
     # Get Level 2 headers and make sure there's only one!
-    level2_headers = [i for i, j in enumerate(tokens) if j.tag == "h2" if j.nesting == 1]
+    level2_headers = [
+        i for i, j in enumerate(tokens) if j.tag == "h2" if j.nesting == 1
+    ]
     assert (
         len(level2_headers) == 1
     ), "There is a problem in the question, there seem to be multiple level two headers in a body part, or there is a weird edge-case in the parse_body_part() function"
@@ -105,18 +110,21 @@ def parse_body_part(pnum, md_text):
     # Store the content of the level 2 header
     try:
         content = mdformat.renderer.MDRenderer().render(
-                tokens[3 : get_next_headerloc(3, tokens, 3)], mdit.options, env
-            )  # Note the 3 is there to exclude header start,header content,header end tokens
+            tokens[3 : get_next_headerloc(3, tokens, 3)], mdit.options, env
+        )  # Note the 3 is there to exclude header start,header content,header end tokens
         nested_dict[part]["content"] = content.replace(r"\\", "\\")
     except IndexError:
-        print("It looks like there is an empty section of header level 2 in your md file.")
+        print(
+            "It looks like there is an empty section of header level 2 in your md file."
+        )
         raise
 
     # Get all Level 3 headers
-    level3_headers = [i for i, j in enumerate(tokens) if j.tag == "h3" if j.nesting == 1]
+    level3_headers = [
+        i for i, j in enumerate(tokens) if j.tag == "h3" if j.nesting == 1
+    ]
 
     for hd in level3_headers:
-
         header = tokens[hd + 1].content
         assert (
             len(header) < 20
@@ -126,14 +134,18 @@ def parse_body_part(pnum, md_text):
         try:
             content = codecs.unicode_escape_decode(
                 mdformat.renderer.MDRenderer().render(
-                    tokens[hd + 3 : get_next_headerloc(hd + 3, tokens, 3)], mdit.options, env
+                    tokens[hd + 3 : get_next_headerloc(hd + 3, tokens, 3)],
+                    mdit.options,
+                    env,
                 )
             )[
                 0
             ]  # Note the +3 is there to exclude header start,header content,header end tokens
             nested_dict[part][header] = content
         except IndexError:
-            print("It looks like there is an empty section of header level 3 in your md file.")
+            print(
+                "It looks like there is an empty section of header level 3 in your md file."
+            )
             # TODO: in the future, suggest ignoring empty sections instead of throwing an error
             raise
 
@@ -156,7 +168,6 @@ def get_next_headerloc(start, tokens, header_level):
     close = len(tokens)
 
     for i, j in enumerate(tokens[start:]):
-
         if j.tag == f"h{header_level}" and j.nesting == 1:
             # next header found
             close = i + start
@@ -306,7 +317,6 @@ def read_md_problem(filepath):
 
     ###
     for x, t in enumerate(tokens):
-
         if t.tag == "h1" and t.nesting == 1:  # title
             # oh boy. this is going to break and it will be your fault firas.
             blocks["title"] = [x, x + 3]
@@ -329,8 +339,14 @@ def read_md_problem(filepath):
     blocks[f"block{block_count}"].append(len(tokens))
 
     # Assert statements (turn into tests!)
-    assert num_titles == 1, "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(num_titles)
-    assert block_count >= 1, "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(
+    assert (
+        num_titles == 1
+    ), "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(
+        num_titles
+    )
+    assert (
+        block_count >= 1
+    ), "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(
         block_count - 1
     )
 
@@ -348,8 +364,11 @@ def read_md_problem(filepath):
     part_counter = 0
 
     for k, v in blocks.items():
-
-        rendered_part = mdformat.renderer.MDRenderer().render(tokens[v[0] : v[1]], mdit.options, env).replace(r"\\", "\\")
+        rendered_part = (
+            mdformat.renderer.MDRenderer()
+            .render(tokens[v[0] : v[1]], mdit.options, env)
+            .replace(r"\\", "\\")
+        )
 
         if k == "title":
             body_parts["title"] = rendered_part
@@ -407,7 +426,7 @@ def dict_to_md(
     md_string += md_dict.pop("title", None)
     md_string += md_dict.pop("preamble", None)
 
-    #TODO: Refactor this to use the elegant solution provided here: https://stackoverflow.com/a/49723101/2217577
+    # TODO: Refactor this to use the elegant solution provided here: https://stackoverflow.com/a/49723101/2217577
 
     for k, v in md_dict.items():
         if k in remove_keys:
@@ -491,6 +510,8 @@ def assemble_server_py(parsed_question, location):
             "import prairielearn as pl",
             "import problem_bank_scripts.prairielearn as pl",
         )
+    elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
+        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
 
     server_py = f""""""
 
@@ -505,6 +526,15 @@ def assemble_server_py(parsed_question, location):
             else:
                 if code:
                     server_py += f"def {function}(data):\n    {indented_code}\n"
+            if location == "prairielearn" and function == "generate":
+                server_py += """\
+    # The following code is added in by problem bank scripts automatically to
+    # convert backticks to codeblocks/code fences in answers text.
+    # This line can be commented out to disable
+    pbh.backticks_to_code_tags(value)
+    # End code added in by problem bank scripts
+
+"""
     except:
         raise
 
@@ -523,15 +553,8 @@ def write_server_py(output_path, parsed_question):
     server_file = assemble_server_py(parsed_question, "prairielearn")
 
     # Deal with path differences when using PL
-    server_file = server_file.replace('read_csv("', 'read_csv(data["options"]["client_files_course_path"]+"/')
-
-    server_file = re.sub(
-        r"(data2?\[(?P<Quote1>\"|\')params(?P=Quote1)\]\[(?P<Quote2>\"|\')part\d+(?P=Quote2)\]"
-        + r"\[(?P<Quote3>\"|\')ans\d+(?P=Quote3)\]\[(?P<Quote4>\"|\')value(?P=Quote4)\] ?= "
-        + r"?f?(?P<Opening>\"{3}|\'{3}|\"|\'|).*?(?P=Opening)$)",
-        lambda match: backticks_to_code_tags(match.expand(r"\1")),
-        server_file,
-        flags=re.MULTILINE | re.DOTALL,
+    server_file = server_file.replace(
+        'read_csv("', 'read_csv(data["options"]["client_files_course_path"]+"/'
     )
 
     # Write server.py
@@ -552,7 +575,12 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
     html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
 
@@ -566,7 +594,6 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
 
     ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
     for a in data_dict["params"][f"{part_name}"].keys():
-
         if "ans" in a:
             if data_dict["params"][f"{part_name}"][f"{a}"]["feedback"]:
                 feedback = f"|@ params.{part_name}.{a}.feedback @|"
@@ -577,7 +604,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
             value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
             ## Hack to remove feedback for Dropdown questions
-            if parsed_question["header"][part_name]['type'] == 'dropdown':
+            if parsed_question["header"][part_name]["type"] == "dropdown":
                 html += f"\t<pl-answer correct= {correctness} > {value} {units} </pl-answer>\n"
             else:
                 html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
@@ -598,7 +625,9 @@ def process_dropdown(part_name, parsed_question, data_dict):
     Returns:
         html: A string of HTML that is part of the final PL question.html file.
     """
-    html = process_multiple_choice(part_name, parsed_question, data_dict).replace("-multiple-choice", "-dropdown")
+    html = process_multiple_choice(part_name, parsed_question, data_dict).replace(
+        "-multiple-choice", "-dropdown"
+    )
     return html
 
 
@@ -617,7 +646,12 @@ def process_number_input(part_name, parsed_question, data_dict):
     html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
 
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
     html += f"""<pl-number-input answers-name="{part_name}_ans" {pl_customizations} ></pl-number-input>\n"""
 
@@ -636,7 +670,9 @@ def process_checkbox(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
     # start with the MCQ version and then...change things for checkbox questions
-    html = process_multiple_choice(part_name, parsed_question, data_dict).replace("-multiple-choice", "-checkbox")
+    html = process_multiple_choice(part_name, parsed_question, data_dict).replace(
+        "-multiple-choice", "-checkbox"
+    )
     return html
 
 
@@ -655,7 +691,12 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
     html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
 
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
     html += f"""<pl-symbolic-input answers-name="{part_name}_ans" {pl_customizations} ></pl-symbolic-input>\n"""
 
@@ -673,7 +714,12 @@ def process_longtext(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
@@ -698,15 +744,21 @@ def process_matching(part_name, parsed_question, data_dict):
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
-    html += f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
+    html += (
+        f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
+    )
 
-    options = ''
-    statements = ''
+    options = ""
+    statements = ""
     ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
     for a in data_dict["params"][f"{part_name}"].keys():
-
         if "option" in a:
             value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
@@ -719,7 +771,9 @@ def process_matching(part_name, parsed_question, data_dict):
             matches_with = f"|@ params.{part_name}.{a}.matches @|"
             value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
-            statements += f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
+            statements += (
+                f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
+            )
 
     html += statements
     html += options
@@ -740,7 +794,12 @@ def process_file_upload(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
@@ -770,7 +829,12 @@ def process_file_editor(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
@@ -778,6 +842,7 @@ def process_file_editor(part_name, parsed_question, data_dict):
     html += f"""<pl-file-editor { pl_customizations } > </pl-file-editor>"""
 
     return replace_tags(html)
+
 
 def process_string_input(part_name, parsed_question, data_dict):
     """Processes markdown format of string-input questions and returns PL HTML
@@ -790,7 +855,12 @@ def process_string_input(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
     pl_customizations = " ".join(
-        [f'{k} = "{v}"' for k, v in parsed_question["header"][part_name]["pl-customizations"].items()]
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
     )  # PL-customizations
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
@@ -798,6 +868,7 @@ def process_string_input(part_name, parsed_question, data_dict):
     html += f"""<pl-string-input { pl_customizations } ></pl-string-input>"""
 
     return replace_tags(html)
+
 
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
@@ -808,7 +879,12 @@ def replace_tags(string):
     Returns:
         string (str): returns string with tags replaced with curly braces.
     """
-    return string.replace("|@|@", "{{{").replace("@|@|", "}}}").replace("|@", "{{").replace("@|", "}}")
+    return (
+        string.replace("|@|@", "{{{")
+        .replace("@|@|", "}}}")
+        .replace("|@", "{{")
+        .replace("@|", "}}")
+    )
 
 
 def remove_correct_answers(data2_dict):
@@ -850,8 +926,10 @@ def process_attribution(attribution):
         string (str): returns the html of the attribution
     """
 
-    with importlib.resources.open_text("problem_bank_scripts", "attributions.json") as file:
-        possible_attributions = json.load(file)  
+    with importlib.resources.open_text(
+        "problem_bank_scripts", "attributions.json"
+    ) as file:
+        possible_attributions = json.load(file)
 
     try:
         attribution_text = possible_attributions[attribution]
@@ -866,7 +944,6 @@ def process_attribution(attribution):
 
 
 def process_question_md(source_filepath, output_path=None, instructor=False):
-
     try:
         pathlib.Path(source_filepath)
     except:
@@ -882,7 +959,9 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         if "source" in source_filepath:
             output_path = pathlib.Path(source_filepath.replace("source", path_replace))
         else:
-            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!! ")
+            raise NotImplementedError(
+                "Check the source filepath; it does not have 'source' in it!! "
+            )
     else:
         ## TODO: Make this a bit more robust, perhaps by switching encodings!?
         output_path = pathlib.Path(output_path)
@@ -893,7 +972,9 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
     def str_presenter(dumper, data2):
         if len(data2.splitlines()) > 1:  # check for multiline string
             # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
-            data2 = re.sub("\\n\s+\\n", "\n\n", data2)  # # Try \s{3,} for three or more spaces
+            data2 = re.sub(
+                "\\n\s+\\n", "\n\n", data2
+            )  # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
         return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
 
@@ -933,24 +1014,26 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         df = pd.json_normalize(data2_sanitized, sep="_")
         data2_sanitized_flattened = df.to_dict(orient="records")[0]
 
-        repl_keys = {k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())}
+        repl_keys = {
+            k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())
+        }
 
         text = dict_to_md(
-                body_parts,
-                remove_keys=[
-                    "Rubric",
-                    "Solution",
-                    "Comments",
-                    "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
-                    "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
-                ],
-            )
+            body_parts,
+            remove_keys=[
+                "Rubric",
+                "Solution",
+                "Comments",
+                "pl-submission-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
+                "pl-answer-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
+            ],
+        )
 
         for k, v in repl_keys.items():
             text = text.replace(k, v)
 
         # Update the YAML header to add substitutions
-        header.update({"myst": {"substitutions": data2_sanitized_flattened} })
+        header.update({"myst": {"substitutions": data2_sanitized_flattened}})
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
@@ -1024,18 +1107,24 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
     # Move image assets
     files_to_copy = header.get("assets")
     if files_to_copy:
-        [copy2(pathlib.Path(source_filepath).parent / fl, output_path.parent) for fl in files_to_copy]
+        [
+            copy2(pathlib.Path(source_filepath).parent / fl, output_path.parent)
+            for fl in files_to_copy
+        ]
 
     # Move autograde py test files
     files_to_copy = header.get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path.parent / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy if (instructor or fl=="starter_code.py")]
+        [
+            copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl)
+            for fl in files_to_copy
+            if (instructor or fl == "starter_code.py")
+        ]
 
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
-
     try:
         pathlib.Path(source_filepath)
     except:
@@ -1046,16 +1135,22 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
     if output_path is None:
         if "source" in source_filepath:
-            output_path = pathlib.Path(source_filepath.replace("source", path_replace)).parent
+            output_path = pathlib.Path(
+                source_filepath.replace("source", path_replace)
+            ).parent
         else:
-            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!! ")
+            raise NotImplementedError(
+                "Check the source filepath; it does not have 'source' in it!! "
+            )
     else:
         ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
         output_path = pathlib.Path(output_path).parent
 
     # Parse the MD file
     parsed_q = read_md_problem(source_filepath)
-    parsed_q["header"]["topic"] = topics[parsed_q["header"]["topic"]] # Add integer topic id, this is safe because we validated the header in read_md_problem
+    parsed_q["header"]["topic"] = topics[
+        parsed_q["header"]["topic"]
+    ]  # Add integer topic id, this is safe because we validated the header in read_md_problem
 
     # Create output dir if it doesn't exist
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1084,9 +1179,9 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
     # Question Preamble
     preamble = parsed_q["body_parts"].get("preamble", None)
-    #TODO: Remove Debugging print statement
-    #print(f"premable: {preamble}")
-    
+    # TODO: Remove Debugging print statement
+    # print(f"premable: {preamble}")
+
     if preamble:
         question_html = f"<pl-question-panel>\n<markdown>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
     else:
@@ -1095,7 +1190,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Useful info panel
     useful_info = parsed_q["body_parts"].get("Useful_info", None)
 
-    #TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
+    # TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
     if useful_info:
         question_html += f"""<p>
    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -1144,7 +1239,9 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         elif "matching" in q_type:
             question_html += process_matching(part, parsed_q, data2)
         else:
-            raise NotImplementedError(f"This question type ({q_type}) is not yet implemented.")
+            raise NotImplementedError(
+                f"This question type ({q_type}) is not yet implemented."
+            )
 
         if parsed_q["num_parts"] > 1:
             question_html += "</div>\n</div>\n"
@@ -1154,7 +1251,9 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         q_panel = parsed_q["body_parts_split"][part].get("pl-answer-panel", None)
 
         if subm_panel:
-            question_html += f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
+            question_html += (
+                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
+            )
         if q_panel:
             question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
 
@@ -1186,26 +1285,39 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     if files_to_copy:
         pl_path = output_path / "clientFilesQuestion"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl) for fl in files_to_copy]
+        [
+            copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl)
+            for fl in files_to_copy
+        ]
 
     # Move autograde py test files
     files_to_copy = parsed_q["header"].get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl) for fl in files_to_copy]
+        [
+            copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl)
+            for fl in files_to_copy
+        ]
 
 
 def pl_image_path(html):
-
     """Adds `{{options.client_files_question_url}}` directory before the path automatically"""
 
     # TODO: Figure out the regex to make this into a single expression, maybe with |
     # If image files are included as markdown format, add {{options.client_files_question_url}}
-    res = re.subn(r"\(((?!http).*\.png)\)", "({{options.client_files_question_url}}/\\1)", html)
-    res = re.subn(r"\(((?!http).*\.gif)\)", "({{options.client_files_question_url}}/\\1)", html)
-    res = re.subn(r"\(((?!http).*\.jpeg)\)", "({{options.client_files_question_url}}/\\1)", html)
-    res = re.subn(r"\(((?!http).*\.jpg)\)", "({{options.client_files_question_url}}/\\1)", html)
+    res = re.subn(
+        r"\(((?!http).*\.png)\)", "({{options.client_files_question_url}}/\\1)", html
+    )
+    res = re.subn(
+        r"\(((?!http).*\.gif)\)", "({{options.client_files_question_url}}/\\1)", html
+    )
+    res = re.subn(
+        r"\(((?!http).*\.jpeg)\)", "({{options.client_files_question_url}}/\\1)", html
+    )
+    res = re.subn(
+        r"\(((?!http).*\.jpg)\)", "({{options.client_files_question_url}}/\\1)", html
+    )
 
     # If image files are included as html format, add {{options.client_files_question_url}}
     res = re.subn(
@@ -1231,30 +1343,9 @@ def pl_image_path(html):
 
     return res[0]
 
-def backticks_to_code_tags(html):
-    """
-    Converts backticks to <code> tags, and code fences to <pl-code> tags.
-
-    Args:
-        html (str): The HTML to convert.
-
-    """
-    html = re.sub(
-        r"```(?P<language>\w+)?(?(language)(\{(?P<highlighting>[\d,-]*)\})?|)(?P<Code>[^`]+)```",
-        r'<pl-code language="\g<language>" highlight-lines="\g<highlighting>">\g<Code></pl-code>',
-        html,
-        flags=re.MULTILINE,
-    )
-    html = html.replace(' language=""', "")  # Remove empty language attributes
-    html = html.replace(
-        ' highlight-lines=""', ""
-    )  # Remove empty highlight-lines attributes
-    html = re.sub(r"(?<!\\)`(?P<Code>[^`]+)`", r"<code>\g<Code></code>", html)
-    html = html.replace("\\`", "`")  # Replace escaped backticks
-    return html
 
 def validate_header(header_dict):
     # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
-    
+
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")

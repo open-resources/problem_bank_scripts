@@ -22,6 +22,12 @@ def generate(data):
     # Update the data object with a new dict
     data.update(data2)
     
+    # The following code is added in by problem bank scripts automatically to
+    # convert backticks to codeblocks/code fences in answers text.
+    # This line can be commented out to disable
+    pbh.backticks_to_code_tags(value)
+    # End code added in by problem bank scripts
+
 def grade(data):
     # Since we want an alternate correct answer, we can check for it here, and override the automatic 
     # score if it is correct
