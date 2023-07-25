@@ -483,7 +483,7 @@ def assemble_server_py(parsed_question, location):
         location (string): 'local' or 'prairielearn' ; the import statements are different depending on if it's local or on a PL server.
     """
 
-    server_dict = parsed_question["header"]["server"]
+    server_dict = parsed_question["header"]["server"].copy()
 
     if location == "local":
         # This is needed to run this locally compared to when it gets run on a PL server
