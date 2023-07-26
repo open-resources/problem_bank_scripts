@@ -46,7 +46,7 @@ myst:
     params_part1_ans3_value: '`11`'
     params_part1_ans3_feedback: Hmm, does it make sense to add a velocity and a time?
       Check the units!
-    params_part1_ans4_value: '`0.8333333333333334`'
+    params_part1_ans4_value: '`0.833`'
     params_part1_ans4_feedback: 'Hmm, check the units of the resulting answer: v/t.'
     params_part1_ans5_value: '`-1`'
     params_part1_ans5_feedback: Hmm, does it make sense to subtract a velocity and

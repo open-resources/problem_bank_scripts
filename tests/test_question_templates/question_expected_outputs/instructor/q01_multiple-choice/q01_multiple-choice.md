@@ -118,7 +118,7 @@ myst:
           feedback: Hmm, does it make sense to add a velocity and a time? Check the
             units!
         ans4:
-          value: '`0.8333333333333334`'
+          value: '`0.833`'
           correct: false
           feedback: 'Hmm, check the units of the resulting answer: v/t.'
         ans5:
