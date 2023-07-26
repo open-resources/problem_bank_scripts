@@ -29,33 +29,39 @@ def generate(data):
     data2["params"]["t"] = t
     
     # define possible answers
-    data2["params"]["part1"]["ans1"]["value"] = f"<code>{pbh.roundp(42)}</code>"
+    data2["params"]["part1"]["ans1"]["value"] = f"`{pbh.roundp(42)}`"
     data2["params"]["part1"]["ans1"]["correct"] = False
     data2["params"]["part1"]["ans1"]["feedback"] = "This is a random number, you probably selected this choice by mistake! Try again please!"
     
-    data2["params"]["part1"]["ans2"]["value"] = f"<code>{pbh.roundp(v*t)}</code>"
+    data2["params"]["part1"]["ans2"]["value"] = f"`{pbh.roundp(v*t)}`"
     data2["params"]["part1"]["ans2"]["correct"] = True
     data2["params"]["part1"]["ans2"]["feedback"] = "Great! You got it."
     
-    data2["params"]["part1"]["ans3"]["value"] = f"<code>{pbh.roundp(v+t)}</code>"
+    data2["params"]["part1"]["ans3"]["value"] = f"`{pbh.roundp(v+t)}`"
     data2["params"]["part1"]["ans3"]["correct"] = False
     data2["params"]["part1"]["ans3"]["feedback"] = "Hmm, does it make sense to add a velocity and a time? Check the units!"
     
-    data2["params"]["part1"]["ans4"]["value"] = f"<code>{pbh.roundp(v/t)}</code>"
+    data2["params"]["part1"]["ans4"]["value"] = f"`{pbh.roundp(v/t)}`"
     data2["params"]["part1"]["ans4"]["correct"] = False
     data2["params"]["part1"]["ans4"]["feedback"] = "Hmm, check the units of the resulting answer: v/t."
     
-    data2["params"]["part1"]["ans5"]["value"] = f"<code>{pbh.roundp(v-t)}</code>"
+    data2["params"]["part1"]["ans5"]["value"] = f"`{pbh.roundp(v-t)}`"
     data2["params"]["part1"]["ans5"]["correct"] = False
     data2["params"]["part1"]["ans5"]["feedback"] = "Hmm, does it make sense to subtract a velocity and a time? Check the units!"
     
-    data2["params"]["part1"]["ans6"]["value"] = f"<code>{pbh.roundp(1.3*(v-t))}</code>"
+    data2["params"]["part1"]["ans6"]["value"] = f"`{pbh.roundp(1.3*(v-t))}`"
     data2["params"]["part1"]["ans6"]["correct"] = False
     data2["params"]["part1"]["ans6"]["feedback"] = "Hmm, does it make sense to subtract a velocity and a time? Check the units!"
     
     # Update the data object with a new dict
     data.update(data2)
     
+    # The following code is added in by problem bank scripts automatically to
+    # convert backticks to codeblocks/code fences in answers text.
+    # This line can be commented out to disable
+    pbh.backticks_to_code_tags(value)
+    # End code added in by problem bank scripts
+
 def prepare(data):
     pass
     
