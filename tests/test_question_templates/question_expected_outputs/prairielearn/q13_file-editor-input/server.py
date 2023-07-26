@@ -46,6 +46,12 @@ def generate(data):
         {"name": function_name, "description": f"receives a single numerical input, returns its {question}", "type": "function"}
     ]
     
+    # The following code is added in by problem bank scripts automatically to
+    # convert backticks to codeblocks/code fences in answers text.
+    # This line can be commented out to disable
+    pbh.backticks_to_code_tags(value)
+    # End code added in by problem bank scripts
+
 def prepare(data):
     pass
     
