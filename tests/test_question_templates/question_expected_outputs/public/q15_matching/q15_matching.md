@@ -47,7 +47,7 @@ myst:
     params_part1_statement2_matches: 'True'
     params_part1_statement3_value: 11
     params_part1_statement3_matches: 'False'
-    params_part1_statement4_value: 0.8333333333333334
+    params_part1_statement4_value: 0.833
     params_part1_statement4_matches: 'False'
 ---
 # {{ params_vars_title }}

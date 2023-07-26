@@ -108,7 +108,7 @@ myst:
           value: 11
           matches: 'False'
         statement4:
-          value: 0.8333333333333334
+          value: 0.833
           matches: 'False'
 
 ---
