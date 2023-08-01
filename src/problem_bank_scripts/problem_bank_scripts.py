@@ -531,7 +531,7 @@ def assemble_server_py(parsed_question, location):
     # The following code is added in by problem bank scripts automatically to
     # convert backticks to codeblocks/code fences in answers text.
     # This line can be commented out to disable
-    pbh.backticks_to_code_tags(value)
+    pbh.backticks_to_code_tags(data)
     # End code added in by problem bank scripts
 
 """
