@@ -528,10 +528,14 @@ def assemble_server_py(parsed_question, location):
                     server_py += f"def {function}(data):\n    {indented_code}\n"
             if location == "prairielearn" and function == "generate":
                 server_py += """\
-    # The following code is added in by problem bank scripts automatically to
-    # convert backticks to codeblocks/code fences in answers text.
-    # This line can be commented out to disable
-    pbh.backticks_to_code_tags(data)
+    # Start code added automatically by problem_bank_scripts
+
+    # Convert backticks to code blocks/fences in answer choices.
+    pbh.backticks_to_code_tags(data2)
+
+    # Update data with data2
+    data.update(data2)
+
     # End code added in by problem bank scripts
 
 """
