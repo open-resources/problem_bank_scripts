@@ -2,6 +2,10 @@
 # Date: 2021-05-09
 # This file contains many helper functions that will be used across the question bank project.
 
+import inspect
+import textwrap
+from bs4 import BeautifulSoup
+import bs4
 from docopt import docopt
 
 # Imports
@@ -511,7 +515,9 @@ def assemble_server_py(parsed_question, location):
             "import problem_bank_scripts.prairielearn as pl",
         )
     elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
-        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
+        server_dict[
+            "imports"
+        ] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts"
 
     server_py = f""""""
 
@@ -522,7 +528,7 @@ def assemble_server_py(parsed_question, location):
             indented_code = code.replace("\n", "\n    ")
             # With the custom header, add functions to server.py as-is
             if function == "custom":
-                server_py += f"{code}"
+                pass
             else:
                 if code:
                     server_py += f"def {function}(data):\n    {indented_code}\n"
@@ -541,6 +547,9 @@ def assemble_server_py(parsed_question, location):
 """
     except:
         raise
+
+    if "custom" in server_dict.keys():
+        server_py += f"{server_dict['custom']}"
 
     return server_py
 
@@ -1353,3 +1362,298 @@ def validate_header(header_dict):
 
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+
+
+def identify_button_html(tag: bs4.Tag) -> bool:
+    """Identifies if the tag is a button
+
+    Args:
+        tag (bs4.Tag): BeautifulSoup tag
+
+    Returns:
+        bool: True if the tag is a button, False otherwise
+    """
+    if tag.name == "p":
+        button = tag.find("button", class_="btn btn-primary")
+        if button is not None:
+            if button.text.strip() == "Helpful Information":
+                return True
+    elif tag.name == "div" and tag.attrs.get("id") == "collapseExample":
+        return True
+    return False
+
+
+def pl_to_md(question: os.PathLike):
+    """Converts a PL question to the OPB MD format
+
+    Args:
+        question (os.PathLike): Path to the PL question directory
+    """
+    path = pathlib.Path(question)
+    html = path.joinpath("question.html").read_text(encoding="utf8")
+    start = re.match(
+        r"(?P<Content>.*)\n\n<!-- #{8} Start of Part 1 #{8} -->",
+        html,
+        re.DOTALL | re.MULTILINE,
+    )
+    parts: list[tuple[str, str]] = re.findall(
+        r"<!-- #{8} Start of Part (?P<part>\d+) #{8} -->(?P<Content>.*)<!-- #{8} End of Part (?P=part) #{8} -->",
+        html,
+        re.DOTALL | re.MULTILINE,
+    )
+    end = re.search(
+        r"<!-- #{8} End of Part \d+ #{8} -->\n\n(?!<!-- #{8} Start of Part \d+ #{8} -->)(?P<Content>.*)",
+        html,
+        re.DOTALL | re.MULTILINE,
+    )
+    md_result = "# {{ params.vars.title }}\n\n"
+    header_dict = {}
+    # the start and end sections are special, and don't have an associated part
+    if start is not None:
+        soup = BeautifulSoup(start.group("Content"), "lxml")
+        if (preamble_tag := soup.find("pl-question-panel")) is not None:
+            md_result += preamble_tag.text.strip()
+            md_result += "\n\n"
+        if len(usefuL_info := soup.find_all(identify_button_html)) > 0:
+            info = usefuL_info[1]
+            if not isinstance(info, bs4.Tag):
+                raise ValueError(
+                    f"Detected presence of useful info button components but could not parse it for question {path.name}"
+                )
+            md_result += f"## Useful Info\n\n{info.text.strip()}\n\n"
+
+    if end is not None:
+        end_md = BeautifulSoup(end.group("Content"), "lxml").contents
+        if not end_md:
+            raise ValueError(
+                f"Could not find attribution at end of question for question {path.name}"
+            )
+        end_md = end_md[0].text.strip().replace("---\n", "").replace("\n", "<br>")
+        with importlib.resources.open_text(
+            "problem_bank_scripts", "attributions.json"
+        ) as file:
+            possible_attributions: dict[str, str] = json.load(file)
+        attribution = None
+        for possible_attribution, pl_attribution_text in possible_attributions.items():
+            if end_md.endswith(pl_attribution_text.replace("<br>","")):
+                attribution = possible_attribution
+        if attribution is None:
+            raise ValueError(
+                f"Could not find attribution at end of question or the found attribution was not recognized for question {path.name}:\n\n{end_md!r}"
+            )
+    else:
+        raise ValueError(
+            f"Could not find attribution at end of question for question {path.name}"
+        )
+
+    supported_input_types = {
+        "pl-multiple-choice": "multiple-choice",
+        "pl-number-input": "number-input",
+        "pl-checkbox": "checkbox",
+        "pl-symbolic-input": "symbolic-input",
+        "pl-dropdown": "dropdown",
+        "pl-longtext": "longtext",
+        "pl-file-upload": "file-upload",
+        "pl-file-editor": "file-editor",
+        "pl-string-input": "string-input",
+        "pl-matching": "matching",
+    }
+
+    auto_tags = {"multi_part"} | set(supported_input_types.values())
+
+    parts_dict = {} # we want to try and eagerly parse the markdown for each part so we can get the question text in 
+                                    # as early as possible, but this means we need to delay adding the part metadata to the
+                                    # header dictionary since insert order is preserved in python dictionaries which will preserve it on yaml dump
+
+    for part, content in parts:
+        # print(part, content)
+        part_soup = BeautifulSoup(content, "lxml")
+        pl_input = part_soup.find(
+            [
+                "pl-big-o-input",
+                "pl-checkbox",
+                "pl-dropdown",
+                "pl-file-editor",
+                "pl-file-upload",
+                "pl-integer-input",
+                "pl-matching",
+                "pl-matrix-component-input",
+                "pl-matrix-input",
+                "pl-multiple-choice",
+                "pl-number-input",
+                "pl-order-blocks",
+                "pl-rich-text-editor",
+                "pl-string-input",
+                "pl-symbolic-input",
+                "pl-threejs",
+                "pl-units-input",
+            ]
+        )
+        if pl_input is not None:
+            pl_input = pl_input.extract()
+        else:
+            raise ValueError(f"Could not find input tag for part {part}")
+        if isinstance(pl_input, bs4.NavigableString):
+            raise ValueError(f"Could not find input tag for part {part}")
+        pl_customizations = pl_input.attrs
+        pl_input_type = pl_input.name
+        opb_input_type = supported_input_types.get(pl_input_type, None)
+        if opb_input_type is None:
+            raise NotImplementedError(
+                f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
+            )
+        pl_submission_panel = part_soup.find("pl-submission-panel")
+        if isinstance(pl_submission_panel, bs4.Tag):
+            submission_panel = pl_submission_panel.text.strip()
+        else:
+            submission_panel = ""
+        pl_answer_panel = part_soup.find("pl-answer-panel")
+        if isinstance(pl_answer_panel, bs4.Tag):
+            answer_panel = pl_answer_panel.text.strip()
+        else:
+            answer_panel = ""
+        question_text_tag = part_soup.find("pl-question-panel")
+        if question_text_tag is not None:
+            question_text = question_text_tag.text.strip()
+        else:
+            question_text = ""
+        if opb_input_type in {"multiple-choice", "checkbox", "dropdown"}:
+            answers = pl_input.find_all("pl-answer")
+            if len(answers) == 0:
+                print(pl_input.prettify())
+                raise ValueError(f"Could not find any answers for part {part}")
+            answer_list = [replace_tags(answer.text.strip()) for answer in answers]
+        else:
+            answer_list = []
+
+        md_result += f"## Part {part}\n\n"
+        if question_text:
+            md_result += f"{question_text}\n\n"
+
+        md_result += "### Answer Section \n\n"
+
+        if answer_list:
+            for answer in answer_list:
+                md_result += f"- {answer}\n"
+            md_result += "\n"
+        
+        if submission_panel:
+            md_result += f"### pl-submission-panel\n\n{submission_panel}\n\n"
+        
+        if answer_panel:
+            md_result += f"### pl-answer-panel\n\n{answer_panel}\n\n"
+
+        pl_customizations.pop("answers-name", None)
+
+        parts_dict[f"part{part}"] = {
+            "type": opb_input_type,
+            "pl-customizations": pl_customizations,
+        }
+    
+    info_json = json.loads(path.joinpath("info.json").read_text(encoding="utf8"))
+    header_dict["title"] = info_json["title"]
+    header_dict["topic"] = info_json["topic"].split(".", 1)[-1]
+    header_dict["author"] = "UNABLE TO ROUNDTRIP"
+    header_dict["source"] = "UNABLE TO ROUNDTRIP"
+    header_dict["template_version"] = "UNABLE TO ROUNDTRIP"
+    header_dict["attribution"] = attribution
+    header_dict["gradingMethod"] = info_json.get("partialCredit", None)
+    header_dict["partialCredit"] = info_json.get("partialCredit", None)
+    header_dict["singleVariant"] = info_json.get("singleVariant", None)
+    header_dict["showCorrectAnswer"] = info_json.get("showCorrectAnswer", None)
+    header_dict["dependencies"] = info_json.get("dependencies", None)
+    header_dict["externalGradingOptions"] = info_json.get("externalGradingOptions", None)
+    header_dict["workspaceOptions"] = info_json.get("workspaceOptions", None)
+    header_dict["outcomes"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["difficulty"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["randomization"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["taxonomy"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["span"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["length"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["tags"] = sorted(list(set(info_json["tags"]) - auto_tags)) # force deterministic order
+    header_dict["assets"] = [] # TODO: Add support for this
+    header_dict["autogradeTestFiles"] = [] # TODO: Add support for this
+    header_dict["workspaceFiles"] = [] # TODO: Add support for this
+    header_dict["serverFiles"] = [] # TODO: Add support for this
+    
+    if header_dict["tags"] == []:
+        header_dict["tags"] = ["unknown"]
+
+    server_py = path.joinpath("server.py")
+    spec = importlib.util.spec_from_file_location(f"server_{path.name}", str(server_py.absolute()))
+    if spec is None:
+        raise ValueError(f"Could not find server.py file for question {path.name}")
+    server = importlib.util.module_from_spec(spec)
+    loader = spec.loader
+    if loader is None:
+        raise ValueError(f"Could not load server.py file for question {path.name}")
+    loader.exec_module(server) # execute the server.py file to get code objects for it that can be access with inspect
+
+    functions = {}
+
+    custom_start_line_no = 0
+
+    for func_name in ("imports", "generate", "prepare", "parse", "grade"):
+        func = getattr(server, func_name, None)
+        if func is None:
+            functions[func_name] = "pass\n"
+        if not inspect.isfunction(func):
+            raise ValueError(f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)")
+        if func.__code__.co_argcount != 1:
+            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {func.__code__.co_argcount})")
+        if func.__code__.co_varnames[0] != "data":
+            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {func.__code__.co_varnames[0]!r})")
+        func_code = inspect.getsource(func)
+        functions[func_name] = textwrap.dedent(func_code.split("\n", 1)[-1]) # remove "def name(data):"" line, and remove unnecessary indentation
+        end_line_no = func_code.count("\n") + func.__code__.co_firstlineno
+        custom_start_line_no = max(custom_start_line_no, end_line_no)
+    # get custom functions
+
+    func_code = inspect.getsource(server).split("\n", custom_start_line_no)[-1]
+    if func_code.strip():
+        functions["custom"] = func_code.strip()
+    
+    header_dict["server"] = functions
+    
+    for part, info in parts_dict.items(): # now add them in to force them to the bottom
+        header_dict[part] = info
+
+    for opt_key in (
+        "gradingMethod",
+        "partialCredit",
+        "dependencies",
+        "singleVariant",
+        "showCorrectAnswer",
+        "externalGradingOptions",
+        "workspaceOptions"
+    ): # trim optional keys
+        if header_dict[opt_key] is None:
+            del header_dict[opt_key]
+
+    for asset_key in ("assets", "autogradeTestFiles", "workspaceFiles", "serverFiles"):
+        if header_dict[asset_key] == []:  # remove empty lists
+            header_dict[asset_key] = None
+
+    def str_presenter(dumper, data2):
+        if len(data2.splitlines()) > 1:  # check for multiline string
+            # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
+            data2 = re.sub(
+                "\\n\s+\\n", "\n\n", data2
+            )  # # Try \s{3,} for three or more spaces
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
+        if data2.startswith("pass"):
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
+        return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
+
+    yaml.add_representer(str, str_presenter)
+
+    def represent_none(self, _):
+        return self.represent_scalar('tag:yaml.org,2002:null', '')
+
+    yaml.add_representer(type(None), represent_none)
+
+    md_result = f"---\n{yaml.dump(header_dict, sort_keys=False)}---\n{md_result}"
+
+    # path.joinpath("question.md").write_text(md_result, encoding="utf8")
+
+    return md_result
