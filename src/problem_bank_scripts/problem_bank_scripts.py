@@ -1647,10 +1647,32 @@ def pl_to_md(question: os.PathLike):
         if header_dict[opt_key] is None:
             del header_dict[opt_key]
 
-    for asset_key in ("assets", "autogradeTestFiles", "workspaceFiles", "serverFiles"):
-        if header_dict[asset_key] == []:  # remove empty lists
-            header_dict[asset_key] = None
+    ### Get assets # TODO: Copy assets to destination path
 
+    client_assets = path / "clientFilesQuestion"
+    server_assets = path / "serverFilesQuestion"
+    test_assets = path / "tests"
+    workspace_assets = path / "workspaceFiles"
+
+    if client_assets.exists():
+        header_dict["assets"] = sorted([str(fl.relative_to(path)) for fl in client_assets.iterdir()])
+    else:
+        header_dict["assets"] = None
+    
+    if server_assets.exists():
+        header_dict["serverFiles"] = sorted([str(fl.relative_to(path)) for fl in server_assets.iterdir()])
+    else:
+        header_dict["serverFiles"] = None
+
+    if test_assets.exists():
+        header_dict["autogradeTestFiles"] = sorted([str(fl.relative_to(path)) for fl in test_assets.iterdir()])
+    else:
+        header_dict["autogradeTestFiles"] = None
+
+    if workspace_assets.exists():
+        header_dict["workspaceFiles"] = sorted([str(fl.relative_to(path)) for fl in workspace_assets.iterdir()])
+    else:
+        header_dict["workspaceFiles"] = None
 
     ### START Yaml Dump Configuration ###
 
