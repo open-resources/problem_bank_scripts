@@ -2,10 +2,6 @@
 # Date: 2021-05-09
 # This file contains many helper functions that will be used across the question bank project.
 
-import inspect
-import textwrap
-from bs4 import BeautifulSoup
-import bs4
 from docopt import docopt
 
 # Imports
@@ -34,6 +30,13 @@ import yaml
 
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
+
+## Roundtrip PL questions back to OPB MD
+import ast
+import inspect
+import textwrap
+import bs4
+from bs4 import BeautifulSoup
 
 ## Topic Validation
 
@@ -1545,10 +1548,24 @@ def pl_to_md(question: os.PathLike):
 
         pl_customizations.pop("answers-name", None)
 
+        for customization, value in pl_customizations.items():
+            # we want to try and parse the values of the customizations as python literals
+            # so that we can roundtrip them through yaml and get the same values back
+            # but we don't want to fail if we can't parse them, nor do we want to try and parse non literals
+            # so using ast.literal_eval is preferred over eval here
+            try:
+                pl_customizations[customization] = ast.literal_eval(value)
+            except:
+                pass
+
         parts_dict[f"part{part}"] = {
             "type": opb_input_type,
             "pl-customizations": pl_customizations,
         }
+
+    md_result += f"## Rubric\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should be hidden from students until after the deadline.'!r}\n\n"
+    md_result += f"## Solution\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should never be revealed to students.'!r}.\n\n"
+    md_result += f"## Comments\n\nUNABLE TO ROUNDTRIP, Defaulting to {'These are random comments associated with this question.'!r}\n\n"
     
     info_json = json.loads(path.joinpath("info.json").read_text(encoding="utf8"))
     header_dict["title"] = info_json["title"]
@@ -1634,6 +1651,9 @@ def pl_to_md(question: os.PathLike):
         if header_dict[asset_key] == []:  # remove empty lists
             header_dict[asset_key] = None
 
+
+    ### START Yaml Dump Configuration ###
+
     def str_presenter(dumper, data2):
         if len(data2.splitlines()) > 1:  # check for multiline string
             # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
@@ -1641,16 +1661,18 @@ def pl_to_md(question: os.PathLike):
                 "\\n\s+\\n", "\n\n", data2
             )  # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
-        if data2.startswith("pass"):
+        if data2.startswith("pass"): # Check for default server.py functions
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
         return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
 
     yaml.add_representer(str, str_presenter)
 
-    def represent_none(self, _):
+    def represent_none(self, _): # This removes explicit null values
         return self.represent_scalar('tag:yaml.org,2002:null', '')
 
     yaml.add_representer(type(None), represent_none)
+
+    ### END Yaml Dump Configuration ###
 
     md_result = f"---\n{yaml.dump(header_dict, sort_keys=False)}---\n{md_result}"
 
