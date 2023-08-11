@@ -1616,10 +1616,10 @@ def pl_to_md(question: os.PathLike):
             functions[func_name] = "pass\n"
         if not inspect.isfunction(func):
             raise ValueError(f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)")
-        if func.__code__.co_argcount != 1:
-            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {func.__code__.co_argcount})")
-        if func.__code__.co_varnames[0] != "data":
-            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {func.__code__.co_varnames[0]!r})")
+        if len(arguments := inspect.getargs(func.__code__)) != 1 :
+            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(arguments)})")
+        if arguments[0] != "data":
+            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {arguments[0]!r})")
         func_code = inspect.getsource(func)
         functions[func_name] = textwrap.dedent(func_code.split("\n", 1)[-1]) # remove "def name(data):"" line, and remove unnecessary indentation
         end_line_no = func_code.count("\n") + func.__code__.co_firstlineno
