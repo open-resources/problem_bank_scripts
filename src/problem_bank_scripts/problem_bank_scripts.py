@@ -1386,14 +1386,60 @@ def identify_button_html(tag: bs4.Tag) -> bool:
     return False
 
 
-def pl_to_md(question: os.PathLike):
+def pl_to_md(
+    question: os.PathLike[str], output: os.PathLike[str], file_name: str | None = None
+):
     """Converts a PL question to the OPB MD format
 
     Args:
-        question (os.PathLike): Path to the PL question directory
+        question (os.PathLike[str]): Path to the PL question directory
+        output (os.PathLike[str]): Path to the output directory
+        file_name (str, optional): Name of the output file. Defaults to the name of last segment of the output filepath.
+
+    Raises:
+        FileNotFoundError: If the question directory does not exist
+        NotADirectoryError: If the question or output path is a file
+        ValueError: If the question directory is missing any of the required files, the files are not in the expected format, or the attribution at the end of the question is not recognized
+        UserWarning: If the output directory already exists
+        NotImplementedError: If the question contains a question type that is not yet supported
     """
     path = pathlib.Path(question)
-    html = path.joinpath("question.html").read_text(encoding="utf8")
+    if not path.exists():
+        raise FileNotFoundError(f"{question} does not exist")
+    if path.is_file():
+        raise NotADirectoryError(
+            f"{question} is not a directory, passing a file as the question directory is not supported for converting PL to MD"
+        )
+
+    output_path = pathlib.Path(output)
+    if output_path.is_file():
+        raise NotADirectoryError(
+            f"{output} is not a directory, passing a file as the output directory is not supported for converting PL to MD"
+        )
+    if output_path.exists():
+        warnings.warn(
+            f"Directory {output!r} already exists, any files with the same name will be overwritten",
+            UserWarning,
+            stacklevel=2,
+        )
+    output_path.mkdir(parents=True, exist_ok=True)
+    output_md_file = output_path / (file_name or f"{path.name}.md")
+
+    question_file = path / "question.html"
+    info_json_file = path / "info.json"
+    server_py = path / "server.py"
+
+    if not (question_file.exists() and info_json_file.exists() and server_py.exists()):
+        error = "Error: the following files are missing and are required to convert a question:"
+        if not question_file.exists():
+            error += f"\n\tquestion.html does not exist in {question}"
+        if not info_json_file.exists():
+            error += f"\n\tinfo.json does not exist in {question}"
+        if not server_py.exists():
+            error += f"\n\tserver.py does not exist in {question}"
+        raise FileNotFoundError(error)
+
+    html = question_file.read_text(encoding="utf8")
     start = re.match(
         r"(?P<Content>.*)\n\n<!-- #{8} Start of Part 1 #{8} -->",
         html,
@@ -1438,7 +1484,7 @@ def pl_to_md(question: os.PathLike):
             possible_attributions: dict[str, str] = json.load(file)
         attribution = None
         for possible_attribution, pl_attribution_text in possible_attributions.items():
-            if end_md.endswith(pl_attribution_text.replace("<br>","")):
+            if end_md.endswith(pl_attribution_text.replace("<br>", "")):
                 attribution = possible_attribution
         if attribution is None:
             raise ValueError(
@@ -1464,9 +1510,11 @@ def pl_to_md(question: os.PathLike):
 
     auto_tags = {"multi_part"} | set(supported_input_types.values())
 
-    parts_dict = {} # we want to try and eagerly parse the markdown for each part so we can get the question text in 
-                                    # as early as possible, but this means we need to delay adding the part metadata to the
-                                    # header dictionary since insert order is preserved in python dictionaries which will preserve it on yaml dump
+    parts_dict = (
+        {}
+    )  # we want to try and eagerly parse the markdown for each part so we can get the question text in
+    # as early as possible, but this means we need to delay adding the part metadata to the
+    # header dictionary since insert order is preserved in python dictionaries which will preserve it on yaml dump
 
     for part, content in parts:
         # print(part, content)
@@ -1539,10 +1587,10 @@ def pl_to_md(question: os.PathLike):
             for answer in answer_list:
                 md_result += f"- {answer}\n"
             md_result += "\n"
-        
+
         if submission_panel:
             md_result += f"### pl-submission-panel\n\n{submission_panel}\n\n"
-        
+
         if answer_panel:
             md_result += f"### pl-answer-panel\n\n{answer_panel}\n\n"
 
@@ -1566,8 +1614,8 @@ def pl_to_md(question: os.PathLike):
     md_result += f"## Rubric\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should be hidden from students until after the deadline.'!r}\n\n"
     md_result += f"## Solution\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should never be revealed to students.'!r}.\n\n"
     md_result += f"## Comments\n\nUNABLE TO ROUNDTRIP, Defaulting to {'These are random comments associated with this question.'!r}\n\n"
-    
-    info_json = json.loads(path.joinpath("info.json").read_text(encoding="utf8"))
+
+    info_json = json.loads(info_json_file.read_text(encoding="utf8"))
     header_dict["title"] = info_json["title"]
     header_dict["topic"] = info_json["topic"].split(".", 1)[-1]
     header_dict["author"] = "UNABLE TO ROUNDTRIP"
@@ -1579,7 +1627,9 @@ def pl_to_md(question: os.PathLike):
     header_dict["singleVariant"] = info_json.get("singleVariant", None)
     header_dict["showCorrectAnswer"] = info_json.get("showCorrectAnswer", None)
     header_dict["dependencies"] = info_json.get("dependencies", None)
-    header_dict["externalGradingOptions"] = info_json.get("externalGradingOptions", None)
+    header_dict["externalGradingOptions"] = info_json.get(
+        "externalGradingOptions", None
+    )
     header_dict["workspaceOptions"] = info_json.get("workspaceOptions", None)
     header_dict["outcomes"] = ["UNABLE TO ROUNDTRIP"]
     header_dict["difficulty"] = ["UNABLE TO ROUNDTRIP"]
@@ -1587,48 +1637,62 @@ def pl_to_md(question: os.PathLike):
     header_dict["taxonomy"] = ["UNABLE TO ROUNDTRIP"]
     header_dict["span"] = ["UNABLE TO ROUNDTRIP"]
     header_dict["length"] = ["UNABLE TO ROUNDTRIP"]
-    header_dict["tags"] = sorted(list(set(info_json["tags"]) - auto_tags)) # force deterministic order
-    header_dict["assets"] = [] # TODO: Add support for this
-    header_dict["autogradeTestFiles"] = [] # TODO: Add support for this
-    header_dict["workspaceFiles"] = [] # TODO: Add support for this
-    header_dict["serverFiles"] = [] # TODO: Add support for this
-    
+    header_dict["tags"] = sorted(
+        list(set(info_json["tags"]) - auto_tags)
+    )  # force deterministic order
+    header_dict["assets"] = []  # TODO: Add support for this
+    header_dict["autogradeTestFiles"] = []  # TODO: Add support for this
+    header_dict["workspaceFiles"] = []  # TODO: Add support for this
+    header_dict["serverFiles"] = []  # TODO: Add support for this
+
     if header_dict["tags"] == []:
         header_dict["tags"] = ["unknown"]
 
-    server_py = path.joinpath("server.py")
-    spec = importlib.util.spec_from_file_location(f"server_{path.name}", str(server_py.absolute()))
+    spec = importlib.util.spec_from_file_location(
+        f"server_{path.name}", str(server_py.absolute())
+    )
     if spec is None:
         raise ValueError(f"Could not find server.py file for question {path.name}")
     server = importlib.util.module_from_spec(spec)
     loader = spec.loader
     if loader is None:
         raise ValueError(f"Could not load server.py file for question {path.name}")
-    loader.exec_module(server) # execute the server.py file to get code objects for it that can be access with inspect
+    loader.exec_module(
+        server
+    )  # execute the server.py file to get code objects for it that can be access with inspect
 
     functions = {}
 
     custom_start_line_no = 0
 
-    def flatten(data):
-        if isinstance(data, tuple):
-            for x in data:
-                yield from flatten(x)
-        else:
-            yield data
+    def flatten_args(data: inspect.Arguments):
+        args, varargs, varkw = data
+        if varargs is not None:
+            args.append(varargs)
+        if varkw is not None:
+            args.append(varkw)
+        return args
 
     for func_name in ("imports", "generate", "prepare", "parse", "grade"):
         func = getattr(server, func_name, None)
         if func is None:
             functions[func_name] = "pass\n"
         if not inspect.isfunction(func):
-            raise ValueError(f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)")
-        if len(arguments := list(flatten(inspect.getargs(func.__code__)))) != 1 :
-            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(arguments)})")
+            raise ValueError(
+                f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
+            )
+        if len(arguments := flatten_args(inspect.getargs(func.__code__))) != 1:
+            raise ValueError(
+                f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(arguments)}: {arguments!r})"
+            )
         if arguments[0] != "data":
-            raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {arguments[0]!r})")
+            raise ValueError(
+                f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {arguments[0]!r})"
+            )
         func_code = inspect.getsource(func)
-        functions[func_name] = textwrap.dedent(func_code.split("\n", 1)[-1]) # remove "def name(data):"" line, and remove unnecessary indentation
+        functions[func_name] = textwrap.dedent(
+            func_code.split("\n", 1)[-1]
+        )  # remove "def name(data):"" line, and remove unnecessary indentation
         end_line_no = func_code.count("\n") + func.__code__.co_firstlineno
         custom_start_line_no = max(custom_start_line_no, end_line_no)
     # get custom functions
@@ -1636,10 +1700,10 @@ def pl_to_md(question: os.PathLike):
     func_code = inspect.getsource(server).split("\n", custom_start_line_no)[-1]
     if func_code.strip():
         functions["custom"] = func_code.strip()
-    
+
     header_dict["server"] = functions
-    
-    for part, info in parts_dict.items(): # now add them in to force them to the bottom
+
+    for part, info in parts_dict.items():  # now add them in to force them to the bottom
         header_dict[part] = info
 
     for opt_key in (
@@ -1649,8 +1713,8 @@ def pl_to_md(question: os.PathLike):
         "singleVariant",
         "showCorrectAnswer",
         "externalGradingOptions",
-        "workspaceOptions"
-    ): # trim optional keys
+        "workspaceOptions",
+    ):  # trim optional keys
         if header_dict[opt_key] is None:
             del header_dict[opt_key]
 
@@ -1662,24 +1726,50 @@ def pl_to_md(question: os.PathLike):
     workspace_assets = path / "workspaceFiles"
 
     if client_assets.exists():
-        header_dict["assets"] = sorted([str(fl.relative_to(path)) for fl in client_assets.iterdir()])
+        header_dict["assets"] = sorted(
+            [str(fl.relative_to(client_assets)) for fl in client_assets.iterdir()]
+        )
+        # copy the files from the clientFilesQuestion directory to the output directory
+        for fl in client_assets.iterdir():
+            copy2(fl, output_path / fl.name)
     else:
-        header_dict["assets"] = None
-    
+        del header_dict["assets"]  # remove the key if it the directory doesn't exist
+
     if server_assets.exists():
-        header_dict["serverFiles"] = sorted([str(fl.relative_to(path)) for fl in server_assets.iterdir()])
+        header_dict["serverFiles"] = sorted(
+            [str(fl.relative_to(server_assets)) for fl in server_assets.iterdir()]
+        )
+        # copy the files from the serverFilesQuestion directory to the output directory
+        for fl in server_assets.iterdir():
+            copy2(fl, output_path / fl.name)
     else:
-        header_dict["serverFiles"] = None
+        del header_dict[
+            "serverFiles"
+        ]  # remove the key if it the directory doesn't exist
 
     if test_assets.exists():
-        header_dict["autogradeTestFiles"] = sorted([str(fl.relative_to(path)) for fl in test_assets.iterdir()])
+        header_dict["autogradeTestFiles"] = sorted(
+            [str(fl.relative_to(test_assets)) for fl in test_assets.iterdir()]
+        )
+        # copy the files from the assets directory to the tests subdirectory of the output directory
+        for fl in test_assets.iterdir():
+            copy2(fl, output_path / "tests" / fl.name)
     else:
-        header_dict["autogradeTestFiles"] = None
+        del header_dict[
+            "autogradeTestFiles"
+        ]  # remove the key if it the directory doesn't exist
 
     if workspace_assets.exists():
-        header_dict["workspaceFiles"] = sorted([str(fl.relative_to(path)) for fl in workspace_assets.iterdir()])
+        header_dict["workspaceFiles"] = sorted(
+            [str(fl.relative_to(workspace_assets)) for fl in workspace_assets.iterdir()]
+        )
+        # copy the files from the workspaceFiles directory to the workspace subdirectory of the output directory
+        for fl in workspace_assets.iterdir():
+            copy2(fl, output_path / "workspace" / fl.name)
     else:
-        header_dict["workspaceFiles"] = None
+        del header_dict[
+            "workspaceFiles"
+        ]  # remove the key if it the directory doesn't exist
 
     ### START Yaml Dump Configuration ###
 
@@ -1690,21 +1780,21 @@ def pl_to_md(question: os.PathLike):
                 "\\n\s+\\n", "\n\n", data2
             )  # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
-        if data2.startswith("pass"): # Check for default server.py functions
+        if data2.startswith("pass"):  # Check for default server.py functions
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
         return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
 
     yaml.add_representer(str, str_presenter)
 
-    def represent_none(self, _): # This removes explicit null values
-        return self.represent_scalar('tag:yaml.org,2002:null', '')
+    def represent_none(self, _):  # This removes explicit null values
+        return self.represent_scalar("tag:yaml.org,2002:null", "")
 
     yaml.add_representer(type(None), represent_none)
 
     ### END Yaml Dump Configuration ###
 
-    md_result = f"---\n{yaml.dump(header_dict, sort_keys=False)}---\n{md_result}"
-
-    # path.joinpath("question.md").write_text(md_result, encoding="utf8")
-
-    return md_result
+    # Write the completed converted question to a file
+    output_md_file.write_text(
+        f"---\n{yaml.dump(header_dict, sort_keys=False)}---\n{md_result}",
+        encoding="utf8",
+    )
