@@ -1610,13 +1610,20 @@ def pl_to_md(question: os.PathLike):
 
     custom_start_line_no = 0
 
+    def flatten(data):
+        if isinstance(data, tuple):
+            for x in data:
+                yield from flatten(x)
+        else:
+            yield data
+
     for func_name in ("imports", "generate", "prepare", "parse", "grade"):
         func = getattr(server, func_name, None)
         if func is None:
             functions[func_name] = "pass\n"
         if not inspect.isfunction(func):
             raise ValueError(f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)")
-        if len(arguments := inspect.getargs(func.__code__)) != 1 :
+        if len(arguments := list(flatten(inspect.getargs(func.__code__)))) != 1 :
             raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(arguments)})")
         if arguments[0] != "data":
             raise ValueError(f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {arguments[0]!r})")
