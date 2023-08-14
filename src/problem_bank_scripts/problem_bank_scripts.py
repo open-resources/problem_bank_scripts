@@ -1271,6 +1271,12 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Fix Latex underscore bug (_ being replaced with \_)
     question_html = question_html.replace("\\_", "_")
 
+    # Fix empty <markdown> block
+    # See this issue: https://github.com/PrairieLearn/PrairieLearn/issues/8346
+    # TODO: this can be removed once issue 8346 is resolved
+    question_html = question_html.replace("<markdown></markdown>", 
+                                          "<markdown> </markdown>")
+
     # Final pre-processing
     question_html = pl_image_path(question_html)
 
