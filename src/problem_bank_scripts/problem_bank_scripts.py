@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import os
 from collections import defaultdict
-from shutil import copy2
+from shutil import copy2, rmtree
 import re
 import codecs
 import importlib.util
@@ -1506,6 +1506,7 @@ def pl_to_md(
         "pl-file-editor": "file-editor",
         "pl-string-input": "string-input",
         "pl-matching": "matching",
+        "pl-rich-text-editor": "longtext",
     }
 
     auto_tags = {"multi_part"} | set(supported_input_types.values())
@@ -1602,7 +1603,8 @@ def pl_to_md(
             # but we don't want to fail if we can't parse them, nor do we want to try and parse non literals
             # so using ast.literal_eval is preferred over eval here
             try:
-                pl_customizations[customization] = ast.literal_eval(value)
+                if (val := ast.literal_eval(value)) is not Ellipsis:  # Ellipsis is ..., and is a valid python literal, but we don't want to unstringify it
+                    pl_customizations[customization] = val
             except:
                 pass
 
@@ -1677,6 +1679,7 @@ def pl_to_md(
         func = getattr(server, func_name, None)
         if func is None:
             functions[func_name] = "pass\n"
+            continue
         if not inspect.isfunction(func):
             raise ValueError(
                 f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
@@ -1752,6 +1755,7 @@ def pl_to_md(
             [str(fl.relative_to(test_assets)) for fl in test_assets.iterdir()]
         )
         # copy the files from the assets directory to the tests subdirectory of the output directory
+        output_path.joinpath("tests").mkdir(exist_ok=True)
         for fl in test_assets.iterdir():
             copy2(fl, output_path / "tests" / fl.name)
     else:
@@ -1764,6 +1768,7 @@ def pl_to_md(
             [str(fl.relative_to(workspace_assets)) for fl in workspace_assets.iterdir()]
         )
         # copy the files from the workspaceFiles directory to the workspace subdirectory of the output directory
+        output_path.joinpath("workspace").mkdir(exist_ok=True)
         for fl in workspace_assets.iterdir():
             copy2(fl, output_path / "workspace" / fl.name)
     else:
@@ -1798,3 +1803,7 @@ def pl_to_md(
         f"---\n{yaml.dump(header_dict, sort_keys=False)}---\n{md_result}",
         encoding="utf8",
     )
+
+    pycache = path / "__pycache__"
+    if pycache.exists():
+        rmtree(pycache, ignore_errors=True) # remove the pycache directory, we don't want to leave a mess of pyc files behind
