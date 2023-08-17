@@ -1,6 +1,7 @@
 from __future__ import annotations
 import filecmp
 import pathlib
+import tempfile
 
 import pytest
 
@@ -65,3 +66,24 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str):
             assert filecmp.cmp(
                 file, outputPath / file.relative_to(comparePath)
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+
+
+def test_question_exists_validation():
+    with pytest.raises(FileNotFoundError):
+        pl_to_md("fake", "fake", "fake.md")
+
+
+def test_question_path_not_dir_validation():
+    with pytest.raises(NotADirectoryError):
+        pl_to_md(__file__, "fake", "fake.md")
+
+
+def test_output_path_not_dir_validation():
+    with pytest.raises(NotADirectoryError):
+        pl_to_md(pathlib.Path(__file__).parent, __file__, "fake.md")
+
+
+def test_output_path_warns_exists():
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        with pytest.warns(UserWarning), pytest.raises(FileNotFoundError): # we want to raise the error, but also check that the warning is emitted first
+            pl_to_md(pathlib.Path(__file__).parent, pathlib.Path(tmpdirname), "fake.md")

@@ -454,6 +454,8 @@ def write_info_json(output_path, parsed_question):
         parsed_question (dict]): [description]
     """
 
+    ## *** IMPORTANT: If more auto-tags or optional keys are added, make sure to update the `pl_to_md` function to take them into account properly for the roundtrip ***
+
     # Deal with optional tags in info.json
     # optional = ""
 
@@ -1207,6 +1209,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     useful_info = parsed_q["body_parts"].get("Useful_info", None)
 
     # TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
+    # *** IMPORTANT: If you update how this works, make sure you update the `pl_to_md` function to be able to properly parse and understand the new implementation! ***
     if useful_info:
         question_html += f"""<p>
    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -1233,7 +1236,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += f"""<div class="card my-2">
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
 <div class="card-body">\n\n"""
-
+        ## ***IMPORTANT: If you add or modify an input type, you need to update the `pl_to_md` function as well, to tell it what key it can use for roundtrips! ***
         if "multiple-choice" in q_type:
             question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
         elif "number-input" in q_type:
@@ -1393,13 +1396,13 @@ def identify_button_html(tag: bs4.Tag) -> bool:
 
 
 def pl_to_md(
-    question: os.PathLike[str], output: os.PathLike[str], file_name: str | None = None
-):
+    question: os.PathLike[str] | str | pathlib.Path, output: os.PathLike[str] | str | pathlib.Path, file_name: str | None = None
+) -> None:
     """Converts a PL question to the OPB MD format
 
     Args:
-        question (os.PathLike[str]): Path to the PL question directory
-        output (os.PathLike[str]): Path to the output directory
+        question (os.PathLike[str] | str | pathlib.Path): Path to the PL question directory
+        output (os.PathLike[str] | str | pathlib.Path): Path to the output directory
         file_name (str, optional): Name of the output file. Defaults to the name of last segment of the output filepath.
 
     Raises:
@@ -1409,6 +1412,7 @@ def pl_to_md(
         UserWarning: If the output directory already exists
         NotImplementedError: If the question contains a question type that is not yet supported
     """
+    # Validate the inputs from the user
     path = pathlib.Path(question)
     if not path.exists():
         raise FileNotFoundError(f"{question} does not exist")
@@ -1464,6 +1468,8 @@ def pl_to_md(
     md_result = "# {{ params.vars.title }}\n\n"
     header_dict = {}
     # the start and end sections are special, and don't have an associated part
+
+    # Determine the question title, preamble, and useful info sections
     if start is not None:
         soup = BeautifulSoup(start.group("Content"), "lxml")
         if (preamble_tag := soup.find("pl-question-panel")) is not None:
@@ -1477,6 +1483,7 @@ def pl_to_md(
                 )
             md_result += f"## Useful Info\n\n{info.text.strip()}\n\n"
 
+    # Determine the attribution for the question
     if end is not None:
         end_md = BeautifulSoup(end.group("Content"), "lxml").contents
         if not end_md:
@@ -1515,7 +1522,7 @@ def pl_to_md(
         "pl-rich-text-editor": "longtext",
     }
 
-    auto_tags = {"multi_part"} | set(supported_input_types.values())
+    auto_tags = {"multi_part", "DEV"} | set(supported_input_types.values())
 
     parts_dict = (
         {}
@@ -1526,6 +1533,7 @@ def pl_to_md(
     for part, content in parts:
         # print(part, content)
         part_soup = BeautifulSoup(content, "lxml")
+        # Find the input tag for the question part
         pl_input = part_soup.find(
             [
                 "pl-big-o-input",
@@ -1560,6 +1568,7 @@ def pl_to_md(
             raise NotImplementedError(
                 f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
             )
+        # Extract the different panels and sections of the question part
         pl_submission_panel = part_soup.find("pl-submission-panel")
         if isinstance(pl_submission_panel, bs4.Tag):
             submission_panel = pl_submission_panel.text.strip()
@@ -1619,9 +1628,13 @@ def pl_to_md(
             "pl-customizations": pl_customizations,
         }
 
+    # TODO: Add support for the following headers somehow
+
     md_result += f"## Rubric\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should be hidden from students until after the deadline.'!r}\n\n"
     md_result += f"## Solution\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should never be revealed to students.'!r}.\n\n"
     md_result += f"## Comments\n\nUNABLE TO ROUNDTRIP, Defaulting to {'These are random comments associated with this question.'!r}\n\n"
+
+    # Parse the info.json file, and pull all possible fields from it (and populate as much of the yaml header as we can here)
 
     info_json = json.loads(info_json_file.read_text(encoding="utf8"))
     header_dict["title"] = info_json["title"]
@@ -1656,16 +1669,18 @@ def pl_to_md(
     if header_dict["tags"] == []:
         header_dict["tags"] = ["unknown"]
 
+    # Get the module spec for the server.py file so we can load it and get the functions from it
     spec = importlib.util.spec_from_file_location(
         f"server_{path.name}", str(server_py.absolute())
     )
+    # validate the file exists and a module spec was created for it
     if spec is None:
         raise ValueError(f"Could not find server.py file for question {path.name}")
-    server = importlib.util.module_from_spec(spec)
-    loader = spec.loader
-    if loader is None:
+    server = importlib.util.module_from_spec(spec) # create a module object from the spec
+    loader = spec.loader # get the loader from the spec
+    if loader is None: # validate the loader exists, since we need it to get the code objects for the functions
         raise ValueError(f"Could not load server.py file for question {path.name}")
-    loader.exec_module(
+    loader.exec_module( # load the code objects for the module into the module object by executing the module code with the loader
         server
     )  # execute the server.py file to get code objects for it that can be access with inspect
 
@@ -1686,24 +1701,29 @@ def pl_to_md(
         if func is None:
             functions[func_name] = "pass\n"
             continue
+        # We could use the builtin callable function here, but that would allow classes or callable objects (instances of classes that define __call__ somewhere in the chain)
         if not inspect.isfunction(func):
             raise ValueError(
                 f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
             )
+        # This is a relatively hacky way to get the arguments and the number of arguments for a function, but it works
+        # Its better than trying to parse the source code ourselves, since the function header could be spread across multiple lines, in a non standard format,
+        # And the python interpreter/compiler has already done the work of parsing it for us with the code object
         if len(arguments := flatten_args(inspect.getargs(func.__code__))) != 1:
             raise ValueError(
                 f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(arguments)}: {arguments!r})"
             )
+        # the argument name should be named data, and we know there is only one argument here (if we wanted to be super precise we could check its the only posarg, but thats too pedantic)
         if arguments[0] != "data":
             raise ValueError(
                 f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {arguments[0]!r})"
             )
-        func_code = inspect.getsource(func)
+        func_code = inspect.getsource(func) # get the source code for the function
         functions[func_name] = textwrap.dedent(
-            func_code.split("\n", 1)[-1]
+            func_code.split("\n", 1)[-1] # remove "def <name>(data):"" line, and remove unnecessary indentation to prevent the function from being indented too far in the yaml dump
         )  # remove "def name(data):"" line, and remove unnecessary indentation
         end_line_no = func_code.count("\n") + func.__code__.co_firstlineno
-        custom_start_line_no = max(custom_start_line_no, end_line_no)
+        custom_start_line_no = max(custom_start_line_no, end_line_no) # keep track of the last line number of the custom functions so we can get the custom functions at the end of the file
     # get custom functions
 
     func_code = inspect.getsource(server).split("\n", custom_start_line_no)[-1]
@@ -1723,7 +1743,7 @@ def pl_to_md(
         "showCorrectAnswer",
         "externalGradingOptions",
         "workspaceOptions",
-    ):  # trim optional keys
+    ):  # trim optional keys that don't exist, since they are optional and we don't want to include them if they don't exist as that would pollute the output
         if header_dict[opt_key] is None:
             del header_dict[opt_key]
 
@@ -1788,7 +1808,7 @@ def pl_to_md(
         if len(data2.splitlines()) > 1:  # check for multiline string
             # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
             data2 = re.sub(
-                "\\n\s+\\n", "\n\n", data2
+                r"\n\s+\n", "\n\n", data2
             )  # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
         if data2.startswith("pass"):  # Check for default server.py functions
@@ -1797,7 +1817,7 @@ def pl_to_md(
 
     yaml.add_representer(str, str_presenter)
 
-    def represent_none(self, _):  # This removes explicit null values
+    def represent_none(self, _):  # This removes explicit null values, since implicit nulls are the de-facto standard for OPB
         return self.represent_scalar("tag:yaml.org,2002:null", "")
 
     yaml.add_representer(type(None), represent_none)
