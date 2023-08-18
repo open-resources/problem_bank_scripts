@@ -498,6 +498,28 @@ def write_info_json(output_path, parsed_question):
         }
     )
 
+    comment_keys = (
+        "author",
+        "source",
+        "template_version",
+        "outcomes",
+        "difficulty",
+        "randomization",
+        "taxonomy",
+        "span",
+        "length",
+    )
+
+    comment = {key: parsed_question["header"][key] for key in comment_keys}
+
+    # Get keys that need to get added to the comment from the question body (Rubric, Solution, Comments)
+
+    comment |= {key: parsed_question["body_parts"][key].split("\n\n", 1)[-1].strip() for key in ("Rubric", "Solution", "Comments")}
+
+    # Add the comment to the info_json, under a metadata key in the comment object of info_json
+
+    info_json["comment"] = {"METADATA": comment}
+
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
         json.dump(info_json, output_file, indent=4)
@@ -1625,20 +1647,20 @@ def pl_to_md(
             "pl-customizations": pl_customizations,
         }
 
-    # TODO: Add support for the following headers somehow
-
-    md_result += f"## Rubric\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should be hidden from students until after the deadline.'!r}\n\n"
-    md_result += f"## Solution\n\nUNABLE TO ROUNDTRIP, Defaulting to {'This should never be revealed to students.'!r}.\n\n"
-    md_result += f"## Comments\n\nUNABLE TO ROUNDTRIP, Defaulting to {'These are random comments associated with this question.'!r}\n\n"
-
     # Parse the info.json file, and pull all possible fields from it (and populate as much of the yaml header as we can here)
 
-    info_json = json.loads(info_json_file.read_text(encoding="utf8"))
+    info_json: dict = json.loads(info_json_file.read_text(encoding="utf8"))
+    metadata: dict = info_json.get("comment", {}).get("METADATA", {})
+
+    md_result += f"## Rubric\n\n{metadata.get('Rubric', '')}\n\n"
+    md_result += f"## Solution\n\n{metadata.get('Solution', '')}\n\n"
+    md_result += f"## Comments\n\n{metadata.get('Comments', '')}\n\n"
+
     header_dict["title"] = info_json["title"]
     header_dict["topic"] = info_json["topic"].split(".", 1)[-1]
-    header_dict["author"] = "UNABLE TO ROUNDTRIP"
-    header_dict["source"] = "UNABLE TO ROUNDTRIP"
-    header_dict["template_version"] = "UNABLE TO ROUNDTRIP"
+    header_dict["author"] = metadata.get("author", "Unknown")
+    header_dict["source"] = metadata.get("source", "Unknown")
+    header_dict["template_version"] = metadata.get("template_version", "Unknown")
     header_dict["attribution"] = attribution
     header_dict["gradingMethod"] = info_json.get("partialCredit", None)
     header_dict["partialCredit"] = info_json.get("partialCredit", None)
@@ -1648,13 +1670,13 @@ def pl_to_md(
     header_dict["externalGradingOptions"] = info_json.get(
         "externalGradingOptions", None
     )
-    header_dict["workspaceOptions"] = info_json.get("workspaceOptions", None)
-    header_dict["outcomes"] = ["UNABLE TO ROUNDTRIP"]
-    header_dict["difficulty"] = ["UNABLE TO ROUNDTRIP"]
-    header_dict["randomization"] = ["UNABLE TO ROUNDTRIP"]
-    header_dict["taxonomy"] = ["UNABLE TO ROUNDTRIP"]
-    header_dict["span"] = ["UNABLE TO ROUNDTRIP"]
-    header_dict["length"] = ["UNABLE TO ROUNDTRIP"]
+    header_dict["workspaceOptions"] = metadata.get("workspaceOptions", None)
+    header_dict["outcomes"] = metadata.get("outcomes", ["unknown"])
+    header_dict["difficulty"] = metadata.get("difficulty", "undefined")
+    header_dict["randomization"] = metadata.get("randomization", ["undefined"])
+    header_dict["taxonomy"] = metadata.get("taxonomy", ["undefined"])
+    header_dict["span"] = metadata.get("span", ["undefined"])
+    header_dict["length"] = metadata.get("length", ["undefined"])
     header_dict["tags"] = sorted(
         list(set(info_json["tags"]) - auto_tags)
     )  # force deterministic order
