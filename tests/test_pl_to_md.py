@@ -36,7 +36,7 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str):
     folder = question
     pl_to_md(baseFile, outputPath, f"{question}.md")
 
-    for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
+    for file in sorted(comparePath.glob("**/*")):
         isFile = file.is_file()
         hiddenFile = not file.name.startswith(".")
         assetFile = file.name == "question.html" or not file.name.endswith(
@@ -46,10 +46,7 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str):
 
         print(hiddenFile, ~(hiddenFile))
 
-        # TODO: Find a way to separately test info.json files
-        infoJSON = not file.name.endswith("info.json")
-
-        if isFile and hiddenFile and assetFile and excludedFile and infoJSON:
+        if isFile and hiddenFile and assetFile and not excludedFile:
             folder = file.parent.name
             outputFolder = outputPath.joinpath(folder)
 

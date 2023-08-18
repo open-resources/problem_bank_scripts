@@ -171,7 +171,7 @@ def test_info_json(
         "uuid"
     ]  # uuid is semi-randomly generated, so we can't compare reliably it
     del expected_json["uuid"]
-    for key in expected_json:
+    for key in expected_json.keys() | generated_json.keys():
         generated = generated_json[key]
         if isinstance(generated, list):
             generated = sorted(generated)

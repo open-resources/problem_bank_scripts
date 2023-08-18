@@ -1,26 +1,31 @@
 ---
 title: OSUPv2p12_55
 topic: Template
-author: UNABLE TO ROUNDTRIP
-source: UNABLE TO ROUNDTRIP
-template_version: UNABLE TO ROUNDTRIP
+author: Jake Bobowksi
+source: 2.12.55
+template_version: 1.4
 attribution: openstax-physics-vol2
 gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false
 outcomes:
-- UNABLE TO ROUNDTRIP
+- 19.2.3.0
+- 19.2.3.1
+- 19.3.2.0
+- 19.3.2.1
+- 19.6.1.0
+- 19.6.1.1
 difficulty:
-- UNABLE TO ROUNDTRIP
+- undefined
 randomization:
-- UNABLE TO ROUNDTRIP
+- undefined
 taxonomy:
-- UNABLE TO ROUNDTRIP
+- undefined
 span:
-- UNABLE TO ROUNDTRIP
+- undefined
 length:
-- UNABLE TO ROUNDTRIP
+- undefined
 tags:
 - OSUP
 - centripetal acceleration
@@ -136,13 +141,13 @@ $I=$ {{ correct_answers.part1_ans_str }} $\textrm{ A}$
 
 ## Rubric
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should be hidden from students until after the deadline.'
+This should be hidden from students until after the deadline.
 
 ## Solution
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should never be revealed to students.'.
+This should never be revealed to students.
 
 ## Comments
 
-UNABLE TO ROUNDTRIP, Defaulting to 'These are random comments associated with this question.'
+These are random comments associated with this question.
 

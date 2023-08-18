@@ -1,9 +1,9 @@
 ---
 title: Python Powers
 topic: Template
-author: UNABLE TO ROUNDTRIP
-source: UNABLE TO ROUNDTRIP
-template_version: UNABLE TO ROUNDTRIP
+author: Aidan Murphy
+source: original
+template_version: 1.0
 attribution: standard
 gradingMethod: true
 partialCredit: true
@@ -14,17 +14,18 @@ externalGradingOptions:
   image: prairielearn/grader-python
   entrypoint: /python_autograder/run.sh
 outcomes:
-- UNABLE TO ROUNDTRIP
+- 6.1.1.0
+- 6.1.1.1
 difficulty:
-- UNABLE TO ROUNDTRIP
+- undefined
 randomization:
-- UNABLE TO ROUNDTRIP
+- undefined
 taxonomy:
-- UNABLE TO ROUNDTRIP
+- undefined
 span:
-- UNABLE TO ROUNDTRIP
+- undefined
 length:
-- UNABLE TO ROUNDTRIP
+- undefined
 tags:
 - nothing
 autogradeTestFiles:
@@ -121,13 +122,13 @@ Please remove this section if it is not application for this question.
 
 ## Rubric
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should be hidden from students until after the deadline.'
+This should be hidden from students until after the deadline.
 
 ## Solution
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should never be revealed to students.'.
+This should never be revealed to students.
 
 ## Comments
 
-UNABLE TO ROUNDTRIP, Defaulting to 'These are random comments associated with this question.'
+These are random comments associated with this question.
 

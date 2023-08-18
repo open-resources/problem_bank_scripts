@@ -8,6 +8,7 @@
         "DEV"
     ],
     "type": "v3",
+    "singleVariant": true,
     "partialCredit": true,
     "externalGradingOptions": {
         "enabled": true,
@@ -16,5 +17,33 @@
     },
     "gradingMethod": "External",
     "showCorrectAnswer": false,
-    "singleVariant": true
+    "comment": {
+        "METADATA": {
+            "author": "Aidan Murphy",
+            "source": "original",
+            "template_version": 1.0,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        }
+    }
 }

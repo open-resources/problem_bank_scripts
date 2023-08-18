@@ -1,22 +1,21 @@
 ---
 title: Simple Harmonic Spring
 topic: Energy
-author: UNABLE TO ROUNDTRIP
-source: UNABLE TO ROUNDTRIP
-template_version: UNABLE TO ROUNDTRIP
+author: Unknown
+source: Unknown
+template_version: Unknown
 attribution: standard
 outcomes:
-- UNABLE TO ROUNDTRIP
-difficulty:
-- UNABLE TO ROUNDTRIP
+- unknown
+difficulty: undefined
 randomization:
-- UNABLE TO ROUNDTRIP
+- undefined
 taxonomy:
-- UNABLE TO ROUNDTRIP
+- undefined
 span:
-- UNABLE TO ROUNDTRIP
+- undefined
 length:
-- UNABLE TO ROUNDTRIP
+- undefined
 tags:
 - MP
 server:
@@ -115,13 +114,13 @@ No feedback is provided.
 
 ## Rubric
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should be hidden from students until after the deadline.'
+
 
 ## Solution
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should never be revealed to students.'.
+
 
 ## Comments
 
-UNABLE TO ROUNDTRIP, Defaulting to 'These are random comments associated with this question.'
+
 

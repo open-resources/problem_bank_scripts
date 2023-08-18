@@ -1,26 +1,26 @@
 ---
 title: Electric Field and Direction
 topic: Template
-author: UNABLE TO ROUNDTRIP
-source: UNABLE TO ROUNDTRIP
-template_version: UNABLE TO ROUNDTRIP
+author: Jake Bobowski
+source: 2.6.67
+template_version: 1.4
 attribution: openstax-physics-vol2
 gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false
 outcomes:
-- UNABLE TO ROUNDTRIP
+- undefined
 difficulty:
-- UNABLE TO ROUNDTRIP
+- undefined
 randomization:
-- UNABLE TO ROUNDTRIP
+- undefined
 taxonomy:
-- UNABLE TO ROUNDTRIP
+- undefined
 span:
-- UNABLE TO ROUNDTRIP
+- undefined
 length:
-- UNABLE TO ROUNDTRIP
+- undefined
 tags:
 - unknown
 server:
@@ -147,13 +147,13 @@ $E=$ {{ correct_answers.part1_ans_str }} $\mathrm{N}/\mathrm{C}$
 
 ## Rubric
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should be hidden from students until after the deadline.'
+This should be hidden from students until after the deadline.
 
 ## Solution
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should never be revealed to students.'.
+This should never be revealed to students.
 
 ## Comments
 
-UNABLE TO ROUNDTRIP, Defaulting to 'These are random comments associated with this question.'
+These are random comments associated with this question.
 

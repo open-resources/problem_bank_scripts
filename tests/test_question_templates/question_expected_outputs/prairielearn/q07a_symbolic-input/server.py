@@ -1,14 +1,14 @@
 import random as rd; rd.seed(111)
 import pandas as pd
 import sympy as sp
-import problem_bank_scripts.prairielearn as pl
+import prairielearn as pl
 import problem_bank_helpers as pbh
 
 def imports(data):
     import random as rd; rd.seed(111)
     import pandas as pd
     import sympy as sp
-    import problem_bank_scripts.prairielearn as pl
+    import prairielearn as pl
     import problem_bank_helpers as pbh
     
 def generate(data):

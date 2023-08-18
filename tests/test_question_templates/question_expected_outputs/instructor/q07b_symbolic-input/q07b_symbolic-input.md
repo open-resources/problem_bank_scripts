@@ -29,7 +29,7 @@ server:
     import random as rd; rd.seed(111)
     import pandas as pd
     import sympy as sp
-    import problem_bank_scripts.prairielearn as pl
+    import prairielearn as pl
     import problem_bank_helpers as pbh
   generate: |
     data2 = pbh.create_data2()
@@ -82,9 +82,17 @@ myst:
         _type: sympy
         _value: g*(mu_s*cos(theta) - sin(theta))
         _variables:
-        - g
         - mu_s
+        - g
         - theta
+        _assumptions:
+          mu_s:
+            commutative: true
+          g:
+            commutative: true
+          theta:
+            commutative: true
+        _custom_functions: []
 
 ---
 # {{ params.vars.title }}

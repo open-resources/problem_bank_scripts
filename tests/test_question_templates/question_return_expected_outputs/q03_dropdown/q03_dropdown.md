@@ -1,26 +1,27 @@
 ---
 title: Distance travelled
 topic: Template
-author: UNABLE TO ROUNDTRIP
-source: UNABLE TO ROUNDTRIP
-template_version: UNABLE TO ROUNDTRIP
+author: Firas Moosvi
+source: original
+template_version: 1.4
 attribution: standard
 gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false
 outcomes:
-- UNABLE TO ROUNDTRIP
+- 6.1.1.0
+- 6.1.1.1
 difficulty:
-- UNABLE TO ROUNDTRIP
+- undefined
 randomization:
-- UNABLE TO ROUNDTRIP
+- undefined
 taxonomy:
-- UNABLE TO ROUNDTRIP
+- undefined
 span:
-- UNABLE TO ROUNDTRIP
+- undefined
 length:
-- UNABLE TO ROUNDTRIP
+- undefined
 tags:
 - unknown
 server:
@@ -126,13 +127,13 @@ Please remove this section if it is not application for this question.
 
 ## Rubric
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should be hidden from students until after the deadline.'
+This should be hidden from students until after the deadline.
 
 ## Solution
 
-UNABLE TO ROUNDTRIP, Defaulting to 'This should never be revealed to students.'.
+This should never be revealed to students.
 
 ## Comments
 
-UNABLE TO ROUNDTRIP, Defaulting to 'These are random comments associated with this question.'
+These are random comments associated with this question.
 
