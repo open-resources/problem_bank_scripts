@@ -520,9 +520,7 @@ def assemble_server_py(parsed_question, location):
             "import problem_bank_scripts.prairielearn as pl",
         )
     elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
-        server_dict[
-            "imports"
-        ] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts"
+        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts"
 
     server_py = f""""""
 
@@ -533,7 +531,7 @@ def assemble_server_py(parsed_question, location):
             indented_code = code.replace("\n", "\n    ")
             # With the custom header, add functions to server.py as-is
             if function == "custom":
-                pass
+                continue
             else:
                 if code:
                     server_py += f"def {function}(data):\n    {indented_code}\n"
@@ -1524,11 +1522,10 @@ def pl_to_md(
 
     auto_tags = {"multi_part", "DEV"} | set(supported_input_types.values())
 
-    parts_dict = (
-        {}
-    )  # we want to try and eagerly parse the markdown for each part so we can get the question text in
+    # we want to try and eagerly parse the markdown for each part so we can get the question text in
     # as early as possible, but this means we need to delay adding the part metadata to the
     # header dictionary since insert order is preserved in python dictionaries which will preserve it on yaml dump
+    parts_dict = {}  
 
     for part, content in parts:
         # print(part, content)
