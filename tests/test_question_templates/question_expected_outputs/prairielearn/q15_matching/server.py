@@ -30,20 +30,32 @@ def generate(data):
     
     # define all options for right side of matching
     data2["params"]["part1"]["option1"]["value"] = True
+    data2["params"]["part1"]["option1"]["name"] = "True"
     data2["params"]["part1"]["option2"]["value"] = False
+    data2["params"]["part1"]["option2"]["name"] = "False"
     
     data2["params"]["part1"]["statement1"]["value"] = pbh.roundp(42)
-    data2["params"]["part1"]["statement1"]["matches"] = "option2"
+    data2["params"]["part1"]["statement1"]["matches"] = "False"
     data2["params"]["part1"]["statement2"]["value"] = pbh.roundp(v*t)
-    data2["params"]["part1"]["statement2"]["matches"] = "option1"
+    data2["params"]["part1"]["statement2"]["matches"] = "True"
     data2["params"]["part1"]["statement3"]["value"] = pbh.roundp(v+t)
-    data2["params"]["part1"]["statement3"]["matches"] = "option2"
+    data2["params"]["part1"]["statement3"]["matches"] = "False"
     data2["params"]["part1"]["statement4"]["value"] = pbh.roundp(v/t)
-    data2["params"]["part1"]["statement4"]["matches"] = "option2"
+    data2["params"]["part1"]["statement4"]["matches"] = "False"
     
     # Update the data object with a new dict
     data.update(data2)
     
+    # Start code added automatically by problem_bank_scripts
+
+    # Convert backticks to code blocks/fences in answer choices.
+    pbh.backticks_to_code_tags(data2)
+
+    # Update data with data2
+    data.update(data2)
+
+    # End code added in by problem bank scripts
+
 def prepare(data):
     pass
     

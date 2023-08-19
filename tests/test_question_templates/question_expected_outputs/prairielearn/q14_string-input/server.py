@@ -22,6 +22,16 @@ def generate(data):
     # Update the data object with a new dict
     data.update(data2)
     
+    # Start code added automatically by problem_bank_scripts
+
+    # Convert backticks to code blocks/fences in answer choices.
+    pbh.backticks_to_code_tags(data2)
+
+    # Update data with data2
+    data.update(data2)
+
+    # End code added in by problem bank scripts
+
 def grade(data):
     # Since we want an alternate correct answer, we can check for it here, and override the automatic 
     # score if it is correct

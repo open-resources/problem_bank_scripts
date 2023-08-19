@@ -38,15 +38,17 @@ myst:
     params_v: 5
     params_t: 6
     params_part1_option1_value: true
+    params_part1_option1_name: 'True'
     params_part1_option2_value: false
+    params_part1_option2_name: 'False'
     params_part1_statement1_value: 42
-    params_part1_statement1_matches: option2
+    params_part1_statement1_matches: 'False'
     params_part1_statement2_value: 30
-    params_part1_statement2_matches: option1
+    params_part1_statement2_matches: 'True'
     params_part1_statement3_value: 11
-    params_part1_statement3_matches: option2
-    params_part1_statement4_value: 0.8333333333333334
-    params_part1_statement4_matches: option2
+    params_part1_statement3_matches: 'False'
+    params_part1_statement4_value: 0.833
+    params_part1_statement4_matches: 'False'
 ---
 # {{ params_vars_title }}
 

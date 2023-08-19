@@ -46,6 +46,16 @@ def generate(data):
         {"name": function_name, "description": f"receives a single numerical input, returns its {question}", "type": "function"}
     ]
     
+    # Start code added automatically by problem_bank_scripts
+
+    # Convert backticks to code blocks/fences in answer choices.
+    pbh.backticks_to_code_tags(data2)
+
+    # Update data with data2
+    data.update(data2)
+
+    # End code added in by problem bank scripts
+
 def prepare(data):
     pass
     
