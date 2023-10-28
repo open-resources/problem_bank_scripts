@@ -1268,9 +1268,11 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Add Attribution
     question_html += f"\n<pl-question-panel>\n<markdown>\n---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
 
-    # Fix Latex underscore bug (_ being replaced with \_)
-    question_html = question_html.replace("\\_", "_")
-
+    # Fix Latex over-escaping from mdformat (i.e. _, [, and ]being replaced with \_, \[, and \])
+    # See https://github.com/open-resources/problem_bank_scripts/issues/89
+    # Also see https://github.com/open-resources/problem_bank_scripts/pull/92
+    question_html = question_html.replace("\\_", "_").replace("\\[","[").replace("\\]","]")
+    question_html = question_html.replace("\\*", "*").replace("\\<","<").replace("\\`","`")
     # Fix empty <markdown> block
     # See this issue: https://github.com/PrairieLearn/PrairieLearn/issues/8346
     # TODO: this can be removed once issue 8346 is resolved
