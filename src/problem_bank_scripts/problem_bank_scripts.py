@@ -1428,6 +1428,7 @@ def pl_to_md(
     Raises:
         FileNotFoundError: If the question directory does not exist
         NotADirectoryError: If the question or output path is a file
+        ModuleNotFoundError: If the server.py file fails to be able to be dynamically imported
         ValueError: If the question directory is missing any of the required files, the files are not in the expected format, or the attribution at the end of the question is not recognized
         UserWarning: If the output directory already exists
         NotImplementedError: If the question contains a question type that is not yet supported
@@ -1694,11 +1695,11 @@ def pl_to_md(
     )
     # validate the file exists and a module spec was created for it
     if spec is None:
-        raise ValueError(f"Could not find server.py file for question {path.name}")
+        raise ModuleNotFoundError(f"Could not find server.py file for question {path.name}")
     server = importlib.util.module_from_spec(spec) # create a module object from the spec
     loader = spec.loader # get the loader from the spec
     if loader is None: # validate the loader exists, since we need it to get the code objects for the functions
-        raise ValueError(f"Could not load server.py file for question {path.name}")
+        raise ModuleNotFoundError(f"Could not load server.py file for question {path.name}")
     loader.exec_module( # load the code objects for the module into the module object by executing the module code with the loader
         server
     )  # execute the server.py file to get code objects for it that can be access with inspect
@@ -1706,14 +1707,6 @@ def pl_to_md(
     functions = {}
 
     custom_start_line_no = 0
-
-    def flatten_args(data: inspect.Arguments):
-        args, varargs, varkw = data
-        if varargs is not None:
-            args.append(varargs)
-        if varkw is not None:
-            args.append(varkw)
-        return args
 
     for func_name in ("imports", "generate", "prepare", "parse", "grade"):
         func = getattr(server, func_name, None)
@@ -1725,17 +1718,21 @@ def pl_to_md(
             raise ValueError(
                 f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
             )
-        # This is a relatively hacky way to get the arguments and the number of arguments for a function, but it works
-        # Its better than trying to parse the source code ourselves, since the function header could be spread across multiple lines, in a non standard format,
-        # And the python interpreter/compiler has already done the work of parsing it for us with the code object
-        if len(arguments := flatten_args(inspect.getargs(func.__code__))) != 1:
+        signature = inspect.signature(func)
+        parameters = signature.parameters
+        if len(parameters) != 1:
             raise ValueError(
-                f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(arguments)}: {arguments!r})"
+                f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(parameters)}: {signature})"
             )
+        [parameter] = parameters.values()
         # the argument name should be named data, and we know there is only one argument here (if we wanted to be super precise we could check its the only posarg, but thats too pedantic)
-        if arguments[0] != "data":
+        if parameter.name != "data":
             raise ValueError(
-                f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {arguments[0]!r})"
+                f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {parameter!r})"
+            )
+        if parameter.kind != inspect.Parameter.POSITIONAL_OR_KEYWORD:
+            raise ValueError(
+                f"Function {func_name} in server.py for question {path.name} does not have the correct argument kind (expected 'POSITIONAL_OR_KEYWORD', got {parameter})"
             )
         func_code = inspect.getsource(func) # get the source code for the function
         functions[func_name] = textwrap.dedent(
