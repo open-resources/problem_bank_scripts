@@ -21,6 +21,8 @@ sympy = "^1.8"
 problem-bank-helpers = "^0.2.0"
 typing-extensions = "^4.7.1"
 httpimport = "^1.3.1"
+beautifulsoup4 = {extras = ["lxml"], version = "^4.12.2"}
+lxml = "^4.9.3"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^4.4"

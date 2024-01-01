@@ -13,7 +13,7 @@ import sys
 import numpy as np
 import os
 from collections import defaultdict
-from shutil import copy2
+from shutil import copy2, rmtree
 import re
 import codecs
 import importlib.util
@@ -30,6 +30,13 @@ import yaml
 
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
+
+## Roundtrip PL questions back to OPB MD
+import ast
+import inspect
+import textwrap
+import bs4
+from bs4 import BeautifulSoup
 
 ## Topic Validation
 
@@ -447,6 +454,8 @@ def write_info_json(output_path, parsed_question):
         parsed_question (dict]): [description]
     """
 
+    ## *** IMPORTANT: If more auto-tags or optional keys are added, make sure to update the `pl_to_md` function to take them into account properly for the roundtrip ***
+
     # Deal with optional tags in info.json
     # optional = ""
 
@@ -489,6 +498,28 @@ def write_info_json(output_path, parsed_question):
         }
     )
 
+    comment_keys = (
+        "author",
+        "source",
+        "template_version",
+        "outcomes",
+        "difficulty",
+        "randomization",
+        "taxonomy",
+        "span",
+        "length",
+    )
+
+    comment = {key: parsed_question["header"][key] for key in comment_keys}
+
+    # Get keys that need to get added to the comment from the question body (Rubric, Solution, Comments)
+
+    comment |= {key: parsed_question["body_parts"][key].split("\n\n", 1)[-1].strip() for key in ("Rubric", "Solution", "Comments")}
+
+    # Add the comment to the info_json, under a metadata key in the comment object of info_json
+
+    info_json["comment"] = {"METADATA": comment}
+
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
         json.dump(info_json, output_file, indent=4)
@@ -511,7 +542,7 @@ def assemble_server_py(parsed_question, location):
             "import problem_bank_scripts.prairielearn as pl",
         )
     elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
-        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
+        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts"
 
     server_py = f""""""
 
@@ -522,7 +553,7 @@ def assemble_server_py(parsed_question, location):
             indented_code = code.replace("\n", "\n    ")
             # With the custom header, add functions to server.py as-is
             if function == "custom":
-                server_py += f"{code}"
+                continue
             else:
                 if code:
                     server_py += f"def {function}(data):\n    {indented_code}\n"
@@ -541,6 +572,9 @@ def assemble_server_py(parsed_question, location):
 """
     except:
         raise
+
+    if "custom" in server_dict.keys():
+        server_py += f"{server_dict['custom']}"
 
     return server_py
 
@@ -1235,6 +1269,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     useful_info = parsed_q["body_parts"].get("Useful_info", None)
 
     # TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
+    # *** IMPORTANT: If you update how this works, make sure you update the `pl_to_md` function to be able to properly parse and understand the new implementation! ***
     if useful_info:
         question_html += f"""<p>
    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -1261,7 +1296,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += f"""<div class="card my-2">
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
 <div class="card-body">\n\n"""
-
+        ## ***IMPORTANT: If you add or modify an input type, you need to update the `pl_to_md` function as well, to tell it what key it can use for roundtrips! ***
         if "multiple-choice" in q_type:
             question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
         elif "number-input" in q_type:
@@ -1405,3 +1440,458 @@ def validate_header(header_dict):
 
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+
+
+def identify_button_html(tag: bs4.Tag) -> bool:
+    """Identifies if the tag is a button
+
+    Args:
+        tag (bs4.Tag): BeautifulSoup tag
+
+    Returns:
+        bool: True if the tag is a button, False otherwise
+    """
+    if tag.name == "p":
+        button = tag.find("button", class_="btn btn-primary")
+        if button is not None:
+            if button.text.strip() == "Helpful Information":
+                return True
+    elif tag.name == "div" and tag.attrs.get("id") == "collapseExample":
+        return True
+    return False
+
+
+def pl_to_md(
+    question: os.PathLike[str] | str | pathlib.Path, output: os.PathLike[str] | str | pathlib.Path, file_name: str | None = None
+) -> None:
+    """Converts a PL question to the OPB MD format
+
+    Args:
+        question (os.PathLike[str] | str | pathlib.Path): Path to the PL question directory
+        output (os.PathLike[str] | str | pathlib.Path): Path to the output directory
+        file_name (str, optional): Name of the output file. Defaults to the name of last segment of the output filepath.
+
+    Raises:
+        FileNotFoundError: If the question directory does not exist
+        NotADirectoryError: If the question or output path is a file
+        ModuleNotFoundError: If the server.py file fails to be able to be dynamically imported
+        ValueError: If the question directory is missing any of the required files, the files are not in the expected format, or the attribution at the end of the question is not recognized
+        UserWarning: If the output directory already exists
+        NotImplementedError: If the question contains a question type that is not yet supported
+    """
+    # Validate the inputs from the user
+    path = pathlib.Path(question)
+    if not path.exists():
+        raise FileNotFoundError(f"{question} does not exist")
+    if path.is_file():
+        raise NotADirectoryError(
+            f"{question} is not a directory, passing a file as the question directory is not supported for converting PL to MD"
+        )
+
+    output_path = pathlib.Path(output)
+    if output_path.is_file():
+        raise NotADirectoryError(
+            f"{output} is not a directory, passing a file as the output directory is not supported for converting PL to MD"
+        )
+    if output_path.exists():
+        warnings.warn(
+            f"Directory {output!r} already exists, any files with the same name will be overwritten",
+            UserWarning,
+            stacklevel=2,
+        )
+    output_path.mkdir(parents=True, exist_ok=True)
+    output_md_file = output_path / (file_name or f"{path.name}.md")
+
+    question_file = path / "question.html"
+    info_json_file = path / "info.json"
+    server_py = path / "server.py"
+
+    if not (question_file.exists() and info_json_file.exists() and server_py.exists()):
+        error = "Error: the following files are missing and are required to convert a question:"
+        if not question_file.exists():
+            error += f"\n\tquestion.html does not exist in {question}"
+        if not info_json_file.exists():
+            error += f"\n\tinfo.json does not exist in {question}"
+        if not server_py.exists():
+            error += f"\n\tserver.py does not exist in {question}"
+        raise FileNotFoundError(error)
+
+    html = question_file.read_text(encoding="utf8")
+    start = re.match(
+        r"(?P<Content>.*)\n\n<!-- #{8} Start of Part 1 #{8} -->",
+        html,
+        re.DOTALL | re.MULTILINE,
+    )
+    parts: list[tuple[str, str]] = re.findall(
+        r"<!-- #{8} Start of Part (?P<part>\d+) #{8} -->(?P<Content>.*)<!-- #{8} End of Part (?P=part) #{8} -->",
+        html,
+        re.DOTALL | re.MULTILINE,
+    )
+    end = re.search(
+        r"<!-- #{8} End of Part \d+ #{8} -->\n\n(?!<!-- #{8} Start of Part \d+ #{8} -->)(?P<Content>.*)",
+        html,
+        re.DOTALL | re.MULTILINE,
+    )
+    md_result = "# {{ params.vars.title }}\n\n"
+    header_dict = {}
+    # the start and end sections are special, and don't have an associated part
+
+    # Determine the question title, preamble, and useful info sections
+    if start is not None:
+        soup = BeautifulSoup(start.group("Content"), "lxml")
+        if (preamble_tag := soup.find("pl-question-panel")) is not None:
+            md_result += preamble_tag.text.strip()
+            md_result += "\n\n"
+        if len(usefuL_info := soup.find_all(identify_button_html)) > 0:
+            info = usefuL_info[1]
+            if not isinstance(info, bs4.Tag):
+                raise ValueError(
+                    f"Detected presence of useful info button components but could not parse it for question {path.name}"
+                )
+            md_result += f"## Useful Info\n\n{info.text.strip()}\n\n"
+
+    # Determine the attribution for the question
+    if end is not None:
+        end_md = BeautifulSoup(end.group("Content"), "lxml").contents
+        if not end_md:
+            raise ValueError(
+                f"Could not find attribution at end of question for question {path.name}"
+            )
+        end_md = end_md[0].text.strip().replace("---\n", "").replace("\n", "<br>")
+        with importlib.resources.open_text(
+            "problem_bank_scripts", "attributions.json"
+        ) as file:
+            possible_attributions: dict[str, str] = json.load(file)
+        attribution = None
+        for possible_attribution, pl_attribution_text in possible_attributions.items():
+            if end_md.endswith(pl_attribution_text.replace("<br>", "")):
+                attribution = possible_attribution
+        if attribution is None:
+            raise ValueError(
+                f"Could not find attribution at end of question or the found attribution was not recognized for question {path.name}:\n\n{end_md!r}"
+            )
+    else:
+        raise ValueError(
+            f"Could not find attribution at end of question for question {path.name}"
+        )
+
+    supported_input_types = {
+        "pl-multiple-choice": "multiple-choice",
+        "pl-number-input": "number-input",
+        "pl-checkbox": "checkbox",
+        "pl-symbolic-input": "symbolic-input",
+        "pl-dropdown": "dropdown",
+        "pl-longtext": "longtext",
+        "pl-file-upload": "file-upload",
+        "pl-file-editor": "file-editor",
+        "pl-string-input": "string-input",
+        "pl-matching": "matching",
+        "pl-rich-text-editor": "longtext",
+    }
+
+    auto_tags = {"multi_part", "DEV"} | set(supported_input_types.values())
+
+    # we want to try and eagerly parse the markdown for each part so we can get the question text in
+    # as early as possible, but this means we need to delay adding the part metadata to the
+    # header dictionary since insert order is preserved in python dictionaries which will preserve it on yaml dump
+    parts_dict = {}  
+
+    for part, content in parts:
+        # print(part, content)
+        part_soup = BeautifulSoup(content, "lxml")
+        # Find the input tag for the question part
+        pl_input = part_soup.find(
+            [
+                "pl-big-o-input",
+                "pl-checkbox",
+                "pl-dropdown",
+                "pl-file-editor",
+                "pl-file-upload",
+                "pl-integer-input",
+                "pl-matching",
+                "pl-matrix-component-input",
+                "pl-matrix-input",
+                "pl-multiple-choice",
+                "pl-number-input",
+                "pl-order-blocks",
+                "pl-rich-text-editor",
+                "pl-string-input",
+                "pl-symbolic-input",
+                "pl-threejs",
+                "pl-units-input",
+            ]
+        )
+        if pl_input is not None:
+            pl_input = pl_input.extract()
+        else:
+            raise ValueError(f"Could not find input tag for part {part}")
+        if isinstance(pl_input, bs4.NavigableString):
+            raise ValueError(f"Could not find input tag for part {part}")
+        pl_customizations = pl_input.attrs
+        pl_input_type = pl_input.name
+        opb_input_type = supported_input_types.get(pl_input_type, None)
+        if opb_input_type is None:
+            raise NotImplementedError(
+                f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
+            )
+        # Extract the different panels and sections of the question part
+        pl_submission_panel = part_soup.find("pl-submission-panel")
+        if isinstance(pl_submission_panel, bs4.Tag):
+            submission_panel = pl_submission_panel.text.strip()
+        else:
+            submission_panel = ""
+        pl_answer_panel = part_soup.find("pl-answer-panel")
+        if isinstance(pl_answer_panel, bs4.Tag):
+            answer_panel = pl_answer_panel.text.strip()
+        else:
+            answer_panel = ""
+        question_text_tag = part_soup.find("pl-question-panel")
+        if question_text_tag is not None:
+            question_text = question_text_tag.text.strip()
+        else:
+            question_text = ""
+        if opb_input_type in {"multiple-choice", "checkbox", "dropdown"}:
+            answers = pl_input.find_all("pl-answer")
+            if len(answers) == 0:
+                print(pl_input.prettify())
+                raise ValueError(f"Could not find any answers for part {part}")
+            answer_list = [replace_tags(answer.text.strip()) for answer in answers]
+        else:
+            answer_list = []
+
+        md_result += f"## Part {part}\n\n"
+        if question_text:
+            md_result += f"{question_text}\n\n"
+
+        md_result += "### Answer Section \n\n"
+
+        if answer_list:
+            for answer in answer_list:
+                md_result += f"- {answer}\n"
+            md_result += "\n"
+
+        if submission_panel:
+            md_result += f"### pl-submission-panel\n\n{submission_panel}\n\n"
+
+        if answer_panel:
+            md_result += f"### pl-answer-panel\n\n{answer_panel}\n\n"
+
+        pl_customizations.pop("answers-name", None)
+
+        for customization, value in pl_customizations.items():
+            # we want to try and parse the values of the customizations as python literals
+            # so that we can roundtrip them through yaml and get the same values back
+            # but we don't want to fail if we can't parse them, nor do we want to try and parse non literals
+            # so using ast.literal_eval is preferred over eval here
+            try:
+                if (val := ast.literal_eval(value)) is not Ellipsis:  # Ellipsis is ..., and is a valid python literal, but we don't want to unstringify it
+                    pl_customizations[customization] = val
+            except:
+                pass
+
+        parts_dict[f"part{part}"] = {
+            "type": opb_input_type,
+            "pl-customizations": pl_customizations,
+        }
+
+    # Parse the info.json file, and pull all possible fields from it (and populate as much of the yaml header as we can here)
+
+    info_json: dict = json.loads(info_json_file.read_text(encoding="utf8"))
+    metadata: dict = info_json.get("comment", {}).get("METADATA", {})
+
+    md_result += f"## Rubric\n\n{metadata.get('Rubric', '')}\n\n"
+    md_result += f"## Solution\n\n{metadata.get('Solution', '')}\n\n"
+    md_result += f"## Comments\n\n{metadata.get('Comments', '')}\n\n"
+
+    header_dict["title"] = info_json["title"]
+    header_dict["topic"] = info_json["topic"].split(".", 1)[-1]
+    header_dict["author"] = metadata.get("author", "Unknown")
+    header_dict["source"] = metadata.get("source", "Unknown")
+    header_dict["template_version"] = metadata.get("template_version", "Unknown")
+    header_dict["attribution"] = attribution
+    header_dict["gradingMethod"] = info_json.get("partialCredit", None)
+    header_dict["partialCredit"] = info_json.get("partialCredit", None)
+    header_dict["singleVariant"] = info_json.get("singleVariant", None)
+    header_dict["showCorrectAnswer"] = info_json.get("showCorrectAnswer", None)
+    header_dict["dependencies"] = info_json.get("dependencies", None)
+    header_dict["externalGradingOptions"] = info_json.get(
+        "externalGradingOptions", None
+    )
+    header_dict["workspaceOptions"] = metadata.get("workspaceOptions", None)
+    header_dict["outcomes"] = metadata.get("outcomes", ["unknown"])
+    header_dict["difficulty"] = metadata.get("difficulty", "undefined")
+    header_dict["randomization"] = metadata.get("randomization", ["undefined"])
+    header_dict["taxonomy"] = metadata.get("taxonomy", ["undefined"])
+    header_dict["span"] = metadata.get("span", ["undefined"])
+    header_dict["length"] = metadata.get("length", ["undefined"])
+    header_dict["tags"] = sorted(
+        list(set(info_json["tags"]) - auto_tags)
+    )  # force deterministic order
+    header_dict["assets"] = []  # TODO: Add support for this
+    header_dict["autogradeTestFiles"] = []  # TODO: Add support for this
+    header_dict["workspaceFiles"] = []  # TODO: Add support for this
+    header_dict["serverFiles"] = []  # TODO: Add support for this
+
+    if header_dict["tags"] == []:
+        header_dict["tags"] = ["unknown"]
+
+    # Get the module spec for the server.py file so we can load it and get the functions from it
+    spec = importlib.util.spec_from_file_location(
+        f"server_{path.name}", str(server_py.absolute())
+    )
+    # validate the file exists and a module spec was created for it
+    if spec is None:
+        raise ModuleNotFoundError(f"Could not find server.py file for question {path.name}")
+    server = importlib.util.module_from_spec(spec) # create a module object from the spec
+    loader = spec.loader # get the loader from the spec
+    if loader is None: # validate the loader exists, since we need it to get the code objects for the functions
+        raise ModuleNotFoundError(f"Could not load server.py file for question {path.name}")
+    loader.exec_module( # load the code objects for the module into the module object by executing the module code with the loader
+        server
+    )  # execute the server.py file to get code objects for it that can be access with inspect
+
+    functions = {}
+
+    custom_start_line_no = 0
+
+    for func_name in ("imports", "generate", "prepare", "parse", "grade"):
+        func = getattr(server, func_name, None)
+        if func is None:
+            functions[func_name] = "pass\n"
+            continue
+        # We could use the builtin callable function here, but that would allow classes or callable objects (instances of classes that define __call__ somewhere in the chain)
+        if not inspect.isfunction(func):
+            raise ValueError(
+                f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
+            )
+        signature = inspect.signature(func)
+        parameters = signature.parameters
+        if len(parameters) != 1:
+            raise ValueError(
+                f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(parameters)}: {signature})"
+            )
+        [parameter] = parameters.values()
+        # the argument name should be named data, and we know there is only one argument here (if we wanted to be super precise we could check its the only posarg, but thats too pedantic)
+        if parameter.name != "data":
+            raise ValueError(
+                f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {parameter!r})"
+            )
+        if parameter.kind != inspect.Parameter.POSITIONAL_OR_KEYWORD:
+            raise ValueError(
+                f"Function {func_name} in server.py for question {path.name} does not have the correct argument kind (expected 'POSITIONAL_OR_KEYWORD', got {parameter})"
+            )
+        func_code = inspect.getsource(func) # get the source code for the function
+        functions[func_name] = textwrap.dedent(
+            func_code.split("\n", 1)[-1] # remove "def <name>(data):"" line, and remove unnecessary indentation to prevent the function from being indented too far in the yaml dump
+        )  # remove "def name(data):"" line, and remove unnecessary indentation
+        end_line_no = func_code.count("\n") + func.__code__.co_firstlineno
+        custom_start_line_no = max(custom_start_line_no, end_line_no) # keep track of the last line number of the custom functions so we can get the custom functions at the end of the file
+    # get custom functions
+
+    func_code = inspect.getsource(server).split("\n", custom_start_line_no)[-1]
+    if func_code.strip():
+        functions["custom"] = func_code.strip()
+
+    header_dict["server"] = functions
+
+    for part, info in parts_dict.items():  # now add them in to force them to the bottom
+        header_dict[part] = info
+
+    for opt_key in (
+        "gradingMethod",
+        "partialCredit",
+        "dependencies",
+        "singleVariant",
+        "showCorrectAnswer",
+        "externalGradingOptions",
+        "workspaceOptions",
+    ):  # trim optional keys that don't exist, since they are optional and we don't want to include them if they don't exist as that would pollute the output
+        if header_dict[opt_key] is None:
+            del header_dict[opt_key]
+
+    ### Get assets # TODO: Copy assets to destination path
+
+    client_assets = path / "clientFilesQuestion"
+    server_assets = path / "serverFilesQuestion"
+    test_assets = path / "tests"
+    workspace_assets = path / "workspaceFiles"
+
+    if client_assets.exists():
+        header_dict["assets"] = sorted(
+            [str(fl.relative_to(client_assets)) for fl in client_assets.iterdir()]
+        )
+        # copy the files from the clientFilesQuestion directory to the output directory
+        for fl in client_assets.iterdir():
+            copy2(fl, output_path / fl.name)
+    else:
+        del header_dict["assets"]  # remove the key if it the directory doesn't exist
+
+    if server_assets.exists():
+        header_dict["serverFiles"] = sorted(
+            [str(fl.relative_to(server_assets)) for fl in server_assets.iterdir()]
+        )
+        # copy the files from the serverFilesQuestion directory to the output directory
+        for fl in server_assets.iterdir():
+            copy2(fl, output_path / fl.name)
+    else:
+        del header_dict[
+            "serverFiles"
+        ]  # remove the key if it the directory doesn't exist
+
+    if test_assets.exists():
+        header_dict["autogradeTestFiles"] = sorted(
+            [str(fl.relative_to(test_assets)) for fl in test_assets.iterdir()]
+        )
+        # copy the files from the assets directory to the tests subdirectory of the output directory
+        output_path.joinpath("tests").mkdir(exist_ok=True)
+        for fl in test_assets.iterdir():
+            copy2(fl, output_path / "tests" / fl.name)
+    else:
+        del header_dict[
+            "autogradeTestFiles"
+        ]  # remove the key if it the directory doesn't exist
+
+    if workspace_assets.exists():
+        header_dict["workspaceFiles"] = sorted(
+            [str(fl.relative_to(workspace_assets)) for fl in workspace_assets.iterdir()]
+        )
+        # copy the files from the workspaceFiles directory to the workspace subdirectory of the output directory
+        output_path.joinpath("workspace").mkdir(exist_ok=True)
+        for fl in workspace_assets.iterdir():
+            copy2(fl, output_path / "workspace" / fl.name)
+    else:
+        del header_dict[
+            "workspaceFiles"
+        ]  # remove the key if it the directory doesn't exist
+
+    ### START Yaml Dump Configuration ###
+
+    def str_presenter(dumper, data2):
+        if len(data2.splitlines()) > 1:  # check for multiline string
+            # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
+            data2 = re.sub(
+                r"\n\s+\n", "\n\n", data2
+            )  # # Try \s{3,} for three or more spaces
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
+        if data2.startswith("pass"):  # Check for default server.py functions
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
+        return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
+
+    yaml.add_representer(str, str_presenter)
+
+    def represent_none(self, _):  # This removes explicit null values, since implicit nulls are the de-facto standard for OPB
+        return self.represent_scalar("tag:yaml.org,2002:null", "")
+
+    yaml.add_representer(type(None), represent_none)
+
+    ### END Yaml Dump Configuration ###
+
+    # Write the completed converted question to a file
+    output_md_file.write_text(
+        f"---\n{yaml.dump(header_dict, sort_keys=False)}---\n{md_result}",
+        encoding="utf8",
+    )
+
+    pycache = path / "__pycache__"
+    if pycache.exists():
+        rmtree(pycache, ignore_errors=True) # remove the pycache directory, we don't want to leave a mess of pyc files behind
