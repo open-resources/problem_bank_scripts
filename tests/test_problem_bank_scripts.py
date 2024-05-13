@@ -9,10 +9,9 @@ import os
 import pathlib
 
 import fastjsonschema
-import pandas as pd
 import pytest
 
-from problem_bank_scripts import __version__, process_question_pl, process_question_md
+from problem_bank_scripts import __version__, process_question_pl, process_question_md, validate_multiple_choice
 
 
 def test_version():
@@ -257,3 +256,120 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
             assert filecmp.cmp(
                 file, outputPath / file.relative_to(comparePath), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+
+def test_validate_multiple_choice_valid_has_correct_answer():
+    """Tests the `validate_multiple_choice()` function with valid input."""
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": True, "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is True
+
+@pytest.mark.parametrize("value", ["random", "correct"])
+def test_validate_multiple_choice_valid_none_of_the_above(value: str):
+    """Tests the `validate_multiple_choice()` function with valid input.
+    
+    Args:
+        value (str): The value of the "none-of-the-above" key in the parsed question.
+    """
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                    "none-of-the-above": value
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is True
+
+
+def test_validate_multiple_choice_invalid_none_of_the_above_unset():
+    """Tests the `validate_multiple_choice()` function with valid input.
+    
+    Args:
+        value (str): The value of the "none-of-the-above" key in the parsed question.
+    """
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is False
+
+@pytest.mark.parametrize("value", ["false", "incorrect"])
+def test_validate_multiple_choice_invalid_none_of_the_above_set(value: str):
+    """Tests the `validate_multiple_choice()` function with valid input.
+    
+    Args:
+        value (str): The value of the "none-of-the-above" key in the parsed question.
+    """
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                    "none-of-the-above": value
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is False
