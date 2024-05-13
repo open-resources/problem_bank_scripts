@@ -918,9 +918,9 @@ def process_matrix_input(part_name, parsed_question, data_dict):
 def validate_multiple_choice(part_name, parsed_question, data_dict):
     """Validates a markdown format multiple-choice question
     Args:
-        output_path (Path): [description]
-        parsed_question (dict): [description]
-        data_dict (dict)
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
 
     Returns:
         bool: True if the question is valid, False otherwise.
