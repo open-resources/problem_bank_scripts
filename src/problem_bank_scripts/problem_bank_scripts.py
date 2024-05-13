@@ -873,6 +873,7 @@ def process_string_input(part_name, parsed_question, data_dict):
 
     return replace_tags(html)
 
+
 def process_matrix_component_input(part_name, parsed_question, data_dict):
     """Processes markdown format of matrix-component-input questions and returns PL HTML
     Args:
@@ -912,6 +913,28 @@ def process_matrix_input(part_name, parsed_question, data_dict):
     return process_matrix_component_input(
         part_name, parsed_question, data_dict
     ).replace("-matrix-component-input", "-matrix-input")
+
+
+def validate_multiple_choice(part_name, parsed_question, data_dict):
+    """Validates a markdown format multiple-choice question
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        bool: True if the question is valid, False otherwise.
+    """
+
+    if any(ans["correct"] is True for ans in data_dict["params"][f"{part_name}"].values()):
+        return True
+
+    none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
+
+    if none_of_the_above in {"correct", "random"}:
+        return True
+
+    return False
 
 
 def replace_tags(string):
@@ -1263,6 +1286,11 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 <div class="card-body">\n\n"""
 
         if "multiple-choice" in q_type:
+            if not validate_multiple_choice(part,parsed_q,data2):
+                raise ValueError(
+                    f"Multiple choice question {part} does not have a correct answer and "
+                    " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
+                )
             question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
         elif "number-input" in q_type:
             question_html += f"{process_number_input(part,parsed_q,data2)}"
