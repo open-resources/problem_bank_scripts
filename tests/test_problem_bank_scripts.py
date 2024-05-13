@@ -313,6 +313,30 @@ def test_validate_multiple_choice_valid_none_of_the_above(value: str):
 
     assert validate_multiple_choice("part1", parsed_question, data_dict) is True
 
+def test_validate_multiple_choice_invalid_has_truthy_non_bool_correct_answer():
+    """Tests the `validate_multiple_choice()` function with valid input."""
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": "True", "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is False
 
 def test_validate_multiple_choice_invalid_none_of_the_above_unset():
     """Tests the `validate_multiple_choice()` function with valid input.
