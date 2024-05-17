@@ -257,6 +257,7 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
                 file, outputPath / file.relative_to(comparePath), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
+
 def test_validate_multiple_choice_valid_has_correct_answer():
     """Tests the `validate_multiple_choice()` function with valid input."""
     
@@ -276,6 +277,7 @@ def test_validate_multiple_choice_valid_has_correct_answer():
                 "ans1": {"value": "Answer", "correct": True, "feedback": "Feedback"},
                 "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
                 "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "value": 1,
             }
         }
     }

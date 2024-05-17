@@ -926,7 +926,7 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
         bool: True if the question is valid, False otherwise.
     """
 
-    if any(ans["correct"] is True for ans in data_dict["params"][f"{part_name}"].values()):
+    if any(ans["correct"] is True for key, ans in data_dict["params"][f"{part_name}"].items() if "ans" in key):
         return True
 
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
