@@ -108,7 +108,7 @@ jobs:
       - name: Checkout ${{ matrix.repo }}
         uses: actions/checkout@v4
         with:
-          repository: open-resources/instructor_physics_bank
+          repository: open-resources/${{ matrix.repo }}
           token: ${{ secrets.API_TOKEN_GITHUB }}
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
