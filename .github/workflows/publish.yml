@@ -23,7 +23,6 @@ jobs:
   build:
     name: Build dist
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python 3.10
@@ -62,8 +61,8 @@ jobs:
           echo "::notice::Installing wheel: $path_to_file"
           python -m pip install --user $path_to_file
           python -m pip list
-      - name: Install pytest
-        run: python -m pip install --user  pytest
+      - name: Install test dependencies
+        run: python -m pip install --user  pytest fastjsonschema
       - name: Run tests against installed wheel
         run: rm -rf src/ && pytest tests/
 
@@ -89,8 +88,8 @@ jobs:
           echo "::notice::Installing sdist: $path_to_file"
           python -m pip install --user $path_to_file
           python -m pip list
-      - name: Install pytest
-        run: python -m pip install --user pytest
+      - name: Install test dependencies
+        run: python -m pip install --user pytest fastjsonschema
       - name: Run tests against installed sdist
         run: rm -rf src/ && pytest tests/
 
@@ -131,7 +130,7 @@ jobs:
           python -m pip install --user $path_to_file
           python -m pip list
       - name: Test problem bank generates properly
-        run: python scripts/process_q.py # Doesn't matter where the files are saved to, we just need all questions merged into main to process without an error.
+        run: python scripts/process.py 'source' --instructor=True --public=True --prairielearn=True
 
   publish:
     name: Publish new release to PyPI
