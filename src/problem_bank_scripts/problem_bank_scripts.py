@@ -926,7 +926,25 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
         bool: True if the question is valid, False otherwise.
     """
 
-    if any(ans["correct"] is True for key, ans in data_dict["params"][f"{part_name}"].items() if "ans" in key):
+    def validate_ans(val, ans_name, part_name):
+        try:
+            json.dumps(val)
+            if not isinstance(val, bool):
+                msg = (
+                    f"Object of type {val.__class__.__name__!r} for the value of correct for {ans_name!r} of {part_name!r} is not a boolean value."
+                    "\n Implicitly relying on truthiness of the value is not recommended. Please use `True` or `False`."
+                )
+                warnings.warn(msg, SyntaxWarning)
+            return bool(val)
+        except TypeError as err:
+            msg = f"Object of type {val.__class__.__name__!r} is not valid for the correct key for answer {ans_name!r} of {part_name!r}."
+            raise TypeError(msg) from err
+
+    if any(
+        validate_ans(ans["correct"], key, part_name)
+        for key, ans in data_dict["params"][f"{part_name}"].items()
+        if "ans" in key
+    ):
         return True
 
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
