@@ -13,6 +13,16 @@ def generate(data):
     # Update the data object with a new dict
     data.update(data2)
     
+    # Start code added automatically by problem_bank_scripts
+
+    # Convert backticks to code blocks/fences in answer choices.
+    pbh.backticks_to_code_tags(data2)
+
+    # Update data with data2
+    data.update(data2)
+
+    # End code added in by problem bank scripts
+
 def grade(data):
     files = { f['name']: f['contents'] for f in data['submitted_answers'].get('_files', []) }
     data['feedback']['results'] = []
