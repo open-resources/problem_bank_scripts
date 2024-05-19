@@ -21,6 +21,3 @@ git commit -m "Increment version from $FROM to $TO"
 # create a tag
 git tag -m "v$TO"
 
-# push the changes
-git push
-
