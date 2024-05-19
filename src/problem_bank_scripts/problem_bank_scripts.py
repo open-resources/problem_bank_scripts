@@ -457,6 +457,7 @@ def write_info_json(output_path, parsed_question):
         "singleVariant",
         "showCorrectAnswer",
         "externalGradingOptions",
+        "workspaceOptions"
     }
 
     # Add tags based on part type
@@ -488,6 +489,15 @@ def write_info_json(output_path, parsed_question):
             for key in parsed_question["header"].keys() & optional_keys
         }
     )
+
+    if "workspaceOptions" in info_json: # validate workspaceOptions contains the required keys if it exists
+        image = "image" in info_json["workspaceOptions"]
+        port = "port" in info_json["workspaceOptions"]
+        home = "home" in info_json["workspaceOptions"]
+        if not (image and port and home):
+            raise SyntaxError("workspaceOptions must contain image, port, and home keys")
+        if not isinstance(info_json["workspaceOptions"]["port"], int):
+            raise TypeError(f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead")
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
@@ -874,6 +884,31 @@ def process_string_input(part_name, parsed_question, data_dict):
     return replace_tags(html)
 
 
+def process_workspace(part_name, parsed_question, data_dict):
+    """Processes markdown format of workspace questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    if "pl-customizations" in parsed_question["header"][part_name]:
+        if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
+            raise ValueError("pl-customizations are not supported for workspace questions")
+
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-workspace></pl-workspace>"""
+
+    if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
+        html += f"""<pl-submission-panel>\n\t<pl-external-grader-results></pl-external-grader-results>\n\t<pl-file-preview></pl-file-preview></pl-submission-panel>"""
+
+    return replace_tags(html)
+
+
 def process_matrix_component_input(part_name, parsed_question, data_dict):
     """Processes markdown format of matrix-component-input questions and returns PL HTML
     Args:
@@ -1171,24 +1206,56 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             encoding="utf8",
         )
 
-    # Move image assets
+    # Create the file errors list
+    os_errors = []
+
+    # Move client assets (generally images)
     files_to_copy = header.get("assets")
     if files_to_copy:
-        [
-            copy2(pathlib.Path(source_filepath).parent / fl, output_path.parent)
-            for fl in files_to_copy
-        ]
+        pl_path = output_path.parent
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    # Move server assets
+    files_to_copy = header.get("serverFiles")
+    if files_to_copy and instructor:
+        pl_path = output_path.parent
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     # Move autograde py test files
     files_to_copy = header.get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path.parent / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [
-            copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl)
-            for fl in files_to_copy
-            if (instructor or fl == "starter_code.py")
-        ]
+        for file in files_to_copy:
+            if file != "starter_code.py" and not instructor:
+                continue
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = header.get("workspaceFiles")
+    if files_to_copy:
+        pl_path = output_path.parent / "workspace"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    if os_errors:
+        error_msg = "\n    ".join(os_errors)
+        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
@@ -1310,6 +1377,8 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += process_string_input(part, parsed_q, data2)
         elif "matching" in q_type:
             question_html += process_matching(part, parsed_q, data2)
+        elif "workspace" in q_type:
+            question_html += process_workspace(part, parsed_q, data2)
         elif "matrix-component-input" in q_type:
             question_html += process_matrix_component_input(part, parsed_q, data2)
         elif "matrix-input" in q_type:
@@ -1364,25 +1433,56 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Write server.py file
     write_server_py(output_path, parsed_q)
 
-    # Move image assets
+    # Create the file errors list
+    os_errors = []
+
+    # Move client assets (generally images)
     files_to_copy = parsed_q["header"].get("assets")
     if files_to_copy:
         pl_path = output_path / "clientFilesQuestion"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [
-            copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl)
-            for fl in files_to_copy
-        ]
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    # Move server assets
+    files_to_copy = parsed_q["header"].get("serverFiles")
+    if files_to_copy:
+        pl_path = output_path / "serverFilesQuestion"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     # Move autograde py test files
     files_to_copy = parsed_q["header"].get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [
-            copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl)
-            for fl in files_to_copy
-        ]
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = parsed_q["header"].get("workspaceFiles")
+    if files_to_copy:
+        pl_path = output_path / "workspace"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    if os_errors:
+        error_msg = "\n    ".join(os_errors)
+        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def pl_image_path(html):
@@ -1433,3 +1533,4 @@ def validate_header(header_dict):
 
     if topics.get(topic := header_dict["topic"], None) is None:
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+
