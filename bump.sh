@@ -19,5 +19,6 @@ git add src/problem_bank_scripts/__init__.py tests/test_problem_bank_scripts.py 
 git commit -m "Increment version from $FROM to $TO"
 
 # create a tag
-git tag -m "v$TO"
+git tag -a "v$TO" -m "Version $TO"
 
+echo "Bump to version $TO complete. Remember to run 'git push --tags' to push the changes."
