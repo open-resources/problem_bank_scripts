@@ -32,7 +32,7 @@ Finally, increment the version and push the new tag and version change.
 ```bash
 bash bump.sh patch
 
-git push --tags
+git push && git push --tags
 ```
 
 To finalize the version update, create a new release on GitHub and the package will be automatically published
