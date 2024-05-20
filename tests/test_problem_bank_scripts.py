@@ -257,6 +257,7 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
                 file, outputPath / file.relative_to(comparePath), shallow=False
             ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
+
 def test_validate_multiple_choice_valid_has_correct_answer():
     """Tests the `validate_multiple_choice()` function with valid input."""
     
@@ -276,6 +277,7 @@ def test_validate_multiple_choice_valid_has_correct_answer():
                 "ans1": {"value": "Answer", "correct": True, "feedback": "Feedback"},
                 "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
                 "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "value": 1,
             }
         }
     }
@@ -313,7 +315,7 @@ def test_validate_multiple_choice_valid_none_of_the_above(value: str):
 
     assert validate_multiple_choice("part1", parsed_question, data_dict) is True
 
-def test_validate_multiple_choice_invalid_has_truthy_non_bool_correct_answer():
+def test_validate_multiple_choice_valid_has_truthy_non_bool_correct_answer():
     """Tests the `validate_multiple_choice()` function with valid input."""
     
     parsed_question = {
@@ -335,8 +337,58 @@ def test_validate_multiple_choice_invalid_has_truthy_non_bool_correct_answer():
             }
         }
     }
+    with pytest.warns(SyntaxWarning):
+        assert validate_multiple_choice("part1", parsed_question, data_dict) is True
 
-    assert validate_multiple_choice("part1", parsed_question, data_dict) is False
+def test_validate_multiple_choice_invalid_has_falsy_non_bool_correct_answer():
+    """Tests the `validate_multiple_choice()` function with valid input."""
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": "", "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+    with pytest.warns(SyntaxWarning):
+        assert validate_multiple_choice("part1", parsed_question, data_dict) is False
+
+def test_validate_multiple_choice_invalid_has_non_json_compatible_value_for_correct():
+    """Tests the `validate_multiple_choice()` function with valid input."""
+    
+    parsed_question = {
+        "header": {
+            "part1": {
+                "pl-customizations": {
+                    "weight": 1,
+                    "fixed-order": True,
+                }
+            }
+        }
+    }
+    data_dict = {
+        "params": {
+                "part1": {
+                "ans1": {"value": "Answer", "correct": 1j, "feedback": "Feedback"},
+                "ans2": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+                "ans3": {"value": "Answer", "correct": False, "feedback": "Feedback"},
+            }
+        }
+    }
+    with pytest.raises(TypeError, match=r"Object of type 'complex'.*"):
+        validate_multiple_choice("part1", parsed_question, data_dict)
 
 def test_validate_multiple_choice_invalid_none_of_the_above_unset():
     """Tests the `validate_multiple_choice()` function with valid input.
