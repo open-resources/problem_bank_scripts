@@ -65,14 +65,8 @@ Once you complete these tasks, click on "Save & Grade" below.
 
 ### pl-submission-panel
 
-<ul>
-  {{#feedback.results}}
-  <li>{{.}}</li>
-  {{/feedback.results}}
-</ul>
-
-<!-- Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question. -->
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ### pl-answer-panel
 

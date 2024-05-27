@@ -14,14 +14,15 @@ Once you complete these tasks, click on "Save & Grade" below.
 </pl-question-panel>
 
 <pl-workspace></pl-workspace>
-<pl-submission-panel><ul>
-  {{#feedback.results}}
-  <li>{{.}}</li>
-  {{/feedback.results}}
+<pl-submission-panel>
+<ul>
+	{{ #feedback.results }} 
+	<li>{{ . }}</li>
+	{{ /feedback.results }}
 </ul>
-
-<!-- Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question. -->
+</pl-submission-panel>
+<pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
  </pl-submission-panel>
 
 <pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
