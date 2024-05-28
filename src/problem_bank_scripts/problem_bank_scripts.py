@@ -39,16 +39,12 @@ topics = {"Template": "000.Template"}  # Start with special cased topics
 try:
     subjects = [path.split("instructor_")[1].split("_bank")[0]]
 except:
-    # warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
     subjects = ["physics", "datascience", "stats"]
 
 for subject in subjects:
     url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
     learning_outcomes = pd.read_csv(url)
-    topics |= {
-        topic: f"{i:03}.{topic}"
-        for i, topic in enumerate(learning_outcomes["Topic"].unique(), start=1)
-    }
+    topics |= learning_outcomes[["Topic", "Numbered Topic"]].drop_duplicates().values
 
 # Start of reading/parsing functions
 
