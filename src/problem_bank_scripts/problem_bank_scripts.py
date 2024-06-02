@@ -1032,6 +1032,10 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
+with importlib.resources.files(__package__).joinpath("attributions.json").open("rb") as file:
+    _ATTRIBUTIONS = json.load(file)
+    _KNOWN_ATTRIBUTIONS = list(_ATTRIBUTIONS.keys())
+
 def process_attribution(attribution):
     """Takes in a string and returns the HTML for the attribution
 
@@ -1042,21 +1046,14 @@ def process_attribution(attribution):
         string (str): returns the html of the attribution
     """
 
-    with importlib.resources.open_text(
-        "problem_bank_scripts", "attributions.json"
-    ) as file:
-        possible_attributions = json.load(file)
-
     try:
-        attribution_text = possible_attributions[attribution]
+        return _ATTRIBUTIONS[attribution]
 
     except KeyError:
         print(
-            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {possible_attributions.keys()}. You need to update your md file and fix the `attribution` in the header"
+            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {_KNOWN_ATTRIBUTIONS}. You need to update your md file and fix the `attribution` in the header"
         )
         raise
-
-    return attribution_text
 
 
 def process_question_md(source_filepath, output_path=None, instructor=False):
