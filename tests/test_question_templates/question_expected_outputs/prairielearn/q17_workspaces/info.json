@@ -1,13 +1,13 @@
 {
-    "uuid": "fc0d8086-108a-3418-a5d7-498e9af0bd74",
+    "uuid": "9ecb07ed-d25c-3da4-bd8a-62076a4b29fe",
     "title": "Moving and copying files",
     "topic": "000.Template",
     "tags": [
-        "workspace",
-        "DEV"
+        "workspace"
     ],
     "type": "v3",
     "singleVariant": false,
+    "showCorrectAnswer": false,
     "partialCredit": true,
     "workspaceOptions": {
         "image": "prairielearn/workspace-xtermjs",
@@ -20,6 +20,5 @@
             "newdir/file1_new.txt",
             "newdir/file2_new.txt"
         ]
-    },
-    "showCorrectAnswer": false
+    }
 }
