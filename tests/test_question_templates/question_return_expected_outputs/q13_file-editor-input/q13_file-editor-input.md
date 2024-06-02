@@ -101,19 +101,26 @@ part1:
 
 ## Part 1
 
-This question requires you to define a function named {{params.fname}}.
-    This function should receive a single numerical input and return the {{params.question}} of this input.
-    assume all inputs to the function are valid.
+This question requires you to define a function named `{{params.fname}}`.
+This function should receive a single numerical input and return the {{params.question}} of this input.
+assume all inputs to the function are valid.
 
+Below are some example uses of the `{{params.fname}}` function:
 
-    Below are some example uses of the {{params.fname}} function
-
-
-    {{params.fname}}({{params.input0}})  # returns {{params.output0}}
-    {{params.fname}}({{params.input1}})  # returns {{params.output1}}
-    {{params.fname}}({{params.input2}})  # returns {{params.output2}}
+```python
+{{params.fname}}({{params.input0}})  # returns {{params.output0}}
+{{params.fname}}({{params.input1}})  # returns {{params.output1}}
+{{params.fname}}({{params.input2}})  # returns {{params.output2}}
+```
 
 ### Answer Section 
+
+### pl-submission-panel
+
+<pl-external-grader-results>
+</pl-external-grader-results>
+<pl-file-preview>
+</pl-file-preview>
 
 ### pl-answer-panel
 

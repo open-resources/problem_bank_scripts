@@ -7,15 +7,15 @@
         "nothing"
     ],
     "type": "v3",
-    "singleVariant": true,
     "partialCredit": true,
+    "gradingMethod": "External",
+    "showCorrectAnswer": false,
     "externalGradingOptions": {
         "enabled": true,
         "image": "prairielearn/grader-python",
         "entrypoint": "/python_autograder/run.sh"
     },
-    "gradingMethod": "External",
-    "showCorrectAnswer": false,
+    "singleVariant": true,
     "comment": {
         "METADATA": {
             "author": "Aidan Murphy",

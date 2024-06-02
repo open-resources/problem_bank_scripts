@@ -117,19 +117,17 @@ myst:
 
 ## Question Text
 
-<p>
-    This question requires you to define a function named <code>{{params.fname}}</code>.<br>
-    This function should receive a single numerical input and return the {{params.question}} of this input.<br>
-    assume all inputs to the function are valid.<br>
-</p>
-<p>
-    Below are some example uses of the <code>{{params.fname}}</code> function
-</p>
-<markdown>
-    {{params.fname}}({{params.input0}})  # returns {{params.output0}}
-    {{params.fname}}({{params.input1}})  # returns {{params.output1}}
-    {{params.fname}}({{params.input2}})  # returns {{params.output2}}
-</markdown>
+This question requires you to define a function named `{{params.fname}}`.
+This function should receive a single numerical input and return the {{params.question}} of this input.
+assume all inputs to the function are valid.
+
+Below are some example uses of the `{{params.fname}}` function:
+
+```python
+{{params.fname}}({{params.input0}})  # returns {{params.output0}}
+{{params.fname}}({{params.input1}})  # returns {{params.output1}}
+{{params.fname}}({{params.input2}})  # returns {{params.output2}}
+```
 
 ### Answer Section
 
