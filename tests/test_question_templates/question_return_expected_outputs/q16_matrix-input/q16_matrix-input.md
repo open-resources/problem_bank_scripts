@@ -1,7 +1,7 @@
 ---
-title: Distance travelled
+title: Matrix Input
 topic: Template
-author: Firas Moosvi
+author: Gavin Kendal-Freedman
 source: original
 template_version: 1.4
 attribution: standard
@@ -25,35 +25,23 @@ tags:
 - unknown
 server:
   imports: |
-    import random as rd; rd.seed(111)
-    import pandas as pd
+    import numpy as np; np.random.seed(111)
     import problem_bank_helpers as pbh
+    import prairielearn as pl
   generate: |
     data2 = pbh.create_data2()
+    data2["params"]["title"] = "Matrix Input"
 
-    # define or load names/items/objects
-    names = pbh.names.copy()
-    manual_vehicles = pbh.manual_vehicles.copy()
+    matrix = np.random.random((2,2))
+    inv_matrix = np.linalg.inv(matrix)
 
-    # store phrases etc
-    data2["params"]["vars"]["name"] = rd.choice(names)
-    data2["params"]["vars"]["vehicle"] = rd.choice(manual_vehicles)
-    data2["params"]["vars"]["title"] = "Distance travelled"
-    data2["params"]["vars"]["units"] = "m/s"
+    # store phrases, info etc
+    data2["params"]["matrixA"] = pl.to_json(matrix)
 
-    # define bounds of the variables
-    v = rd.randint(2,7)
-    t = rd.randint(5,10)
+    # store the correct answers
+    data2["correct_answers"]["part1_ans"] = pl.to_json(inv_matrix)
+    data2["correct_answers"]["part2_ans"] = pl.to_json(inv_matrix)
 
-    # store the variables in the dictionary "params"
-    data2["params"]["v"] = v
-    data2["params"]["t"] = t
-
-    # define correct answers
-    data2["correct_answers"]["part1_ans"] = v*t
-    data2["correct_answers"]["part2_ans"] = v*t
-
-    # Update the data object with a new dict
     data.update(data2)
 
     # Start code added automatically by problem_bank_scripts
@@ -70,38 +58,33 @@ server:
   parse: |
     pass
   grade: |
-    data = pbh.automatic_feedback(data,rtol=0.03)
-    #pass
+    pass
 part1:
-  type: number-input
+  type: matrix-component-input
   pl-customizations:
-    rtol: 0.05
     weight: 1
-    allow-blank: true
-    label: $d= $
-    suffix: m
+    allow-fractions: 'false'
+    label: $A^{-1}$
+    comparison: decdig
 part2:
-  type: number-input
+  type: matrix-input
   pl-customizations:
-    rtol: 0.05
     weight: 1
-    allow-blank: true
-    label: $d= $
-    suffix: m
+    allow-complex: 'false'
+    label: $A^{-1}$
+    comparison: decdig
 ---
 # {{ params.vars.title }}
 
-{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+Given the following matrix, please return the inverse of the matrix.
 
 ## Part 1
 
-How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+Please write your answer as a matrix component input.
 
 ### Answer Section 
 
 ### pl-submission-panel
-
-{{ feedback.part1_ans }}
 
 Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
@@ -113,19 +96,19 @@ Please remove this section if it is not application for this question.
 
 ## Part 2
 
-How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+Please write your answer as a matrix input in python or matlab format.
 
 ### Answer Section 
 
 ### pl-submission-panel
 
-{{ feedback.part1_ans }}
-
 Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ### pl-answer-panel
 
 Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ## Rubric
 

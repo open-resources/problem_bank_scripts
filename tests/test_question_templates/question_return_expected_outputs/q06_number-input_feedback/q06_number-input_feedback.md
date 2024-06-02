@@ -5,7 +5,6 @@ author: Jake Bobowksi
 source: 2.12.55
 template_version: 1.4
 attribution: openstax-physics-vol2
-gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false

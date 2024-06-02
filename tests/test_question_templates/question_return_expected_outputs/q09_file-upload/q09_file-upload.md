@@ -5,7 +5,7 @@ author: Michael Kudla
 source: original
 template_version: 1.4
 attribution: standard
-gradingMethod: true
+gradingMethod: Manual
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false
@@ -66,10 +66,8 @@ Your file must be a png, jpg, or pdf.
 
 ### pl-submission-panel
 
-{{ #feedback.manual }} 
-	Feedback from course staff:
-{{{ feedback.manual }}}
-	{{ /feedback.manual }}
+Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
 
 ### pl-answer-panel
 

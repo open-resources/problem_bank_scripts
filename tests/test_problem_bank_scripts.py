@@ -3,7 +3,7 @@ import pytest
 from problem_bank_scripts import __version__, validate_multiple_choice
 
 def test_version():
-    assert __version__ == "0.10.0"
+    assert __version__ == "0.10.2"
 
 
 def test_validate_multiple_choice_valid_has_correct_answer():

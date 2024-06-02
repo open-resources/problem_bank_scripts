@@ -5,7 +5,6 @@ author: Christina Yang
 source: original
 template_version: 1.4
 attribution: standard
-gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false

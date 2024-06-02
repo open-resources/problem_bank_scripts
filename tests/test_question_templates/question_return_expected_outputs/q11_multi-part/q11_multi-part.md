@@ -5,7 +5,6 @@ author: Firas Moosvi
 source: original
 template_version: 1.4
 attribution: standard
-gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false
@@ -120,6 +119,7 @@ This part of the question is common to both Parts 1 and 2.
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
 How far does {{ vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+<img src="{{options.client_files_question_url}}/test2.png" width="400"/>
 
 ### Answer Section 
 

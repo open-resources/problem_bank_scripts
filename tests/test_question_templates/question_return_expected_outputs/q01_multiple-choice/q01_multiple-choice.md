@@ -5,7 +5,6 @@ author: Firas Moosvi
 source: 5.45
 template_version: 1.4
 attribution: openstax-physics-vol2
-gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false
@@ -108,6 +107,7 @@ part1:
 ## Part 1
 
 How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+<img src="{{options.client_files_question_url}}/test2.png"/>
 
 ### Answer Section 
 

@@ -5,7 +5,6 @@ author: Gavin Kendal-Freedman
 source: original
 template_version: 1.0
 attribution: standard
-gradingMethod: true
 partialCredit: true
 singleVariant: false
 showCorrectAnswer: false

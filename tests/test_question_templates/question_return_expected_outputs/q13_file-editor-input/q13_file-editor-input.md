@@ -5,7 +5,7 @@ author: Aidan Murphy
 source: original
 template_version: 1.0
 attribution: standard
-gradingMethod: true
+gradingMethod: External
 partialCredit: true
 singleVariant: true
 showCorrectAnswer: false

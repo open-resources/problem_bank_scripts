@@ -1072,7 +1072,7 @@ def remove_correct_answers(data2_dict):
 
 
 with importlib.resources.files(__package__).joinpath("attributions.json").open("rb") as file:
-    _ATTRIBUTIONS = json.load(file)
+    _ATTRIBUTIONS: dict[str, str] = json.load(file)
     _KNOWN_ATTRIBUTIONS = list(_ATTRIBUTIONS.keys())
 
 def process_attribution(attribution):
@@ -1586,7 +1586,7 @@ def validate_header(header_dict):
         raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
 
 
-def identify_button_html(tag: bs4.Tag) -> bool:
+def _identify_button_html(tag: bs4.Tag) -> bool:
     """Identifies if the tag is a button
 
     Args:
@@ -1604,6 +1604,31 @@ def identify_button_html(tag: bs4.Tag) -> bool:
         return True
     return False
 
+def _extract_tag_instance(soup: bs4.BeautifulSoup, tag: str, index: int = -1) -> str:
+    """Extracts the specified instance of a tag from a BeautifulSoup object
+
+    Args:
+        soup (bs4.BeautifulSoup): BeautifulSoup object
+        tag (str): Tag to search for
+        index (int, optional): Index of the tag to extract. Defaults to -1.
+
+    Returns:
+        str: The complete contents of the of the tag (with HTML comments) or an empty string if the tag was not found
+    """
+    try:
+        tag = soup.find_all(tag)[-1]
+    except IndexError:
+        return ""
+    else:
+        if isinstance(tag, bs4.Tag):
+            try:
+                while tag.markdown is not None:
+                    tag.markdown.unwrap()
+            except AttributeError:
+                pass
+            return textwrap.dedent("\n".join(line.lstrip(" ") for line in tag.prettify().splitlines()[1:-1]))
+        else:
+            return ""
 
 def pl_to_md(
     question: os.PathLike[str] | str | pathlib.Path, output: os.PathLike[str] | str | pathlib.Path, file_name: str | None = None
@@ -1686,7 +1711,7 @@ def pl_to_md(
         if (preamble_tag := soup.find("pl-question-panel")) is not None:
             md_result += preamble_tag.text.strip()
             md_result += "\n\n"
-        if len(usefuL_info := soup.find_all(identify_button_html)) > 0:
+        if len(usefuL_info := soup.find_all(_identify_button_html)) > 0:
             info = usefuL_info[1]
             if not isinstance(info, bs4.Tag):
                 raise ValueError(
@@ -1702,12 +1727,8 @@ def pl_to_md(
                 f"Could not find attribution at end of question for question {path.name}"
             )
         end_md = end_md[0].text.strip().replace("---\n", "").replace("\n", "<br>")
-        with importlib.resources.open_text(
-            "problem_bank_scripts", "attributions.json"
-        ) as file:
-            possible_attributions: dict[str, str] = json.load(file)
         attribution = None
-        for possible_attribution, pl_attribution_text in possible_attributions.items():
+        for possible_attribution, pl_attribution_text in _ATTRIBUTIONS.items():
             if end_md.endswith(pl_attribution_text.replace("<br>", "")):
                 attribution = possible_attribution
         if attribution is None:
@@ -1731,6 +1752,9 @@ def pl_to_md(
         "pl-string-input": "string-input",
         "pl-matching": "matching",
         "pl-rich-text-editor": "longtext",
+        "pl-workspace": "workspace",
+        "pl-matrix-component-input": "matrix-component-input",
+        "pl-matrix-input": "matrix-input",
     }
 
     auto_tags = {"multi_part", "DEV"} | set(supported_input_types.values())
@@ -1763,6 +1787,7 @@ def pl_to_md(
                 "pl-symbolic-input",
                 "pl-threejs",
                 "pl-units-input",
+                "pl-workspace",
             ]
         )
         if pl_input is not None:
@@ -1778,27 +1803,16 @@ def pl_to_md(
             raise NotImplementedError(
                 f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
             )
+
         # Extract the different panels and sections of the question part
-        pl_submission_panel = part_soup.find("pl-submission-panel")
-        if isinstance(pl_submission_panel, bs4.Tag):
-            submission_panel = pl_submission_panel.text.strip()
-        else:
-            submission_panel = ""
-        pl_answer_panel = part_soup.find("pl-answer-panel")
-        if isinstance(pl_answer_panel, bs4.Tag):
-            answer_panel = pl_answer_panel.text.strip()
-        else:
-            answer_panel = ""
-        question_text_tag = part_soup.find("pl-question-panel")
-        if question_text_tag is not None:
-            question_text = question_text_tag.text.strip()
-        else:
-            question_text = ""
+        submission_panel = _extract_tag_instance(part_soup, "pl-submission-panel")
+        answer_panel = _extract_tag_instance(part_soup, "pl-answer-panel")
+        question_text = _extract_tag_instance(part_soup, "pl-question-panel", 0)
+        
         if opb_input_type in {"multiple-choice", "checkbox", "dropdown"}:
             answers = pl_input.find_all("pl-answer")
             if len(answers) == 0:
-                print(pl_input.prettify())
-                raise ValueError(f"Could not find any answers for part {part}")
+                raise ValueError(f"Could not find any answers for part {part} in question {path.name}:\n{pl_input.prettify()}")
             answer_list = [replace_tags(answer.text.strip()) for answer in answers]
         else:
             answer_list = []
@@ -1853,14 +1867,12 @@ def pl_to_md(
     header_dict["source"] = metadata.get("source", "Unknown")
     header_dict["template_version"] = metadata.get("template_version", "Unknown")
     header_dict["attribution"] = attribution
-    header_dict["gradingMethod"] = info_json.get("partialCredit", None)
+    header_dict["gradingMethod"] = info_json.get("gradingMethod", None)
     header_dict["partialCredit"] = info_json.get("partialCredit", None)
     header_dict["singleVariant"] = info_json.get("singleVariant", None)
     header_dict["showCorrectAnswer"] = info_json.get("showCorrectAnswer", None)
     header_dict["dependencies"] = info_json.get("dependencies", None)
-    header_dict["externalGradingOptions"] = info_json.get(
-        "externalGradingOptions", None
-    )
+    header_dict["externalGradingOptions"] = info_json.get("externalGradingOptions", None)
     header_dict["workspaceOptions"] = metadata.get("workspaceOptions", None)
     header_dict["outcomes"] = metadata.get("outcomes", ["unknown"])
     header_dict["difficulty"] = metadata.get("difficulty", "undefined")
@@ -1868,9 +1880,7 @@ def pl_to_md(
     header_dict["taxonomy"] = metadata.get("taxonomy", ["undefined"])
     header_dict["span"] = metadata.get("span", ["undefined"])
     header_dict["length"] = metadata.get("length", ["undefined"])
-    header_dict["tags"] = sorted(
-        list(set(info_json["tags"]) - auto_tags)
-    )  # force deterministic order
+    header_dict["tags"] = sorted(list(set(info_json["tags"]) - auto_tags))  # force deterministic order
     header_dict["assets"] = []  # TODO: Add support for this
     header_dict["autogradeTestFiles"] = []  # TODO: Add support for this
     header_dict["workspaceFiles"] = []  # TODO: Add support for this
@@ -1924,17 +1934,17 @@ def pl_to_md(
             raise ValueError(
                 f"Function {func_name} in server.py for question {path.name} does not have the correct argument kind (expected 'POSITIONAL_OR_KEYWORD', got {parameter})"
             )
-        func_code = inspect.getsource(func) # get the source code for the function
-        functions[func_name] = textwrap.dedent(
-            func_code.split("\n", 1)[-1] # remove "def <name>(data):"" line, and remove unnecessary indentation to prevent the function from being indented too far in the yaml dump
-        )  # remove "def name(data):"" line, and remove unnecessary indentation
-        end_line_no = func_code.count("\n") + func.__code__.co_firstlineno
-        custom_start_line_no = max(custom_start_line_no, end_line_no) # keep track of the last line number of the custom functions so we can get the custom functions at the end of the file
-    # get custom functions
+        # get the source code for the function and the line number of the first line of the function
+        lines, firstlineno = inspect.getsourcelines(func)
+        # remove "def <name>(data):"" line, and remove unnecessary indentation to prevent the function from being indented too far in the yaml dump
+        functions[func_name] = textwrap.dedent("".join(lines[1:]))
+        # keep track of the last line number of the custom functions so we can get the custom functions at the end of the file
+        custom_start_line_no = max(custom_start_line_no, len(lines) + firstlineno)
 
-    func_code = inspect.getsource(server).split("\n", custom_start_line_no)[-1]
-    if func_code.strip():
-        functions["custom"] = func_code.strip()
+    # get custom functions
+    func_code = inspect.getsource(server).split("\n", custom_start_line_no)[-1].strip()
+    if func_code:
+        functions["custom"] = func_code
 
     header_dict["server"] = functions
 
@@ -1955,58 +1965,31 @@ def pl_to_md(
 
     ### Get assets # TODO: Copy assets to destination path
 
+    def _copy_assets(source: pathlib.Path, dest: pathlib.Path, key: str):
+        dest.mkdir(parents=True, exist_ok=True)
+        if source.exists():
+            files = []
+            # copy the files from the source directory to the output directory
+            for file in source.iterdir():
+                copy2(file, dest / file.name)
+                files.append(str(file.relative_to(source)))
+
+            header_dict[key] = sorted(files)
+        else:
+            try:
+                del header_dict[key]  # remove the key if it the directory doesn't exist
+            except KeyError:
+                pass # ignore if the key doesn't exist, since that means we don't need to remove it
+
     client_assets = path / "clientFilesQuestion"
     server_assets = path / "serverFilesQuestion"
     test_assets = path / "tests"
     workspace_assets = path / "workspaceFiles"
 
-    if client_assets.exists():
-        header_dict["assets"] = sorted(
-            [str(fl.relative_to(client_assets)) for fl in client_assets.iterdir()]
-        )
-        # copy the files from the clientFilesQuestion directory to the output directory
-        for fl in client_assets.iterdir():
-            copy2(fl, output_path / fl.name)
-    else:
-        del header_dict["assets"]  # remove the key if it the directory doesn't exist
-
-    if server_assets.exists():
-        header_dict["serverFiles"] = sorted(
-            [str(fl.relative_to(server_assets)) for fl in server_assets.iterdir()]
-        )
-        # copy the files from the serverFilesQuestion directory to the output directory
-        for fl in server_assets.iterdir():
-            copy2(fl, output_path / fl.name)
-    else:
-        del header_dict[
-            "serverFiles"
-        ]  # remove the key if it the directory doesn't exist
-
-    if test_assets.exists():
-        header_dict["autogradeTestFiles"] = sorted(
-            [str(fl.relative_to(test_assets)) for fl in test_assets.iterdir()]
-        )
-        # copy the files from the assets directory to the tests subdirectory of the output directory
-        output_path.joinpath("tests").mkdir(exist_ok=True)
-        for fl in test_assets.iterdir():
-            copy2(fl, output_path / "tests" / fl.name)
-    else:
-        del header_dict[
-            "autogradeTestFiles"
-        ]  # remove the key if it the directory doesn't exist
-
-    if workspace_assets.exists():
-        header_dict["workspaceFiles"] = sorted(
-            [str(fl.relative_to(workspace_assets)) for fl in workspace_assets.iterdir()]
-        )
-        # copy the files from the workspaceFiles directory to the workspace subdirectory of the output directory
-        output_path.joinpath("workspace").mkdir(exist_ok=True)
-        for fl in workspace_assets.iterdir():
-            copy2(fl, output_path / "workspace" / fl.name)
-    else:
-        del header_dict[
-            "workspaceFiles"
-        ]  # remove the key if it the directory doesn't exist
+    _copy_assets(client_assets, output_path, "assets")
+    _copy_assets(server_assets, output_path, "serverFiles")
+    _copy_assets(test_assets, output_path / "tests", "autogradeTestFiles")
+    _copy_assets(workspace_assets, output_path / "workspace", "workspaceFiles")
 
     ### START Yaml Dump Configuration ###
 
