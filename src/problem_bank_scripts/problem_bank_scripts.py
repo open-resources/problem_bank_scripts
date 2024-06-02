@@ -46,16 +46,12 @@ topics = {"Template": "000.Template"}  # Start with special cased topics
 try:
     subjects = [path.split("instructor_")[1].split("_bank")[0]]
 except:
-    # warnings.warn(f"\na subject could not be found from the path:\n'{path}'\ntopics from all subjects have been loaded.")
     subjects = ["physics", "datascience", "stats"]
 
 for subject in subjects:
     url = f"https://raw.githubusercontent.com/open-resources/learning_outcomes/main/outputs_csv/LO_{subject}.csv"
     learning_outcomes = pd.read_csv(url)
-    topics |= {
-        topic: f"{i:03}.{topic}"
-        for i, topic in enumerate(learning_outcomes["Topic"].unique(), start=1)
-    }
+    topics |= learning_outcomes[["Topic", "Numbered Topic"]].drop_duplicates().values
 
 # Start of reading/parsing functions
 
@@ -466,6 +462,7 @@ def write_info_json(output_path, parsed_question):
         "singleVariant",
         "showCorrectAnswer",
         "externalGradingOptions",
+        "workspaceOptions"
     }
 
     # Add tags based on part type
@@ -497,6 +494,15 @@ def write_info_json(output_path, parsed_question):
             for key in parsed_question["header"].keys() & optional_keys
         }
     )
+
+    if "workspaceOptions" in info_json: # validate workspaceOptions contains the required keys if it exists
+        image = "image" in info_json["workspaceOptions"]
+        port = "port" in info_json["workspaceOptions"]
+        home = "home" in info_json["workspaceOptions"]
+        if not (image and port and home):
+            raise SyntaxError("workspaceOptions must contain image, port, and home keys")
+        if not isinstance(info_json["workspaceOptions"]["port"], int):
+            raise TypeError(f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead")
 
     comment_keys = (
         "author",
@@ -908,6 +914,117 @@ def process_string_input(part_name, parsed_question, data_dict):
     return replace_tags(html)
 
 
+def process_workspace(part_name, parsed_question, data_dict):
+    """Processes markdown format of workspace questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    if "pl-customizations" in parsed_question["header"][part_name]:
+        if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
+            raise ValueError("pl-customizations are not supported for workspace questions")
+
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-workspace></pl-workspace>"""
+
+    html += f"""\n<pl-submission-panel>"""
+
+    if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
+        html += f"""\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>"""
+    
+    html += f"""\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
+
+
+    return replace_tags(html)
+
+
+def process_matrix_component_input(part_name, parsed_question, data_dict):
+    """Processes markdown format of matrix-component-input questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    pl_customizations = " ".join(
+        [
+            f'{k} = "{v}"'
+            for k, v in parsed_question["header"][part_name][
+                "pl-customizations"
+            ].items()
+        ]
+    )  # PL-customizations
+
+    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+    html += f"""<pl-matrix-component-input answers-name="{part_name}_ans" { pl_customizations } ></pl-matrix-component-input>"""
+
+    return replace_tags(html)
+
+
+def process_matrix_input(part_name, parsed_question, data_dict):
+    """Processes markdown format of matrix-input questions and returns PL HTML
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+    return process_matrix_component_input(
+        part_name, parsed_question, data_dict
+    ).replace("-matrix-component-input", "-matrix-input")
+
+
+def validate_multiple_choice(part_name, parsed_question, data_dict):
+    """Validates a markdown format multiple-choice question
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        bool: True if the question is valid, False otherwise.
+    """
+
+    def validate_ans(val, ans_name, part_name):
+        try:
+            json.dumps(val)
+            if not isinstance(val, bool):
+                msg = (
+                    f"Object of type {val.__class__.__name__!r} for the value of correct for {ans_name!r} of {part_name!r} is not a boolean value."
+                    "\n Implicitly relying on truthiness of the value is not recommended. Please use `True` or `False`."
+                )
+                warnings.warn(msg, SyntaxWarning)
+            return bool(val)
+        except TypeError as err:
+            msg = f"Object of type {val.__class__.__name__!r} is not valid for the correct key for answer {ans_name!r} of {part_name!r}."
+            raise TypeError(msg) from err
+
+    if any(
+        validate_ans(ans["correct"], key, part_name)
+        for key, ans in data_dict["params"][f"{part_name}"].items()
+        if "ans" in key
+    ):
+        return True
+
+    none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
+
+    if none_of_the_above in {"correct", "random"}:
+        return True
+
+    return False
+
+
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
 
@@ -954,6 +1071,10 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
+with importlib.resources.files(__package__).joinpath("attributions.json").open("rb") as file:
+    _ATTRIBUTIONS = json.load(file)
+    _KNOWN_ATTRIBUTIONS = list(_ATTRIBUTIONS.keys())
+
 def process_attribution(attribution):
     """Takes in a string and returns the HTML for the attribution
 
@@ -964,21 +1085,14 @@ def process_attribution(attribution):
         string (str): returns the html of the attribution
     """
 
-    with importlib.resources.open_text(
-        "problem_bank_scripts", "attributions.json"
-    ) as file:
-        possible_attributions = json.load(file)
-
     try:
-        attribution_text = possible_attributions[attribution]
+        return _ATTRIBUTIONS[attribution]
 
     except KeyError:
         print(
-            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {possible_attributions.keys()}. You need to update your md file and fix the `attribution` in the header"
+            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {_KNOWN_ATTRIBUTIONS}. You need to update your md file and fix the `attribution` in the header"
         )
         raise
-
-    return attribution_text
 
 
 def process_question_md(source_filepath, output_path=None, instructor=False):
@@ -1142,24 +1256,56 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             encoding="utf8",
         )
 
-    # Move image assets
+    # Create the file errors list
+    os_errors = []
+
+    # Move client assets (generally images)
     files_to_copy = header.get("assets")
     if files_to_copy:
-        [
-            copy2(pathlib.Path(source_filepath).parent / fl, output_path.parent)
-            for fl in files_to_copy
-        ]
+        pl_path = output_path.parent
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    # Move server assets
+    files_to_copy = header.get("serverFiles")
+    if files_to_copy and instructor:
+        pl_path = output_path.parent
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     # Move autograde py test files
     files_to_copy = header.get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path.parent / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [
-            copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl)
-            for fl in files_to_copy
-            if (instructor or fl == "starter_code.py")
-        ]
+        for file in files_to_copy:
+            if file != "starter_code.py" and not instructor:
+                continue
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = header.get("workspaceFiles")
+    if files_to_copy:
+        pl_path = output_path.parent / "workspace"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    if os_errors:
+        error_msg = "\n    ".join(os_errors)
+        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
@@ -1258,6 +1404,11 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 <div class="card-body">\n\n"""
         ## ***IMPORTANT: If you add or modify an input type, you need to update the `pl_to_md` function as well, to tell it what key it can use for roundtrips! ***
         if "multiple-choice" in q_type:
+            if not validate_multiple_choice(part,parsed_q,data2):
+                raise ValueError(
+                    f"Multiple choice question {part} does not have a correct answer and "
+                    " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
+                )
             question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
         elif "number-input" in q_type:
             question_html += f"{process_number_input(part,parsed_q,data2)}"
@@ -1277,6 +1428,12 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += process_string_input(part, parsed_q, data2)
         elif "matching" in q_type:
             question_html += process_matching(part, parsed_q, data2)
+        elif "workspace" in q_type:
+            question_html += process_workspace(part, parsed_q, data2)
+        elif "matrix-component-input" in q_type:
+            question_html += process_matrix_component_input(part, parsed_q, data2)
+        elif "matrix-input" in q_type:
+            question_html += process_matrix_input(part, parsed_q, data2)
         else:
             raise NotImplementedError(
                 f"This question type ({q_type}) is not yet implemented."
@@ -1303,9 +1460,11 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Add Attribution
     question_html += f"\n<pl-question-panel>\n<markdown>\n---\n{process_attribution(parsed_q['header'].get('attribution'))}\n</markdown>\n</pl-question-panel>\n"
 
-    # Fix Latex underscore bug (_ being replaced with \_)
-    question_html = question_html.replace("\\_", "_")
-
+    # Fix Latex over-escaping from mdformat (i.e. _, [, and ]being replaced with \_, \[, and \])
+    # See https://github.com/open-resources/problem_bank_scripts/issues/89
+    # Also see https://github.com/open-resources/problem_bank_scripts/pull/92
+    question_html = question_html.replace("\\_", "_").replace("\\[","[").replace("\\]","]")
+    question_html = question_html.replace("\\*", "*").replace("\\<","<").replace("\\`","`")
     # Fix empty <markdown> block
     # See this issue: https://github.com/PrairieLearn/PrairieLearn/issues/8346
     # TODO: this can be removed once issue 8346 is resolved
@@ -1325,25 +1484,56 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Write server.py file
     write_server_py(output_path, parsed_q)
 
-    # Move image assets
+    # Create the file errors list
+    os_errors = []
+
+    # Move client assets (generally images)
     files_to_copy = parsed_q["header"].get("assets")
     if files_to_copy:
         pl_path = output_path / "clientFilesQuestion"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [
-            copy2(pathlib.Path(source_filepath).parent / fl, pl_path / fl)
-            for fl in files_to_copy
-        ]
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    # Move server assets
+    files_to_copy = parsed_q["header"].get("serverFiles")
+    if files_to_copy:
+        pl_path = output_path / "serverFilesQuestion"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     # Move autograde py test files
     files_to_copy = parsed_q["header"].get("autogradeTestFiles")
     if files_to_copy:
         pl_path = output_path / "tests"
         pl_path.mkdir(parents=True, exist_ok=True)
-        [
-            copy2(pathlib.Path(source_filepath).parent / "tests" / fl, pl_path / fl)
-            for fl in files_to_copy
-        ]
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "tests" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = parsed_q["header"].get("workspaceFiles")
+    if files_to_copy:
+        pl_path = output_path / "workspace"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
+
+    if os_errors:
+        error_msg = "\n    ".join(os_errors)
+        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def pl_image_path(html):
@@ -1849,3 +2039,4 @@ def pl_to_md(
     pycache = path / "__pycache__"
     if pycache.exists():
         rmtree(pycache, ignore_errors=True) # remove the pycache directory, we don't want to leave a mess of pyc files behind
+

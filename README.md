@@ -1,6 +1,6 @@
 # Problem Bank Scripts 
 
-[![Python](https://img.shields.io/badge/python-3.9-blue)]()
+[![Python](https://img.shields.io/badge/python-3.10-blue)]()
 [![codecov](https://codecov.io/gh/open-resources/problem_bank_scripts/branch/main/graph/badge.svg)](https://codecov.io/gh/open-resources/problem_bank_scripts)
 [![Documentation Status](https://readthedocs.org/projects/problem_bank_scripts/badge/?version=latest)](https://problem_bank_scripts.readthedocs.io/en/latest/?badge=latest)
 
@@ -8,31 +8,35 @@
 ## Installation
 
 ```bash
-$ pip install -i https://test.pypi.org/simple/ problem_bank_scripts
+pip install problem_bank_scripts
 ```
 
 ## Update version
 
-Here are the steps to increment the version (replace patch with major/minor/patch)
+Here are the steps to increment the version (replace patch with major/minor/patch):
 
+First, make sure to have the latest changes in the main branch.
+
+```bash
+git checkout main && git pull
 ```
-poetry version patch
 
-pico src/problem_bank_scripts/__init__.py
+Then, make sure all tests pass before incrementing the version.
 
-pico tests/test_problem_bank_scripts.py
-
+```bash
 poetry run pytest
-
-cd docs; poetry run make html; cd ..
-
-git add .; git commit -m "increment version"; git push
-
-poetry build
-
-poetry publish
 ```
 
+Finally, increment the version and push the new tag and version change.
+
+```bash
+bash bump.sh patch
+
+git push && git push --tags
+```
+
+To finalize the version update, create a new release on GitHub and the package will be automatically published
+ to PyPI after the deployment is approved assuming all tests pass.
 
 ## Features
 
