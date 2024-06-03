@@ -515,11 +515,15 @@ def write_info_json(output_path, parsed_question):
         "length",
     )
 
-    comment = {key: parsed_question["header"][key] for key in comment_keys}
+    comment = {key: parsed_question["header"][key] for key in comment_keys if key in parsed_question["header"]}
 
     # Get keys that need to get added to the comment from the question body (Rubric, Solution, Comments)
 
-    comment |= {key: parsed_question["body_parts"][key].split("\n\n", 1)[-1].strip() for key in ("Rubric", "Solution", "Comments")}
+    comment |= {
+        key: parsed_question["body_parts"][key].split("\n\n", 1)[-1].strip()
+        for key in ("Rubric", "Solution", "Comments")
+        if key in parsed_question["body_parts"]
+    }
 
     # Add the comment to the info_json, under a metadata key in the comment object of info_json
 
