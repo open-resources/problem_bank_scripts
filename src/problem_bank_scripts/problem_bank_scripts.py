@@ -904,7 +904,7 @@ def replace_tags(string):
         .replace("@|", "}}")
     )
 
-_SUPPORTED_INPUTS: dict["str", tuple[Callable[[str, dict, dict], str], str]] = {
+_SUPPORTED_INPUTS: dict[str, tuple[Callable[[str, dict, dict], str], str]] = {
     "number-input":           (BasicInputConverter("number-input"), "pl-number-input"),
     "symbolic-input":         (BasicInputConverter("symbolic-input"), "pl-symbolic-input"),
     "matrix-input":           (BasicInputConverter("matrix-input"), "pl-matrix-input"),
