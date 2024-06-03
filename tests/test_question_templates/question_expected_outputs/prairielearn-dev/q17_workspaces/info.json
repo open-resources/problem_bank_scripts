@@ -1,5 +1,5 @@
 {
-    "uuid": "a27bed7b-7fe1-3092-9be7-82e4d2799c82",
+    "uuid": "abe940ee-ff06-30dc-ac09-6800e74a9aa3",
     "title": "Moving and copying files",
     "topic": "000.Template",
     "tags": [
@@ -7,8 +7,9 @@
         "DEV"
     ],
     "type": "v3",
-    "partialCredit": true,
+    "singleVariant": false,
     "showCorrectAnswer": false,
+    "partialCredit": true,
     "workspaceOptions": {
         "image": "prairielearn/workspace-xtermjs",
         "port": 8080,
@@ -21,5 +22,33 @@
             "newdir/file2_new.txt"
         ]
     },
-    "singleVariant": false
+    "comment": {
+        "METADATA": {
+            "author": "Jonatan Schroeder; Converted by Gavin Kendal-Freedman",
+            "source": "original",
+            "template_version": 1.0,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question:\n\nThis example problem was originally created by [Jonatan Schroeder](https://www.cs.ubc.ca/people/jonatan-schroeder), and was later converted to the OER markdown layout."
+        }
+    }
 }

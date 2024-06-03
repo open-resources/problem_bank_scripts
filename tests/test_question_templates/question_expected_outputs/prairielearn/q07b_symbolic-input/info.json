@@ -7,6 +7,35 @@
     ],
     "type": "v3",
     "singleVariant": false,
+    "partialCredit": true,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "METADATA": {
+            "author": "Michael Kudla",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        }
+    }
 }

@@ -1,15 +1,44 @@
 {
-    "uuid": "7481a4ee-ce20-3741-8a8e-35baedd57dc5",
+    "uuid": "1457df87-a1d3-325a-bacb-8aa8fccd3852",
     "title": "Matrix Input",
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "matrix-input",
         "matrix-component-input",
+        "matrix-input",
         "DEV"
     ],
     "type": "v3",
-    "partialCredit": true,
     "singleVariant": false,
-    "showCorrectAnswer": false
+    "showCorrectAnswer": false,
+    "partialCredit": true,
+    "comment": {
+        "METADATA": {
+            "author": "Gavin Kendal-Freedman",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        }
+    }
 }

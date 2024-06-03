@@ -62,7 +62,7 @@ jobs:
           python -m pip install --user $path_to_file
           python -m pip list
       - name: Install test dependencies
-        run: python -m pip install --user  pytest fastjsonschema
+        run: python -m pip install --user pytest pytest-subtests fastjsonschema
       - name: Run tests against installed wheel
         run: rm -rf src/ && pytest tests/
 
@@ -89,7 +89,7 @@ jobs:
           python -m pip install --user $path_to_file
           python -m pip list
       - name: Install test dependencies
-        run: python -m pip install --user pytest fastjsonschema
+        run: python -m pip install --user pytest pytest-subtests fastjsonschema
       - name: Run tests against installed sdist
         run: rm -rf src/ && pytest tests/
 
