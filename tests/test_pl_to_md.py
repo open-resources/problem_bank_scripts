@@ -23,7 +23,7 @@ files = sorted(
     "question",
     [file for file in files],
 )
-def test_pl_to_md(paths: dict[str, pathlib.Path], question: str):
+def test_pl_to_md(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the ``pl_to_md()`` function
 
     Args:
@@ -47,22 +47,23 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str):
         print(hiddenFile, ~(hiddenFile))
 
         if isFile and hiddenFile and assetFile and not excludedFile:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
 
-            try:
-                filecmp.cmp(file, outputPath / file.relative_to(comparePath))
-            except FileNotFoundError:
-                print(
-                    file,
-                    folder,
-                    outputFolder,
-                    outputPath / file.relative_to(comparePath),
-                )
+                try:
+                    filecmp.cmp(file, outputPath / file.relative_to(comparePath))
+                except FileNotFoundError:
+                    print(
+                        file,
+                        folder,
+                        outputFolder,
+                        outputPath / file.relative_to(comparePath),
+                    )
 
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath)
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath)
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
 def test_question_exists_validation():

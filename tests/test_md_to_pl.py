@@ -76,7 +76,7 @@ def run_prairie_learn_generator(
         for dev in [False, True]
     ],
 )
-def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: bool):
+def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: bool, subtests):
     """Tests the PrairieLearn `process_question_pl()`
 
     Args:
@@ -108,22 +108,23 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
         infoJSON = not file.name.endswith("info.json")
 
         if isFile and hiddenFile and assetFile and excludedFile and infoJSON:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
 
-            try:
-                filecmp.cmp(file, outputPath / file.relative_to(comparePath))
-            except FileNotFoundError:
-                print(
-                    file,
-                    folder,
-                    outputFolder,
-                    outputPath / file.relative_to(comparePath),
-                )
+                try:
+                    filecmp.cmp(file, outputPath / file.relative_to(comparePath))
+                except FileNotFoundError:
+                    print(
+                        file,
+                        folder,
+                        outputFolder,
+                        outputPath / file.relative_to(comparePath),
+                    )
 
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath)
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath)
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
 @pytest.mark.parametrize(
@@ -202,7 +203,7 @@ def test_info_json(
         for file in files
     ],
 )
-def test_public(paths: dict[str, pathlib.Path], question: str):
+def test_public(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the PrairieLearn `process_question_md()`
 
     Args:
@@ -224,11 +225,12 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
         if isFile and notHiddenFile and notImageFile:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath), shallow=False
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath), shallow=False
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
 @pytest.mark.parametrize(
@@ -250,7 +252,7 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
         for file in files
     ],
 )
-def test_instructor(paths: dict[str, pathlib.Path], question: str):
+def test_instructor(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the PrairieLearn `process_question_md(instructor=True)`
 
     Args:
@@ -276,8 +278,9 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
         notExcludedFile = not (file.parent.name in exclude_question)
 
         if isFile and notHiddenFile and notImageFile and notExcludedFile:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath), shallow=False
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath), shallow=False
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
