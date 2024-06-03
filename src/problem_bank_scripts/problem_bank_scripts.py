@@ -2,6 +2,7 @@
 # Date: 2021-05-09
 # This file contains many helper functions that will be used across the question bank project.
 
+from collections.abc import Callable
 from docopt import docopt
 
 # Imports
@@ -1024,7 +1025,6 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
 
     return False
 
-
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
 
@@ -1041,6 +1041,24 @@ def replace_tags(string):
         .replace("@|", "}}")
     )
 
+_SUPPORTED_INPUTS: dict["str", tuple[Callable[[str, dict, dict], str], str]] = {
+    "multiple-choice":        (process_multiple_choice, "pl-multiple-choice"),
+    "number-input":           (process_number_input, "pl-number-input"),
+    "checkbox":               (process_checkbox, "pl-checkbox"),
+    "symbolic-input":         (process_symbolic_input, "pl-symbolic-input"),
+    "dropdown":               (process_dropdown, "pl-dropdown"),
+    "longtext":               (process_longtext, "pl-rich-text-editor"),
+    "file-upload":            (process_file_upload, "pl-file-upload"),
+    "file-editor":            (process_file_editor, "pl-file-editor"),
+    "string-input":           (process_string_input, "pl-string-input"),
+    "matching":               (process_matching, "pl-matching"),
+    "workspace":              (process_workspace, "pl-workspace"),
+    "matrix-component-input": (process_matrix_component_input, "pl-matrix-component-input"),
+    "matrix-input":           (process_matrix_input, "pl-matrix-input"),
+}
+
+INPUT_TYPE_PROCESSORS = {opb_name: func for opb_name, (func, _) in _SUPPORTED_INPUTS.items()}
+OPB_INPUT_TYPES = {tag: opb_name for opb_name, (_, tag) in _SUPPORTED_INPUTS.items()}
 
 def remove_correct_answers(data2_dict):
     """Magical recursive function that removes particular keys from a nested dictionary: https://stackoverflow.com/a/29652561/2217577
@@ -1409,35 +1427,12 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
                     f"Multiple choice question {part} does not have a correct answer and "
                     " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
                 )
-            question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
-        elif "number-input" in q_type:
-            question_html += f"{process_number_input(part,parsed_q,data2)}"
-        elif "checkbox" in q_type:
-            question_html += process_checkbox(part, parsed_q, data2)
-        elif "symbolic-input" in q_type:
-            question_html += process_symbolic_input(part, parsed_q, data2)
-        elif "dropdown" in q_type:
-            question_html += process_dropdown(part, parsed_q, data2)
-        elif "longtext" in q_type:
-            question_html += process_longtext(part, parsed_q, data2)
-        elif "file-upload" in q_type:
-            question_html += process_file_upload(part, parsed_q, data2)
-        elif "file-editor" in q_type:
-            question_html += process_file_editor(part, parsed_q, data2)
-        elif "string-input" in q_type:
-            question_html += process_string_input(part, parsed_q, data2)
-        elif "matching" in q_type:
-            question_html += process_matching(part, parsed_q, data2)
-        elif "workspace" in q_type:
-            question_html += process_workspace(part, parsed_q, data2)
-        elif "matrix-component-input" in q_type:
-            question_html += process_matrix_component_input(part, parsed_q, data2)
-        elif "matrix-input" in q_type:
-            question_html += process_matrix_input(part, parsed_q, data2)
+        
+        converter = INPUT_TYPE_PROCESSORS.get(q_type, None)
+        if converter is None:
+            raise NotImplementedError(f"The question type ({q_type}) is not yet implemented.")
         else:
-            raise NotImplementedError(
-                f"This question type ({q_type}) is not yet implemented."
-            )
+            question_html += f"{converter(part,parsed_q,data2)}"
 
         if parsed_q["num_parts"] > 1:
             question_html += "</div>\n</div>\n"
@@ -1740,24 +1735,7 @@ def pl_to_md(
             f"Could not find attribution at end of question for question {path.name}"
         )
 
-    supported_input_types = {
-        "pl-multiple-choice": "multiple-choice",
-        "pl-number-input": "number-input",
-        "pl-checkbox": "checkbox",
-        "pl-symbolic-input": "symbolic-input",
-        "pl-dropdown": "dropdown",
-        "pl-longtext": "longtext",
-        "pl-file-upload": "file-upload",
-        "pl-file-editor": "file-editor",
-        "pl-string-input": "string-input",
-        "pl-matching": "matching",
-        "pl-rich-text-editor": "longtext",
-        "pl-workspace": "workspace",
-        "pl-matrix-component-input": "matrix-component-input",
-        "pl-matrix-input": "matrix-input",
-    }
-
-    auto_tags = {"multi_part", "DEV"} | set(supported_input_types.values())
+    auto_tags = {"multi_part", "DEV"} | set(OPB_INPUT_TYPES.values())
 
     # we want to try and eagerly parse the markdown for each part so we can get the question text in
     # as early as possible, but this means we need to delay adding the part metadata to the
@@ -1770,24 +1748,12 @@ def pl_to_md(
         # Find the input tag for the question part
         pl_input = part_soup.find(
             [
+                *OPB_INPUT_TYPES.keys(),
                 "pl-big-o-input",
-                "pl-checkbox",
-                "pl-dropdown",
-                "pl-file-editor",
-                "pl-file-upload",
                 "pl-integer-input",
-                "pl-matching",
-                "pl-matrix-component-input",
-                "pl-matrix-input",
-                "pl-multiple-choice",
-                "pl-number-input",
-                "pl-order-blocks",
-                "pl-rich-text-editor",
-                "pl-string-input",
-                "pl-symbolic-input",
-                "pl-threejs",
                 "pl-units-input",
-                "pl-workspace",
+                "pl-order-blocks",
+                "pl-threejs",
             ]
         )
         if pl_input is not None:
@@ -1798,7 +1764,7 @@ def pl_to_md(
             raise ValueError(f"Could not find input tag for part {part}")
         pl_customizations = pl_input.attrs
         pl_input_type = pl_input.name
-        opb_input_type = supported_input_types.get(pl_input_type, None)
+        opb_input_type = OPB_INPUT_TYPES.get(pl_input_type, None)
         if opb_input_type is None:
             raise NotImplementedError(
                 f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
