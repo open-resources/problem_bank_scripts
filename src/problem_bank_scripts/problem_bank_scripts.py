@@ -451,9 +451,6 @@ def write_info_json(output_path, parsed_question):
 
     ## *** IMPORTANT: If more auto-tags or optional keys are added, make sure to update the `pl_to_md` function to take them into account properly for the roundtrip ***
 
-    # Deal with optional tags in info.json
-    # optional = ""
-
     optional_keys = {
         "gradingMethod",
         "partialCredit",
@@ -670,6 +667,10 @@ def MCInputConverter(pl_tag: str):
     """
 
     def closure(part_name: str, parsed_question: dict, data_dict: dict):
+
+        if pl_tag == "multiple-choice":
+            validate_multiple_choice(part_name, parsed_question, data_dict)
+        
         html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
         pl_customizations = " ".join(
@@ -875,14 +876,17 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
         for key, ans in data_dict["params"][f"{part_name}"].items()
         if "ans" in key
     ):
-        return True
+        return
 
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
 
     if none_of_the_above in {"correct", "random"}:
-        return True
+        return
 
-    return False
+    raise ValueError(
+        f"Multiple choice question {part_name} does not have a correct answer and "
+        "the pl-customization `none-of-the-above` was not set to `correct` or `random`."
+    )
 
 def replace_tags(string):
     """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
@@ -1279,13 +1283,6 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += f"""<div class="card my-2">
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
 <div class="card-body">\n\n"""
-        ## ***IMPORTANT: If you add or modify an input type, you need to update the `pl_to_md` function as well, to tell it what key it can use for roundtrips! ***
-        if "multiple-choice" in q_type:
-            if not validate_multiple_choice(part,parsed_q,data2):
-                raise ValueError(
-                    f"Multiple choice question {part} does not have a correct answer and "
-                    " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
-                )
         
         converter = INPUT_TYPE_PROCESSORS.get(q_type, None)
         if converter is None:
@@ -1705,11 +1702,11 @@ def pl_to_md(
     header_dict["taxonomy"] = metadata.get("taxonomy", ["undefined"])
     header_dict["span"] = metadata.get("span", ["undefined"])
     header_dict["length"] = metadata.get("length", ["undefined"])
-    header_dict["tags"] = sorted(list(set(info_json["tags"]) - auto_tags))  # force deterministic order
-    header_dict["assets"] = []  # TODO: Add support for this
-    header_dict["autogradeTestFiles"] = []  # TODO: Add support for this
-    header_dict["workspaceFiles"] = []  # TODO: Add support for this
-    header_dict["serverFiles"] = []  # TODO: Add support for this
+    header_dict["tags"] = sorted(list(set(info_json["tags"]) - auto_tags))  # Force deterministic order
+    header_dict["assets"] = []  # Populated with _copy_assets(...) later
+    header_dict["autogradeTestFiles"] = []  # Populated with _copy_assets(...) later
+    header_dict["workspaceFiles"] = []  # Populated with _copy_assets(...) later
+    header_dict["serverFiles"] = []  # Populated with _copy_assets(...) later
 
     if header_dict["tags"] == []:
         header_dict["tags"] = ["unknown"]
@@ -1788,7 +1785,7 @@ def pl_to_md(
         if header_dict[opt_key] is None:
             del header_dict[opt_key]
 
-    ### Get assets # TODO: Copy assets to destination path
+    ### Get assets
 
     def _copy_assets(source: pathlib.Path, dest: pathlib.Path, key: str):
         dest.mkdir(parents=True, exist_ok=True)

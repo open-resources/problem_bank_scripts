@@ -5,6 +5,7 @@ from problem_bank_scripts import __version__, validate_multiple_choice
 def test_version():
     assert __version__ == "0.10.2"
 
+_ERROR_MESSAGE = "Multiple choice question part1 does not have a correct answer and the pl-customization `none-of-the-above` was not set to `correct` or `random`."
 
 def test_validate_multiple_choice_valid_has_correct_answer():
     """Tests the `validate_multiple_choice()` function with valid input."""
@@ -30,7 +31,7 @@ def test_validate_multiple_choice_valid_has_correct_answer():
         }
     }
 
-    assert validate_multiple_choice("part1", parsed_question, data_dict) is True
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is None
 
 @pytest.mark.parametrize("value", ["random", "correct"])
 def test_validate_multiple_choice_valid_none_of_the_above(value: str):
@@ -61,7 +62,7 @@ def test_validate_multiple_choice_valid_none_of_the_above(value: str):
         }
     }
 
-    assert validate_multiple_choice("part1", parsed_question, data_dict) is True
+    assert validate_multiple_choice("part1", parsed_question, data_dict) is None
 
 def test_validate_multiple_choice_valid_has_truthy_non_bool_correct_answer():
     """Tests the `validate_multiple_choice()` function with valid input."""
@@ -86,7 +87,7 @@ def test_validate_multiple_choice_valid_has_truthy_non_bool_correct_answer():
         }
     }
     with pytest.warns(SyntaxWarning):
-        assert validate_multiple_choice("part1", parsed_question, data_dict) is True
+        assert validate_multiple_choice("part1", parsed_question, data_dict) is None
 
 def test_validate_multiple_choice_invalid_has_falsy_non_bool_correct_answer():
     """Tests the `validate_multiple_choice()` function with valid input."""
@@ -110,8 +111,8 @@ def test_validate_multiple_choice_invalid_has_falsy_non_bool_correct_answer():
             }
         }
     }
-    with pytest.warns(SyntaxWarning):
-        assert validate_multiple_choice("part1", parsed_question, data_dict) is False
+    with pytest.warns(SyntaxWarning), pytest.raises(ValueError, match=_ERROR_MESSAGE):
+            validate_multiple_choice("part1", parsed_question, data_dict)
 
 def test_validate_multiple_choice_invalid_has_non_json_compatible_value_for_correct():
     """Tests the `validate_multiple_choice()` function with valid input."""
@@ -164,8 +165,8 @@ def test_validate_multiple_choice_invalid_none_of_the_above_unset():
             }
         }
     }
-
-    assert validate_multiple_choice("part1", parsed_question, data_dict) is False
+    with pytest.raises(ValueError, match=_ERROR_MESSAGE):
+        validate_multiple_choice("part1", parsed_question, data_dict)
 
 @pytest.mark.parametrize("value", ["false", "incorrect"])
 def test_validate_multiple_choice_invalid_none_of_the_above_set(value: str):
@@ -196,4 +197,5 @@ def test_validate_multiple_choice_invalid_none_of_the_above_set(value: str):
         }
     }
 
-    assert validate_multiple_choice("part1", parsed_question, data_dict) is False
+    with pytest.raises(ValueError, match=_ERROR_MESSAGE):
+        validate_multiple_choice("part1", parsed_question, data_dict)
