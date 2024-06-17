@@ -25,9 +25,10 @@ tags:
 - unknown
 assets:
 workspaceFiles:
-    - file1.txt
     - file2.txt
     - filebad.txt
+workspaceTemplates:
+    - file1.txt.mustache
 serverFiles:
     - file1.txt
     - file2.txt
