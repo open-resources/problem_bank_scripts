@@ -1285,6 +1285,17 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
                 copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
             except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
                 os_errors.append(str(e))
+                    
+    # Move workspace files
+    files_to_copy = header.get("workspaceTemplates")
+    if files_to_copy:
+        pl_path = output_path.parent / "workspaceTemplates"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspaceTemplates" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
@@ -1514,6 +1525,17 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
                 copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
             except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
                 os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = parsed_q["header"].get("workspaceTemplates")
+    if files_to_copy:
+        pl_path = output_path / "workspaceTemplates"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspaceTemplates" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(f"{e} {e.filename}")
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
