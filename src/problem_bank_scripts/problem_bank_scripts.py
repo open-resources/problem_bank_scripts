@@ -902,9 +902,9 @@ def process_workspace(part_name, parsed_question, data_dict):
     html += f"""\n<pl-submission-panel>"""
 
     if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
-        html += f"""\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>"""
-    
-    html += f"""\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
+        html += f"""\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>\n</pl-submission-panel>"""
+    else:
+        html += f"""\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
 
 
     return replace_tags(html)
