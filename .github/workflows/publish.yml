@@ -160,3 +160,30 @@ jobs:
         run: test $(ls dist/*.tar.gz | wc -l) = 1 && test $(ls dist/*.whl | wc -l) = 1
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+  
+  github-release:
+    name: upload dists to GitHub release
+    needs: [publish]
+    permissions:
+      id-token: write
+      attestations: write
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download release dists
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Attest Build Provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: 'dist/**'
+      - name: Upload Dists to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload
+          '${{ github.ref_name }}' dist/**
+          --repo '${{ github.repository }}'
