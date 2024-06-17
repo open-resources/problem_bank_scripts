@@ -1,0 +1,16 @@
+-   id: lint-opb-question-server
+    name: Lint OPB Markdown Question Server Headers
+    description: This hook reformats the server code headers of the markdown files for OPB problems using a standard black configuration.
+    entry: lint_server
+    language: python
+    stages: [pre-commit, pre-merge-commit, pre-push, manual]
+    types: [markdown]
+    pass_filenames: true
+-   id: check-opb-question-server-ast
+    name: Check OPB Markdown Question Server Headers AST
+    description: This hook checks the AST of server code generated from the headers of markdown files for OPB problems using a `ast.parse`.
+    entry: check_server_ast
+    language: python
+    stages: [pre-commit, pre-merge-commit, pre-push, manual]
+    types: [markdown]
+    pass_filenames: true
