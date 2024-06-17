@@ -1,0 +1,13 @@
+{
+    "uuid": "d0d2c517-6ed7-3801-a6e7-ea72a0b7ded9",
+    "title": "Code Output",
+    "topic": "000.Template",
+    "tags": [
+        "string-input",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
+}

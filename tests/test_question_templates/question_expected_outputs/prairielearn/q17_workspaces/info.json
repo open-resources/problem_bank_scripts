@@ -1,0 +1,24 @@
+{
+    "uuid": "3f0d7ed3-6686-3690-8998-bed5c784e015",
+    "title": "Moving and copying files",
+    "topic": "000.Template",
+    "tags": [
+        "workspace"
+    ],
+    "type": "v3",
+    "showCorrectAnswer": false,
+    "partialCredit": true,
+    "workspaceOptions": {
+        "image": "prairielearn/workspace-xtermjs",
+        "port": 8080,
+        "home": "/home/student",
+        "gradedFiles": [
+            "file1.txt",
+            "file2.txt",
+            "filebad.txt",
+            "newdir/file1_new.txt",
+            "newdir/file2_new.txt"
+        ]
+    },
+    "singleVariant": false
+}

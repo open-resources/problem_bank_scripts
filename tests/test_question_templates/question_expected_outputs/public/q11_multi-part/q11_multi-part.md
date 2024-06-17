@@ -51,7 +51,7 @@ myst:
     params_part2_ans1_value: 42
     params_part2_ans2_value: 30
     params_part2_ans3_value: 11
-    params_part2_ans4_value: 0.8333333333333334
+    params_part2_ans4_value: 0.833
     params_part2_ans5_value: -1
     params_part2_ans6_value: -1.3
 ---

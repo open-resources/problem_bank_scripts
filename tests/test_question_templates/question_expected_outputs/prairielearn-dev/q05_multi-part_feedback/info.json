@@ -1,0 +1,15 @@
+{
+    "uuid": "6951ad1d-4f24-355c-a911-0738a6db8bd1",
+    "title": "Electric Field and Direction",
+    "topic": "000.Template",
+    "tags": [
+        "multi_part",
+        "dropdown",
+        "number-input",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
+}

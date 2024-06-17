@@ -1,0 +1,21 @@
+{
+    "uuid": "548ef32d-08d8-3448-81ee-2775b111c643",
+    "title": "OSUPv2p12_55",
+    "topic": "000.Template",
+    "tags": [
+        "number-input",
+        "OSUP",
+        "volume 2",
+        "chapter 12",
+        "problem 55",
+        "magnetic force",
+        "solenoid",
+        "centripetal acceleration",
+        "circular motion",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
+}

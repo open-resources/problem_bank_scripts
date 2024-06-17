@@ -1,9 +1,13 @@
 {
-            "uuid": "7fadadf5-b5cb-3336-afde-666c770b2c1e",
-            "title": "File Upload",
-            "topic": "Template",
-            "tags":  ["file-upload"],
-            "type": "v3",
-            "gradingMethod": "Manual",
-		"partialCredit":true
+    "uuid": "7bbc4b5f-77d4-36c7-9811-d051565acb4f",
+    "title": "File Upload",
+    "topic": "000.Template",
+    "tags": [
+        "file-upload"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true,
+    "gradingMethod": "Manual"
 }

@@ -124,7 +124,7 @@ myst:
           value: 11
           correct: false
         ans4:
-          value: 0.8333333333333334
+          value: 0.833
           correct: false
         ans5:
           value: -1

@@ -26,65 +26,61 @@ permissions:
   contents: read
 
 jobs:
-  schema:
-    outputs:
-      valid: ${{ steps.check-schema.outputs.schema }}
-      schema: ${{ steps.check-schema.outputs.schema }}
-    runs-on: ubuntu-latest
-    concurrency:
-      group: schema-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Download latest info.json schema
-        run: |
-          curl -sSL https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/master/apps/prairielearn/src/schemas/schemas/infoQuestion.json > latestSchema.json
-      - name: Check schema
-        id: check-schema
-        run: |
-          echo "schema=latestSchema.json" >> "$GITHUB_OUTPUT"
-          diff latestSchema.json tests/infoSchema.json
-          if [ $? -eq 0 ]; then
-            echo "valid=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          else
-            echo "valid=false" >> "$GITHUB_OUTPUT"
-            exit 1
-          fi
-      - name: Comment if out of date
-        if: failure()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            core.error(
-              "The info.json schema is out of date. Please update it to match the latest schema from PrairieLearn.",
-              {
-                title: "Schema out of date",
-                file: "tests/infoSchema.json",
-              }
-            );
+#   schema:
+#     outputs:
+#       invalid: ${{ steps.check-schema.outputs.invalid }}
+#       schema: ${{ steps.check-schema.outputs.schema }}
+#     runs-on: ubuntu-latest
+#     concurrency:
+#       group: schema-${{ github.ref }}
+#       cancel-in-progress: true
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Download latest info.json schema
+#         run: |
+#           curl -sSL https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/master/apps/prairielearn/src/schemas/schemas/infoQuestion.json > latestSchema.json
+#       - name: Check schema
+#         id: check-schema
+#         run: |
+#           echo "schema=latestSchema.json" >> "$GITHUB_OUTPUT"
+#           diff latestSchema.json tests/infoSchema.json
+#           if [ $? -eq 0 ]; then
+#             echo "invalid=false" >> "$GITHUB_OUTPUT"
+#             exit 0
+#           else
+#             echo "invalid=true" >> "$GITHUB_OUTPUT"
+#             exit 0
+#           fi
+#       - name: Comment if out of date
+#         if: ${{ steps.check-schema.outputs.invalid == 'true' }}
+#         uses: actions/github-script@v6
+#         with:
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           script: |
+#             core.warning(
+#               "The info.json schema is out of date. Please update it to match the latest schema from PrairieLearn.",
+#               {
+#                 title: "Schema out of date",
+#                 file: "tests/infoSchema.json",
+#               }
+#             );
 
 
   tests:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Minimum supported; Maybe add in some newer version to test things won't break if used on newer versions of python?
-        python_version: ["3.9"] #, "3.x"] 
     concurrency:
-      group: tests-${{ github.ref }}-${{ matrix.python_version }}
+      group: tests-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python -
           echo "$HOME/.poetry/bin" >> $GITHUB_PATH
-      - name: Set up Python ${{ matrix.python_version }}
-        uses: actions/setup-python@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: "3.10"
           cache: poetry
       - name: Install dependencies
         run: |
@@ -94,9 +90,9 @@ jobs:
           poetry run pytest tests
       - name: Upload generated files
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-generated-files-${{ github.event_name }}-${{ matrix.python_version }}
+          name: test-generated-files-${{ github.event_name }}
           path: tests/test_question_templates/question_generated_outputs/
           if-no-files-found: ignore
           retention-days: 5

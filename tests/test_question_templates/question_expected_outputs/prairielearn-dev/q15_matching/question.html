@@ -1,0 +1,34 @@
+
+<!-- ######## Start of Part 1 ######## -->
+
+<pl-question-panel>
+<markdown>{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
+</markdown>
+</pl-question-panel>
+
+<pl-matching answers-name="part1_matching" weight = "1" blank = "true" >
+	<pl-statement match= '{{ params.part1.statement1.matches }}' > {{{ params.part1.statement1.value }}} </pl-statement>
+	<pl-statement match= '{{ params.part1.statement2.matches }}' > {{{ params.part1.statement2.value }}} </pl-statement>
+	<pl-statement match= '{{ params.part1.statement3.matches }}' > {{{ params.part1.statement3.value }}} </pl-statement>
+	<pl-statement match= '{{ params.part1.statement4.matches }}' > {{{ params.part1.statement4.value }}} </pl-statement>
+	<pl-option name='True' > {{{ params.part1.option1.value }}} </pl-option>
+	<pl-option name='False' > {{{ params.part1.option2.value }}} </pl-option>
+</pl-matching>
+
+<pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+ </pl-submission-panel>
+
+<pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
+Please remove this section if it is not application for this question.
+ </pl-answer-panel>
+
+<!-- ######## End of Part 1 ######## -->
+
+<pl-question-panel>
+<markdown>
+---
+Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)
+</markdown>
+</pl-question-panel>

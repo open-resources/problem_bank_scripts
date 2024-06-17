@@ -1,0 +1,15 @@
+{
+    "uuid": "3fd804a1-96de-3996-9547-9b5893265a9a",
+    "title": "Multi-part Question",
+    "topic": "000.Template",
+    "tags": [
+        "multi_part",
+        "multiple-choice",
+        "number-input",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true
+}

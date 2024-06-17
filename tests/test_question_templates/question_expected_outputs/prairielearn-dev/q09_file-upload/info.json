@@ -1,0 +1,14 @@
+{
+    "uuid": "cfaaaed0-bf18-3305-b15f-770848d40798",
+    "title": "File Upload",
+    "topic": "000.Template",
+    "tags": [
+        "file-upload",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "partialCredit": true,
+    "gradingMethod": "Manual"
+}

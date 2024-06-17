@@ -1,0 +1,13 @@
+{
+    "uuid": "03d2fc31-cc01-3a77-9394-05da8968db50",
+    "title": "Median",
+    "topic": "000.Template",
+    "tags": [
+        "integer-input",
+        "DEV"
+    ],
+    "type": "v3",
+    "singleVariant": false,
+    "partialCredit": true,
+    "showCorrectAnswer": false
+}
