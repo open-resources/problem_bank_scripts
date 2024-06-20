@@ -111,11 +111,8 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
         assetFile = (
             file.name == "question.html" or not file.name.endswith((".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store"))
         )
-        excludedFile = not file.parent.name in exclude_question
+        excludedFile = file.parent.name not in exclude_question
 
-        print(hiddenFile, ~(hiddenFile))
-
-        # TODO: Find a way to separately test info.json files
         infoJSON = not file.name.endswith("info.json")
 
         if isFile and hiddenFile and assetFile and excludedFile and infoJSON:
@@ -156,8 +153,8 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str , devmode: bool
     run_prairie_learn_generator(paths, question, devmode)
     output_info_json = paths["outputDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/{question}/info.json")
     compare_info_json = paths["compareDest"].joinpath(f"prairielearn{'-dev' if devmode else ''}/{question}/info.json")
-    generated_json = json.load(open(output_info_json))
-    expected_json = json.load(open(compare_info_json))
+    generated_json = json.loads(output_info_json.read_bytes())
+    expected_json = json.loads(compare_info_json.read_bytes())
     validate_info_json(generated_json)
     del generated_json["uuid"] # uuid is semi-randomly generated, so we can't compare reliably it
     del expected_json["uuid"]
@@ -244,7 +241,7 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
         isFile = os.path.isfile(file)
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
-        notExcludedFile = not (file.parent.name in exclude_question)
+        notExcludedFile = file.parent.name not in exclude_question
 
         if isFile and notHiddenFile and notImageFile and notExcludedFile:
             folder = file.parent.name
