@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
       - name: Install Poetry
         run: pipx install poetry
       - name: Build release
@@ -45,10 +45,10 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
           cache: pip
       - name: Download release dists
         uses: actions/download-artifact@v4
@@ -72,10 +72,10 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
           cache: pip
       - name: Download release dists
         uses: actions/download-artifact@v4
@@ -110,10 +110,10 @@ jobs:
         with:
           repository: open-resources/${{ matrix.repo }}
           token: ${{ secrets.API_TOKEN_GITHUB }}
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
           cache: pip
       - name: Download release dists
         uses: actions/download-artifact@v4
@@ -184,6 +184,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh release upload
-          '${{ github.ref_name }}' dist/**
-          --repo '${{ github.repository }}'
+          gh release upload '${{ github.ref_name }}' dist/** --repo '${{ github.repository }}'

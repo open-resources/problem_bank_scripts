@@ -143,3 +143,4 @@ dev_notebooks/
 Untitled.ipynb
 
 *.DS_Store
+poetry.toml
