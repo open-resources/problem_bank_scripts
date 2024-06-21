@@ -36,6 +36,7 @@ myst-parser = "^0.17"
 [tool.poetry.scripts]
 lint_server = 'problem_bank_scripts.scripts.lint_server:main'
 check_server_ast = 'problem_bank_scripts.scripts.check_server_ast:main'
+process = 'problem_bank_scripts.scripts.process_questions:main'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

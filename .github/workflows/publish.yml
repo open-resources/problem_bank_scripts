@@ -104,12 +104,20 @@ jobs:
           - instructor_physics_bank
           - instructor_datascience_bank
           - instructor_stats_bank
+        branch: [main]
+        exclude:
+          - repo: instructor_stats_bank
+            branch: main
+        include:
+          - repo: instructor_stats_bank
+            branch: Bluesy1-patch-1
     steps:
       - name: Checkout ${{ matrix.repo }}
         uses: actions/checkout@v4
         with:
           repository: open-resources/${{ matrix.repo }}
           token: ${{ secrets.API_TOKEN_GITHUB }}
+          ref: ${{ matrix.branch }}
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
@@ -130,7 +138,7 @@ jobs:
           python -m pip install --user $path_to_file
           python -m pip list
       - name: Test problem bank generates properly
-        run: python scripts/process.py 'source' --instructor=True --public=True --prairielearn=True
+        run: process 'source' --instructor=True --public=True --prairielearn=True
 
   publish:
     name: Publish new release to PyPI
