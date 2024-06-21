@@ -7,4 +7,5 @@
 
 [attr]generated linguist-generated=true diff=generated
 
-**/_vendored/*.py generated
+**/_vendored/*.py     generated
+tests/infoSchema.json generated

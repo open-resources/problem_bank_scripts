@@ -60,6 +60,17 @@ def defdict_to_dict(defdict, finaldict):
         if isinstance(v, defaultdict):
             # new level created and that is the new value
             finaldict[k] = defdict_to_dict(v, {})
+        elif isinstance(v, dict) and v.get("_type", None) == "sympy":
+            for k2, v2 in v.items():
+                if isinstance(v2, (set, list)):
+                    try:
+                        v[k2] = sorted(v2, key=str)
+                    except:
+                        pass
+                elif isinstance(v2, dict):
+                    v[k2] = {key: value for key, value in sorted(v2.items(), key=lambda i: i[0])}
+                
+            finaldict[k] = v
         else:
             finaldict[k] = v
     return finaldict
@@ -512,7 +523,8 @@ def assemble_server_py(parsed_question, location):
             "import prairielearn as pl",
             "import problem_bank_scripts.prairielearn as pl",
         )
-    elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
+
+    if "import problem_bank_helpers as pbh" not in server_dict["imports"]:
         server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
 
     server_py = """"""
