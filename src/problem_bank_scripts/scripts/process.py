@@ -5,6 +5,7 @@ import argparse
 import os
 import pathlib
 import shutil
+import sys
 
 from ..problem_bank_scripts import process_question_md, process_question_pl
 
@@ -22,7 +23,9 @@ def _bool(v: str | bool):
     else:
         raise argparse.ArgumentTypeError("Boolean value expected.")
 
+
 _base_args = {"type": _bool, "action": "store", "default": False, "metavar": "<bool>"}
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -34,7 +37,7 @@ def main():
     parser.add_argument("--instructor", help="Exports md version of question.", **_base_args)
     parser.add_argument("--public", help="Exports md version of question with the answers removed.", **_base_args)
     parser.add_argument("--prairielearn", help="Exports info.json, server.py, and question.html..", **_base_args)
-    
+
     args = parser.parse_args()
 
     source_root = pathlib.Path().joinpath(args.source_root).resolve()
@@ -73,7 +76,12 @@ def main():
             excs.append(e)
 
     if excs:
-        raise ExceptionGroup("Errors in processing questions:", excs)
+        if sys.version_info >= (3, 11):
+            raise ExceptionGroup("Errors in processing questions:", excs)
+        else:
+            import exceptiongroup
+
+            raise exceptiongroup.ExceptionGroup("Errors in processing questions:", excs)
 
     try:
         # Copy over the html_questions directory into output/prairielearn

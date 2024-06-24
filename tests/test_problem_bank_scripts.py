@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-# python >= 3.8 doesn't support subscripting builtin collections
-
 import filecmp
 import json
 import os
@@ -10,7 +8,8 @@ import pathlib
 import fastjsonschema
 import pytest
 
-from problem_bank_scripts import process_question_pl, process_question_md, validate_multiple_choice
+from problem_bank_scripts import process_question_md, process_question_pl, validate_multiple_choice
+
 
 questions_dir = pathlib.Path(__file__).parent / "test_question_templates"
 
@@ -70,7 +69,7 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str, d
 
 
 @pytest.mark.parametrize(
-    "question,devmode",
+    ("question", "devmode"),
     [
         pytest.param(file, dev, id=(f"dev-{file}" if dev else f"nodev-{file}"))
         for file in files
@@ -115,7 +114,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
 
 
 @pytest.mark.parametrize(
-    "question,devmode",
+    ("question", "devmode"),
     [
         pytest.param(file, dev, id=(f"nodev-{file}" if dev else f"dev-{file}"))
         for file in files

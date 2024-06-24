@@ -1,3 +1,7 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry]
 name = "problem_bank_scripts"
 version = "0.11.0"
@@ -10,7 +14,7 @@ homepage = "https://github.com/open-resources/problem_bank_scripts"
 repository = "https://github.com/open-resources/problem_bank_scripts"
 
 [tool.poetry.dependencies]
-python = ">=3.12,<3.13"
+python = ">=3.10,<3.13"
 pandas = "^2.2.2"
 PyYAML = "^6.0.1"
 docopt = "^0.6.2"
@@ -22,6 +26,7 @@ problem-bank-helpers = "^0.2.7"
 typing-extensions = "^4.12.2"
 black = "^24.4.2"
 gitpython = "^3.1.43"
+exceptiongroup = {version = "^1.2.1", python = "<3.11"}
 
 [tool.poetry.group.dev.dependencies]
 Sphinx = "^4.5.0"
@@ -40,10 +45,6 @@ check_server_ast = 'problem_bank_scripts.scripts.check_server_ast:main'
 process = 'problem_bank_scripts.scripts.process:main'
 process_q = 'problem_bank_scripts.scripts.process_q:main'
 checkq = 'problem_bank_scripts.scripts.check_question:main'
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 filterwarnings = ["error", "ignore::DeprecationWarning:problem_bank_helpers"]
