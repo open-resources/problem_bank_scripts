@@ -2,11 +2,10 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Sequence
 from pathlib import Path
 from textwrap import indent
-from typing import Sequence
 
-# Supporting 3.8 means we can't use from collections.abc import Sequence
 from black import format_str
 from black.mode import Mode, TargetVersion
 

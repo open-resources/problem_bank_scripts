@@ -1312,22 +1312,22 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
     try:
-        pathlib.Path(source_filepath)
+        _path = pathlib.Path(source_filepath).resolve()
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
 
-    path_replace = "output/prairielearn"
+    if not _path.exists():
+        raise FileNotFoundError(f"[Errno 2] No such file or directory: '{source_filepath}'")
+    
+    if not _path.is_file():
+        raise IsADirectoryError(f"[Errno 21] Is a directory: '{source_filepath}'")
 
     if output_path is None:
-        if "source" in source_filepath:
-            output_path = pathlib.Path(
-                source_filepath.replace("source", path_replace)
-            ).parent
+        if "source" in str(_path):
+            output_path = pathlib.Path(_path.as_posix().replace("source", "output/prairielearn")).parent
         else:
-            raise NotImplementedError(
-                "Check the source filepath; it does not have 'source' in it!! "
-            )
+            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!!")
     else:
         ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
         output_path = pathlib.Path(output_path).parent

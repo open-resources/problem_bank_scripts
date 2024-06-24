@@ -138,6 +138,8 @@ jobs:
           python -m pip install --user $path_to_file
           python -m pip list
       - name: Test problem bank generates properly
+        env:
+          PYTHONWARNINGS: "ignore::SyntaxWarning,ignore::DeprecationWarning"
         run: process 'source' --instructor=True --public=True --prairielearn=True
 
   publish:

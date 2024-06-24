@@ -6,10 +6,11 @@ import ast
 import platform
 import sys
 import traceback
-from typing import Sequence
+from collections.abc import Sequence
 from pathlib import Path
 
-from ..problem_bank_scripts import read_md_problem, assemble_server_py
+from ..problem_bank_scripts import assemble_server_py, read_md_problem
+
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
