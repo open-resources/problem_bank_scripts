@@ -76,9 +76,6 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    concurrency:
-      group: tests-${{ github.ref }}
-      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
