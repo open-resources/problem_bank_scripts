@@ -48,7 +48,7 @@ server:
 
         feedback_dict = {'vars': ['part1_ans'],
                          'stringData': ['I'],
-                         'units': ['$~\mathrm{A}$']
+                         'units': [r'$~\mathrm{A}$']
                          }
 
     generate: |

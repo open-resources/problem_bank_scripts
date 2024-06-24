@@ -19,16 +19,20 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  FORCE_COLOR: 1
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
+
 jobs:
   build:
     name: Build dist
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
       - name: Install Poetry
         run: pipx install poetry
       - name: Build release
@@ -39,26 +43,37 @@ jobs:
           name: dist
           path: dist/
 
-  test-wheel:
-    name: Test wheel
+  test-dists:
+    name: Test Built ${{ matrix.dist.name }} (${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: 
+          - "3.10"
+          - "3.12"
+        dist: 
+          - name: "wheel"
+            extension: whl
+          - name: "sdist"
+            extension: tar.gz
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.10
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "${{ matrix.python-version }}"
           cache: pip
       - name: Download release dists
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
-      - name: Install wheel
+      - name: Install ${{ matrix.dist.name }}
         run: |
-          export path_to_file=$(find dist -type f -name "problem_bank_scripts-*.whl")
-          echo "::notice::Installing wheel: $path_to_file"
+          export path_to_file=$(find dist -type f -name "problem_bank_scripts-*.${{ matrix.dist.extension }}")
+          echo "::notice::Installing ${{ matrix.dist.name }}: $path_to_file"
           python -m pip install --user $path_to_file
           python -m pip list
       - name: Install test dependencies
@@ -66,54 +81,35 @@ jobs:
       - name: Run tests against installed wheel
         run: rm -rf src/ && pytest tests/
 
-  test-sdist:
-    name: Test sdist
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-          cache: pip
-      - name: Download release dists
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-      - name: Install sdist
-        run: |
-          export path_to_file=$(find dist -type f -name "problem_bank_scripts-*.tar.gz")
-          echo "::notice::Installing sdist: $path_to_file"
-          python -m pip install --user $path_to_file
-          python -m pip list
-      - name: Install test dependencies
-        run: python -m pip install --user pytest fastjsonschema
-      - name: Run tests against installed sdist
-        run: rm -rf src/ && pytest tests/
-
   test-banks:
-    name: Test Problem Banks Build
-    needs: [build]
+    name: Test ${{ matrix.bank.name }} Problem Bank Builds (${{ matrix.python-version }})
+    continue-on-error: ${{ matrix.python-version == '3.12'}}
+    needs: build
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false # We want to know all issues, even if one fails
       matrix:
-        repo: # If more problem banks are ever created, add them here
-          - instructor_physics_bank
-          - instructor_datascience_bank
-          - instructor_stats_bank
+        python-version: 
+          - "3.10"
+          - "3.12"
+        bank:
+          - name: Physics
+            repo: open-resources/instructor_physics_bank
+          - name: Data Science
+            repo: open-resources/instructor_datascience_bank
+          - name: Statistics
+            repo: open-resources/instructor_stats_bank
     steps:
-      - name: Checkout ${{ matrix.repo }}
+      - name: Checkout ${{ matrix.bank.name }} Problem Bank
         uses: actions/checkout@v4
         with:
-          repository: open-resources/${{ matrix.repo }}
+          repository: ${{ matrix.bank.repo }}
           token: ${{ secrets.API_TOKEN_GITHUB }}
-      - name: Set up Python 3.10
+          ref: main
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "${{ matrix.python-version }}"
           cache: pip
       - name: Download release dists
         uses: actions/download-artifact@v4
@@ -125,31 +121,30 @@ jobs:
           python -m pip install --upgrade --upgrade-strategy eager -r requirements.txt
       - name: Install built wheel
         run: |
-          export path_to_file=$(find dist -type f -name "problem_bank_scripts-*.whl")
-          echo "::notice::Installing wheel: $path_to_file"
-          python -m pip install --user $path_to_file
-          python -m pip list
+          python -m pip install --user $(find dist -type f -name "problem_bank_scripts-*.whl")
       - name: Test problem bank generates properly
-        run: python scripts/process.py 'source' --instructor=True --public=True --prairielearn=True
+        run: process 'source' --instructor=True --public=True --prairielearn=True
 
   publish:
     name: Publish new release to PyPI
     if: github.event_name == 'release' # only publish to PyPI on releases
-    needs:  # Ensure build and tests have passed before publishing
-      - build
-      - test-wheel
-      - test-sdist
+    # Ensure tests have passed and problem banks can be built
+    needs:
+      - test-dists
       - test-banks
     runs-on: ubuntu-latest
     # Specifying a GitHub environment so manual approval by an approved user to create a release is required
     # https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
+    
     environment:
       name: publish
       url: https://pypi.org/p/problem-bank-scripts/
+    
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
       # https://docs.pypi.org/trusted-publishers/
       id-token: write
+    
     steps:
       - name: Download release dists
         uses: actions/download-artifact@v4
@@ -163,12 +158,13 @@ jobs:
   
   github-release:
     name: upload dists to GitHub release
-    needs: [publish]
+    needs: publish
+    runs-on: ubuntu-latest
+
     permissions:
       id-token: write
       attestations: write
       contents: write
-    runs-on: ubuntu-latest
 
     steps:
       - name: Download release dists
@@ -184,6 +180,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh release upload
-          '${{ github.ref_name }}' dist/**
-          --repo '${{ github.repository }}'
+          gh release upload '${{ github.ref_name }}' dist/** --repo '${{ github.repository }}'

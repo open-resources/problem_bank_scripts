@@ -9,7 +9,7 @@ errorCheck = 'True'
 
 feedback_dict = {'vars': ['part1_ans'],
                  'stringData': ['E'],
-                 'units': ['$~\mathrm{N}/\mathrm{C}$']
+                 'units': [r'$~\mathrm{N}/\mathrm{C}$']
                  }
 
 def imports(data):
@@ -24,7 +24,7 @@ def imports(data):
     
     feedback_dict = {'vars': ['part1_ans'],
                      'stringData': ['E'],
-                     'units': ['$~\mathrm{N}/\mathrm{C}$']
+                     'units': [r'$~\mathrm{N}/\mathrm{C}$']
                      }
     
 def generate(data):

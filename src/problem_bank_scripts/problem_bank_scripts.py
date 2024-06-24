@@ -2,16 +2,12 @@
 # Date: 2021-05-09
 # This file contains many helper functions that will be used across the question bank project.
 
-from docopt import docopt
 
 # Imports
 ## Loading and Saving files & others
 import uuid
 import json
 import pathlib
-import sys
-import numpy as np
-import os
 from collections import defaultdict
 from shutil import copy2
 import re
@@ -23,7 +19,7 @@ import warnings
 
 ## Parse Markdown
 import markdown_it
-import mdformat
+import mdformat.renderer
 
 ## Dealing with YAML
 import yaml
@@ -64,6 +60,17 @@ def defdict_to_dict(defdict, finaldict):
         if isinstance(v, defaultdict):
             # new level created and that is the new value
             finaldict[k] = defdict_to_dict(v, {})
+        elif isinstance(v, dict) and v.get("_type", None) == "sympy":
+            for k2, v2 in v.items():
+                if isinstance(v2, (set, list)):
+                    try:
+                        v[k2] = sorted(v2, key=str)
+                    except:
+                        pass
+                elif isinstance(v2, dict):
+                    v[k2] = {key: value for key, value in sorted(v2.items(), key=lambda i: i[0])}
+                
+            finaldict[k] = v
         else:
             finaldict[k] = v
     return finaldict
@@ -516,10 +523,11 @@ def assemble_server_py(parsed_question, location):
             "import prairielearn as pl",
             "import problem_bank_scripts.prairielearn as pl",
         )
-    elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
+
+    if "import problem_bank_helpers as pbh" not in server_dict["imports"]:
         server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
 
-    server_py = f""""""
+    server_py = """"""
 
     server_py += server_dict.get("imports", "") + "\n"
 
@@ -595,10 +603,10 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
     html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
 
     ###### LOOKHERE
-    if (data_dict["params"][f"vars"]["units"]) and (
+    if (data_dict["params"]["vars"]["units"]) and (
         "units" in parsed_question["body_parts_split"][part_name]["answer"]
     ):
-        units = f"|@ params.vars.units @|"
+        units = "|@ params.vars.units @|"
     else:
         units = ""
 
@@ -608,7 +616,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
             if data_dict["params"][f"{part_name}"][f"{a}"]["feedback"]:
                 feedback = f"|@ params.{part_name}.{a}.feedback @|"
             else:
-                feedback = f"Feedback for this choice is not available yet."
+                feedback = "Feedback for this choice is not available yet."
 
             correctness = f"|@ params.{part_name}.{a}.correct @|"
             value = f"|@|@ params.{part_name}.{a}.value @|@|"
@@ -816,10 +824,10 @@ def process_file_upload(part_name, parsed_question, data_dict):
 
     html += f"""<pl-file-upload { pl_customizations } > </pl-file-upload>"""
 
-    html += f"""<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>"""
+    html += """<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>"""
 
     # TODO: remove this! because automatic feedback will be added
-    html += f"""\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|\n</pl-submission-panel>"""
+    html += """\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|\n</pl-submission-panel>"""
 
     # TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
     # TODO: Add support for wildcard *.png
@@ -897,14 +905,14 @@ def process_workspace(part_name, parsed_question, data_dict):
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
-    html += f"""<pl-workspace></pl-workspace>"""
+    html += """<pl-workspace></pl-workspace>"""
 
-    html += f"""\n<pl-submission-panel>"""
+    html += """\n<pl-submission-panel>"""
 
     if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
-        html += f"""\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>\n</pl-submission-panel>"""
+        html += """\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>\n</pl-submission-panel>"""
     else:
-        html += f"""\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
+        html += """\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
 
 
     return replace_tags(html)
@@ -1054,7 +1062,7 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
-with importlib.resources.files(__package__).joinpath("attributions.json").open("rb") as file:
+with importlib.resources.files("problem_bank_scripts").joinpath("attributions.json").open("rb") as file:
     _ATTRIBUTIONS = json.load(file)
     _KNOWN_ATTRIBUTIONS = list(_ATTRIBUTIONS.keys())
 
@@ -1108,7 +1116,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         if len(data2.splitlines()) > 1:  # check for multiline string
             # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
             data2 = re.sub(
-                "\\n\s+\\n", "\n\n", data2
+                r"\n\s+\n", "\n\n", data2
             )  # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
         return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
@@ -1304,22 +1312,22 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
     try:
-        pathlib.Path(source_filepath)
+        _path = pathlib.Path(source_filepath).resolve()
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
 
-    path_replace = "output/prairielearn"
+    if not _path.exists():
+        raise FileNotFoundError(f"[Errno 2] No such file or directory: '{source_filepath}'")
+    
+    if not _path.is_file():
+        raise IsADirectoryError(f"[Errno 21] Is a directory: '{source_filepath}'")
 
     if output_path is None:
-        if "source" in source_filepath:
-            output_path = pathlib.Path(
-                source_filepath.replace("source", path_replace)
-            ).parent
+        if "source" in str(_path):
+            output_path = pathlib.Path(_path.as_posix().replace("source", "output/prairielearn")).parent
         else:
-            raise NotImplementedError(
-                "Check the source filepath; it does not have 'source' in it!! "
-            )
+            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!!")
     else:
         ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
         output_path = pathlib.Path(output_path).parent
@@ -1363,7 +1371,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     if preamble:
         question_html = f"<pl-question-panel>\n<markdown>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
     else:
-        question_html = f""
+        question_html = ""
 
     # Useful info panel
     useful_info = parsed_q["body_parts"].get("Useful_info", None)
