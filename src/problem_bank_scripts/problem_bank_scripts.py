@@ -470,7 +470,7 @@ def write_info_json(output_path, parsed_question):
     if (difficulties := parsed_question["header"].get("difficulty", ["undefined"])) != ["undefined"]:
         if not isinstance(difficulties, list):
             difficulties = [difficulties]
-        auto_tags.extend(f"difficulty-{difficulty.lower()}" for difficulty in difficulties)
+        auto_tags.extend(difficulty.lower() for difficulty in difficulties)
 
     # tags is technically an optional key for a question author to specify
     auto_tags.extend(parsed_question["header"].get("tags", []))
