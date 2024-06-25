@@ -117,7 +117,7 @@ myst:
       v: '2.50'
       p: '4'
     correct_answers:
-      part1_ans: !!python/object/apply:numpy._core.multiarray.scalar
+      part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
       - !!python/object/apply:numpy.dtype
         args:
         - f8
