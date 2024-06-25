@@ -68,7 +68,7 @@ def defdict_to_dict(defdict, finaldict):
                     except:
                         pass
                 elif isinstance(v2, dict):
-                    v[k2] = {key: value for key, value in sorted(v2.items(), key=lambda i: i[0])}
+                    v[k2] = dict(sorted(v2.items(), key=lambda i: i[0]))
                 
             finaldict[k] = v
         else:
@@ -329,14 +329,10 @@ def read_md_problem(filepath):
             block_count += 1
 
             if block_count == 1:
-                blocks["block{0}".format(block_count)] = [
-                    x,
-                ]
+                blocks[f"block{block_count}"] = [x]
             else:
-                blocks["block{0}".format(block_count - 1)].append(x)
-                blocks["block{0}".format(block_count)] = [
-                    x,
-                ]
+                blocks[f"block{block_count - 1}"].append(x)
+                blocks[f"block{block_count}"] = [x]
     ###
     # Add -1 to the end of the last block
     blocks[f"block{block_count}"].append(len(tokens))
@@ -344,14 +340,10 @@ def read_md_problem(filepath):
     # Assert statements (turn into tests!)
     assert (
         num_titles == 1
-    ), "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(
-        num_titles
-    )
+    ), f"I see {num_titles} Level 1 Headers (#) in this file, there should only be one!"
     assert (
         block_count >= 1
-    ), "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(
-        block_count - 1
-    )
+    ), f"I see {block_count - 1} Level 2 Headers (##) in this file, there should be at least 1"
 
     # Add the end of the title block; # small hack
     # blocks['title'].append(blocks['block1'][0])
@@ -474,6 +466,11 @@ def write_info_json(output_path, parsed_question):
     if len(q_types) > 1:
         auto_tags.append("multi_part")
     auto_tags.extend(list(set(q_types)))
+
+    if (difficulties := parsed_question["header"].get("difficulty", ["undefined"])) != ["undefined"]:
+        if not isinstance(difficulties, list):
+            difficulties = [difficulties]
+        auto_tags.extend(f"difficulty-{difficulty.lower()}" for difficulty in difficulties)
 
     # tags is technically an optional key for a question author to specify
     auto_tags.extend(parsed_question["header"].get("tags", []))

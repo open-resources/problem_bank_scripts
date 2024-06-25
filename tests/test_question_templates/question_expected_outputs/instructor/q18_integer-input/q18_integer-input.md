@@ -12,7 +12,7 @@ outcomes:
 - 6.1.1.0
 - 6.1.1.1
 difficulty:
-- undefined
+- easy
 randomization:
 - undefined
 taxonomy:

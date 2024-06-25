@@ -1,9 +1,10 @@
 {
-    "uuid": "9880f3fb-8d29-3365-908c-d2a4eec045c7",
+    "uuid": "999970d4-630b-38de-a43b-dbba13af980e",
     "title": "Median",
     "topic": "000.Template",
     "tags": [
-        "integer-input"
+        "integer-input",
+        "difficulty-easy"
     ],
     "type": "v3",
     "singleVariant": false,
