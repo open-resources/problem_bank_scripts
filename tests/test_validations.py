@@ -186,7 +186,7 @@ def test_validate_symbolic_input_valid_sympy_object(answer:sp.Expr):
         "header": {"part1": {"pl-customizations": {"weight": 1}}},
         "body_parts_split": {"part1": {"content": "..."}},
     }
-    data_dict = {"params": {"part1": {"correct_ans": phs.sympy_to_json(answer)}}}
+    data_dict = {"correct_answers": {"part1_ans": phs.sympy_to_json(answer)}}
 
     assert isinstance(process_symbolic_input("part1", parsed_question, data_dict), str)
 
@@ -232,7 +232,7 @@ def test_validate_symbolic_input_invalid_sympy_object(answer:sp.Expr):
         "header": {"part1": {"pl-customizations": {"weight": 1}}},
         "body_parts_split": {"part1": {"content": "..."}},
     }
-    data_dict = {"params": {"part1": {"correct_ans": phs.sympy_to_json(answer)}}}
+    data_dict = {"correct_answers": {"part1_ans": phs.sympy_to_json(answer)}}
 
     with pytest.raises(ValidationError, match=r"The correct answer for part 'part1' contains the floating-point number "):
         process_symbolic_input("part1", parsed_question, data_dict)

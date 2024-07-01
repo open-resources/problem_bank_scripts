@@ -706,7 +706,7 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
     correct_ans = customizations.get("correct-answer", None)
 
     if correct_ans is None:
-        correct_ans = data_dict["params"][part_name]["correct_ans"]
+        correct_ans = data_dict["correct_answers"][f"{part_name}_ans"]
 
     from ._vendored import python_helper_sympy as phs
 
