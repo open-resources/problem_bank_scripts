@@ -788,7 +788,6 @@ def process_matching(part_name, parsed_question, data_dict):
     Returns:
         str: Matching question is returned as a string with PL-compliant syntax.
     """
-    print("Processing matching question...")
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
