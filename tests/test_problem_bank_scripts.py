@@ -8,7 +8,7 @@ import pathlib
 import fastjsonschema
 import pytest
 
-from problem_bank_scripts import process_question_md, process_question_pl, validate_multiple_choice
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 questions_dir = pathlib.Path(__file__).parent / "test_question_templates"

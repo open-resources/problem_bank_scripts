@@ -494,15 +494,6 @@ def write_info_json(output_path, parsed_question):
         }
     )
 
-    if "workspaceOptions" in info_json: # validate workspaceOptions contains the required keys if it exists
-        image = "image" in info_json["workspaceOptions"]
-        port = "port" in info_json["workspaceOptions"]
-        home = "home" in info_json["workspaceOptions"]
-        if not (image and port and home):
-            raise SyntaxError("workspaceOptions must contain image, port, and home keys")
-        if not isinstance(info_json["workspaceOptions"]["port"], int):
-            raise TypeError(f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead")
-
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
         json.dump(info_json, output_file, indent=4)
@@ -940,8 +931,48 @@ def process_workspace(part_name, parsed_question, data_dict):
     """
     if "pl-customizations" in parsed_question["header"][part_name]:
         if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
-            raise ValueError("pl-customizations are not supported for workspace questions")
+            raise ValidationError(f"[part {part_name!r}]: pl-customizations are not supported for workspace questions")
 
+    workspaceOptions = parsed_question["header"].get("workspaceOptions", None)
+    if workspaceOptions is None:
+        raise ValidationError(f"'workspaceOptions' object not found in the question frontmatter, but part {part_name!r} is a workspace question")
+
+
+    image = workspaceOptions.get("image", None)
+    port = workspaceOptions.get("port", None)
+    home = workspaceOptions.get("home", None)
+    gradedFiles = workspaceOptions.get("gradedFiles", None)
+    args = workspaceOptions.get("args", None)
+    rewriteUrl = workspaceOptions.get("rewriteUrl", None)
+    enableNetworking = workspaceOptions.get("enableNetworking", None)
+    environment = workspaceOptions.get("environment", None)
+    if image is None or port is None or home is None:
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions must contain image, port, and home keys")
+    if not isinstance(image, str):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.image must be a string, got {image!r} instead")
+    if not isinstance(port, int):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.port must be an integer, got {port!r} instead")
+    if not isinstance(home, str):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.home must be a string, got {home!r} instead")
+    if gradedFiles is not None and (not isinstance(gradedFiles, list) or not all(isinstance(f, str) for f in gradedFiles)):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.gradedFiles must be a list of strings, got {gradedFiles!r} instead")
+    if args is not None and not isinstance(args, str):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.args must be a string, got {args!r} instead")
+    if rewriteUrl is not None and not isinstance(rewriteUrl, bool):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.rewriteUrl must be a boolean, got {rewriteUrl!r} instead")
+    if enableNetworking is not None and not isinstance(enableNetworking, bool):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.enableNetworking must be a boolean, got {enableNetworking!r} instead")
+    elif enableNetworking is True:
+        warnings.warn(f"[part {part_name!r}]: workspaceOptions.enableNetworking is set to True, which is not recommended for security reasons")
+    if environment is not None and (not isinstance(environment, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in environment.items())):
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.environment must be a dictionary of strings, got {environment!r} instead")
+
+    valid_keys = {"image", "port", "home", "gradedFiles", "args", "rewriteUrl", "enableNetworking", "environment"}
+
+    if not valid_keys.issuperset(workspaceOptions):
+        unknown_keys = set(workspaceOptions) - valid_keys
+        formatted_unknown_keys = ", ".join(f"{k!r}" for k in unknown_keys)
+        raise ValidationError(f"[part {part_name!r}]: workspaceOptions contains one or more unknown keys: {formatted_unknown_keys}")
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
