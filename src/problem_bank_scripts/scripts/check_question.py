@@ -45,6 +45,7 @@ def main():
 
     except FileNotFoundError:
         print(f"This question's file was not found. \n\tSkipping question: {question}.")
+        exit(2)
 
     except Exception as e:
         print(f"There is an error in this problem: \n\t- File path: {question}\n\t- Error: {e}")

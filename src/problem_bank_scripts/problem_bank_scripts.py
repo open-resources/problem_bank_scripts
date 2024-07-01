@@ -967,7 +967,7 @@ def process_workspace(part_name, parsed_question, data_dict):
     if environment is not None and (not isinstance(environment, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in environment.items())):
         raise ValidationError(f"[part {part_name!r}]: workspaceOptions.environment must be a dictionary of strings, got {environment!r} instead")
 
-    valid_keys = {"image", "port", "home", "gradedFiles", "args", "rewriteUrl", "enableNetworking", "environment"}
+    valid_keys = {"image", "port", "home", "gradedFiles", "args", "rewriteUrl", "enableNetworking", "environment", "comment"}
 
     if not valid_keys.issuperset(workspaceOptions):
         unknown_keys = set(workspaceOptions) - valid_keys

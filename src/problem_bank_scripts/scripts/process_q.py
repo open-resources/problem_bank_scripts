@@ -72,6 +72,8 @@ def main():
     if pathlib.Path(questions[0]).suffix.lower() != ".md":
         parser.error("You should check the location of your changed md files, it seems no markdown files were changed in the `source` directory!")
 
+    errors = False
+
     # Process md files
     for md_file in questions:
         try:
@@ -94,12 +96,16 @@ def main():
             # print(f"There are new questions merged into main that are not present in this branch. \n\tSkipping question: {md_file}.")
             print(f"Skipping question: {md_file}:")
             print("\tThere are either new questions merged into main that are not present in this branch, or an expected asset is missing:")
-            print(f"\t\tNo such file or directory: {fne.filename}")
+            print(f"\t\tNo such file or directory: \n\t\t{'\n\t\t'.join(fne.args)}")
+            errors = True
             continue
 
         except Exception as e:
             print(f"There is an error in this problem: \n\t- File path: {md_file}\n\t- Error: {e}")
             raise e
+
+    if errors:
+        exit(2)
 
 
 if __name__ == "__main__":
