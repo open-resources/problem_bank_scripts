@@ -42,6 +42,10 @@ for subject in subjects:
     learning_outcomes = pd.read_csv(url)
     topics |= learning_outcomes[["Topic", "Numbered Topic"]].drop_duplicates().values
 
+class ValidationError(Exception):
+    """Raised when an invalid question is detected"""
+    pass
+
 # Start of reading/parsing functions
 
 
@@ -705,14 +709,53 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
 
     html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
 
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
+    customizations: dict = parsed_question["header"][part_name]["pl-customizations"]
+    allow_complex = customizations.get("allow_complex", False)
+
+    correct_ans = customizations.get("correct-answer", None)
+
+    if correct_ans is None:
+        correct_ans = data_dict["params"][part_name]["correct_ans"]
+
+    from ._vendored import python_helper_sympy as phs
+
+    try:
+        if isinstance(correct_ans, dict) and correct_ans.get("_type") == "sympy":
+            phs.json_to_sympy(phs.cast(phs.SympyJson, correct_ans), allow_complex=allow_complex)
+        elif isinstance(correct_ans, str):
+            variables = phs.get_items_list(customizations.get("variables", None))
+            custom_functions = phs.get_items_list(customizations.get("functions", None))
+            allow_trig = customizations.get("allow-trig-functions", False)
+            phs.convert_string_to_sympy(
+                correct_ans,
+                variables,
+                allow_complex=allow_complex,
+                allow_trig_functions=allow_trig,
+                custom_functions=custom_functions,
+            )
+        else:
+            raise ValidationError(
+                f"The correct answer for part {part_name!r} is not a valid "
+                + f"json-serialized Sympy expression or string: {correct_ans!r}"
+            )
+    except ValidationError:
+        raise
+    except phs.HasFloatError as e:
+        raise ValidationError(
+            f"The correct answer for part {part_name!r} contains the floating-point number {e.n}. "
+            f"All numbers must be expressed as integers (or ratios of integers)."
+        ).with_traceback(e.__traceback__)
+    except phs.BaseSympyError as e:
+        raise ValidationError(
+            f"The correct answer for part {part_name!r} is not a valid Sympy expression: {e!r}"
+        ).with_traceback(e.__traceback__)
+    except Exception as e:
+        raise ValidationError(
+            f"An unexpected error occurred while processing the correct answer for part {part_name!r}: {e!r}"
+        ).with_traceback(e.__traceback__)
+
+    pl_customizations = " ".join(f'{k} = "{v}"' for k, v in customizations.items())  # PL-customizations
+
     html += f"""<pl-symbolic-input answers-name="{part_name}_ans" {pl_customizations} ></pl-symbolic-input>\n"""
 
     return replace_tags(html).replace("\\\\", "\\")
@@ -996,7 +1039,7 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
             return bool(val)
         except TypeError as err:
             msg = f"Object of type {val.__class__.__name__!r} is not valid for the correct key for answer {ans_name!r} of {part_name!r}."
-            raise TypeError(msg) from err
+            raise ValidationError(msg) from err
 
     if any(
         validate_ans(ans["correct"], key, part_name)
@@ -1403,7 +1446,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
         if "multiple-choice" in q_type:
             if not validate_multiple_choice(part,parsed_q,data2):
-                raise ValueError(
+                raise ValidationError(
                     f"Multiple choice question {part} does not have a correct answer and "
                     " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
                 )

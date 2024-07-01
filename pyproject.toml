@@ -38,6 +38,7 @@ sphinxcontrib-napoleon = "^0.7"
 pytest = "^8.2.2"
 myst-nb = "^1.1.1"
 myst-parser = "^3.0.1"
+pytest-subtests = "^0.12.1"
 
 [tool.poetry.scripts]
 lint_server = 'problem_bank_scripts.scripts.lint_server:main'

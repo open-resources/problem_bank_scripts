@@ -2014,6 +2014,21 @@ tomli = {version = ">=1", markers = "python_version < \"3.11\""}
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-subtests"
+version = "0.12.1"
+description = "unittest subTest() support and subtests fixture"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytest-subtests-0.12.1.tar.gz", hash = "sha256:d6605dcb88647e0b7c1889d027f8ef1c17d7a2c60927ebfdc09c7b0d8120476d"},
+    {file = "pytest_subtests-0.12.1-py3-none-any.whl", hash = "sha256:100d9f7eb966fc98efba7026c802812ae327e8b5b37181fb260a2ea93226495c"},
+]
+
+[package.dependencies]
+attrs = ">=19.2.0"
+pytest = ">=7.0"
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
@@ -2942,4 +2957,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10"
-content-hash = "20ca50fa5e764812493f88401320bdec5a024016e074c383095ff5061bafc350"
+content-hash = "44af3ba747394fcc2294344aa84bb2c28ed2fc26bac26c5386f88d917f8080de"
