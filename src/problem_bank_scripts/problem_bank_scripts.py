@@ -16,6 +16,7 @@ import importlib.util
 import problem_bank_helpers as pbh
 import pandas as pd
 import warnings
+from typing import Any
 
 ## Parse Markdown
 import markdown_it
@@ -487,7 +488,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
             ].items()
         ]
     )  # PL-customizations
-    html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
+    html += f'<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n'
 
     ###### LOOKHERE
     if (data_dict["params"]["vars"]["units"]) and (
@@ -557,7 +558,7 @@ def process_number_input(part_name, parsed_question, data_dict):
             ].items()
         ]
     )  # PL-customizations
-    html += f"""<pl-number-input answers-name="{part_name}_ans" {pl_customizations} ></pl-number-input>\n"""
+    html += f'<pl-number-input answers-name="{part_name}_ans" {pl_customizations} ></pl-number-input>\n'
 
     return replace_tags(html)
 
@@ -590,8 +591,6 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
     Returns:
         html: A string of HTML that is part of the final PL question.html file.
     """
-
-    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     customizations: dict = parsed_question["header"][part_name]["pl-customizations"]
     allow_complex = customizations.get("allow_complex", False)
@@ -643,7 +642,9 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
 
     pl_customizations = " ".join(f'{k} = "{v}"' for k, v in customizations.items())  # PL-customizations
 
-    html += f"""<pl-symbolic-input answers-name="{part_name}_ans" {pl_customizations} ></pl-symbolic-input>\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
+
+    html += f'<pl-symbolic-input answers-name="{part_name}_ans" {pl_customizations} ></pl-symbolic-input>\n'
 
     return replace_tags(html).replace("\\\\", "\\")
 
@@ -669,7 +670,7 @@ def process_longtext(part_name, parsed_question, data_dict):
 
     html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-    html += f"""<pl-rich-text-editor { pl_customizations } > </pl-rich-text-editor>"""
+    html += f'<pl-rich-text-editor {pl_customizations} > </pl-rich-text-editor>'
 
     return replace_tags(html)
 
@@ -695,9 +696,7 @@ def process_matching(part_name, parsed_question, data_dict):
             ].items()
         ]
     )  # PL-customizations
-    html += (
-        f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
-    )
+    html += f'<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n'
 
     options = ""
     statements = ""
@@ -781,9 +780,9 @@ def process_file_editor(part_name, parsed_question, data_dict):
         ]
     )  # PL-customizations
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-    html += f"""<pl-file-editor { pl_customizations } > </pl-file-editor>"""
+    html += f'<pl-file-editor {pl_customizations} > </pl-file-editor>'
 
     return replace_tags(html)
 
@@ -807,9 +806,9 @@ def process_string_input(part_name, parsed_question, data_dict):
         ]
     )  # PL-customizations
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-    html += f"""<pl-string-input { pl_customizations } ></pl-string-input>"""
+    html += f'<pl-string-input {pl_customizations} ></pl-string-input>'
 
     return replace_tags(html)
 
@@ -889,9 +888,9 @@ def process_workspace(part_name, parsed_question, data_dict):
         err = f"[part {part_name!r}]: workspaceOptions contains one or more unknown keys: {formatted_unknown_keys}"
         raise ValidationError(err)
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-    html += "pl-workspace></pl-workspace>\n<pl-submission-panel>"
+    html += "<pl-workspace></pl-workspace>\n<pl-submission-panel>"
 
     if parsed_question["header"][part_name].get("gradingMethod") == "External":
         html += "\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>"
@@ -954,10 +953,9 @@ def process_integer_input(part_name, parsed_question, data_dict):
     Returns:
         html: A string of HTML that is part of the final PL question.html file.
     """
-
-    html = process_number_input(part_name, parsed_question, data_dict)
-
-    return html.replace("-number-input", "-integer-input")
+    return process_number_input(
+        part_name, parsed_question, data_dict
+    ).replace("-number-input", "-integer-input")
 
 
 def validate_multiple_choice(part_name, parsed_question, data_dict):

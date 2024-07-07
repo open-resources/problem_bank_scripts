@@ -235,7 +235,6 @@ def test_validate_symbolic_input_valid_string(answer: str, subtests):
 def test_validate_symbolic_input_invalid_sympy_object(answer: sp.Expr):
     parsed_question = {
         "header": {"part1": {"pl-customizations": {"weight": 1}}},
-        "body_parts_split": {"part1": {"content": "..."}},
     }
     data_dict = {"correct_answers": {"part1_ans": phs.sympy_to_json(answer)}}
 
@@ -249,7 +248,6 @@ def test_validate_symbolic_input_invalid_sympy_object(answer: sp.Expr):
 def test_validate_symbolic_input_invalid_string(answer: str, subtests):
     parsed_question = {
         "header": {"part1": {"pl-customizations": {"weight": 1, "variables": "x", "functions": "N"}}},
-        "body_parts_split": {"part1": {"content": "..."}},
     }
     data_dict = {"params": {"part1": {}}}
 
@@ -327,7 +325,6 @@ def test_validate_workspace_missing_required_key(key: str):
             },
             "part1": {"pl-customizations": {}},
         },
-        "body_parts_split": {"part1": {"content": "..."}},
     }
 
     del parsed_question["header"]["workspaceOptions"][key]
@@ -339,10 +336,7 @@ def test_validate_workspace_missing_required_key(key: str):
 
 
 def test_validate_workspace_missing_config():
-    parsed_question = {
-        "header": {"part1": {"pl-customizations": {}}},
-        "body_parts_split": {"part1": {"content": "..."}},
-    }
+    parsed_question = {"header": {"part1": {"pl-customizations": {}}}}
 
     with pytest.raises(
         ValidationError,
@@ -428,7 +422,6 @@ def test_validate_workspace_invalid_config_value(key: str, value, msg: str):
             },
             "part1": {"pl-customizations": {}},
         },
-        "body_parts_split": {"part1": {"content": "..."}},
     }
 
     parsed_question["header"]["workspaceOptions"][key] = value
@@ -475,7 +468,6 @@ def test_validate_workspace_invalid_config_extra_key():
             },
             "part1": {"pl-customizations": {}},
         },
-        "body_parts_split": {"part1": {"content": "..."}},
     }
 
     with pytest.raises(
