@@ -4,10 +4,11 @@
 import argparse
 import os
 import pathlib
+import sys
 
 import git
 
-from ..problem_bank_scripts import process_question_md, process_question_pl
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 def _bool(v: str | bool):
@@ -93,7 +94,6 @@ def main():
             print(f"\t Completed file: {md_file} in location: {temp_output_root}")
 
         except FileNotFoundError as fne:
-            # print(f"There are new questions merged into main that are not present in this branch. \n\tSkipping question: {md_file}.")
             print(f"Skipping question: {md_file}:")
             print("\tThere are either new questions merged into main that are not present in this branch, or an expected asset is missing:")
             print(f"\t\tNo such file or directory: \n\t\t{'\n\t\t'.join(fne.args)}")
@@ -102,10 +102,10 @@ def main():
 
         except Exception as e:
             print(f"There is an error in this problem: \n\t- File path: {md_file}\n\t- Error: {e}")
-            raise e
+            raise
 
     if errors:
-        exit(2)
+        sys.exit(2)
 
 
 if __name__ == "__main__":

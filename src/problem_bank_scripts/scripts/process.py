@@ -7,7 +7,7 @@ import pathlib
 import shutil
 import sys
 
-from ..problem_bank_scripts import process_question_md, process_question_pl
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 def _bool(v: str | bool):
@@ -49,7 +49,7 @@ def main():
         raise NotADirectoryError(f"Path is not a directory: {source_root}")
 
     questions = []
-    for root, dirs, files in os.walk(source_root):
+    for root, _dirs, files in os.walk(source_root):
         for file in files:
             if file.endswith(".md"):
                 questions.append(os.path.join(root, file))
@@ -71,7 +71,6 @@ def main():
 
         except Exception as e:
             e.add_note(f"Error in processing question: {source_filepath}")
-            # print(f"There is an error in this problem: \n\t- File path: {source_filepath}\n\t- Error: {e}")
             # raise e
             excs.append(e)
 

@@ -9,7 +9,7 @@ from textwrap import indent
 from black import format_str
 from black.mode import Mode, TargetVersion
 
-from ..problem_bank_scripts import read_md_problem
+from problem_bank_scripts import read_md_problem
 
 
 def main(argv: Sequence[str] | None = None) -> int:

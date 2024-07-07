@@ -163,25 +163,27 @@ def test_validate_multiple_choice_invalid_none_of_the_above_set(value: str):
 
     assert validate_multiple_choice("part1", parsed_question, data_dict) is False
 
+
 _x = sp.symbols("x")
 _N = sp.symbols("N", cls=sp.Function)
+
 
 @pytest.mark.parametrize(
     "answer",
     [
         pytest.param(_x, id="x"),
-        pytest.param(5*_x, id="5x"),
-        pytest.param(5*_x/2, id="5x/2"),
-        pytest.param(2*_x/5, id="2x/5"),
-        pytest.param(5*_x+1, id="5x+1"),
-        pytest.param(_N(5*_x), id="N(5x)"),
-        pytest.param(_N(5*_x+1), id="N(5x+1)"),
-        pytest.param(_N(5*_x)+1, id="N(5x)+1"),
-        pytest.param(5*_N(_x), id="5N(x)"),
-        pytest.param(5*_N(_x)+1, id="5N(x)+1"),
+        pytest.param(5 * _x, id="5x"),
+        pytest.param(5 * _x / 2, id="5x/2"),
+        pytest.param(2 * _x / 5, id="2x/5"),
+        pytest.param(5 * _x + 1, id="5x+1"),
+        pytest.param(_N(5 * _x), id="N(5x)"),
+        pytest.param(_N(5 * _x + 1), id="N(5x+1)"),
+        pytest.param(_N(5 * _x) + 1, id="N(5x)+1"),
+        pytest.param(5 * _N(_x), id="5N(x)"),
+        pytest.param(5 * _N(_x) + 1, id="5N(x)+1"),
     ],
 )
-def test_validate_symbolic_input_valid_sympy_object(answer:sp.Expr):
+def test_validate_symbolic_input_valid_sympy_object(answer: sp.Expr):
     parsed_question = {
         "header": {"part1": {"pl-customizations": {"weight": 1}}},
         "body_parts_split": {"part1": {"content": "..."}},
@@ -191,7 +193,9 @@ def test_validate_symbolic_input_valid_sympy_object(answer:sp.Expr):
     assert isinstance(process_symbolic_input("part1", parsed_question, data_dict), str)
 
 
-@pytest.mark.parametrize("answer", ["x", "5x", "5x/2", "5/2x", "5/(2x)", "(5/2)x", "5*x", "5 * x", "N(x)", "N(x) + 1", "5N(x)", "N(5x)"])
+@pytest.mark.parametrize(
+    "answer", ["x", "5x", "5x/2", "5/2x", "5/(2x)", "(5/2)x", "5*x", "5 * x", "N(x)", "N(x) + 1", "5N(x)", "N(5x)"]
+)
 def test_validate_symbolic_input_valid_string(answer: str, subtests):
     parsed_question = {
         "header": {"part1": {"pl-customizations": {"weight": 1, "variables": "x", "functions": "N"}}},
@@ -208,33 +212,36 @@ def test_validate_symbolic_input_valid_string(answer: str, subtests):
         with subtests.test(correct_ans_location=location):
             assert isinstance(process_symbolic_input("part1", parsed_question, data_dict), str)
 
+
 @pytest.mark.parametrize(
     "answer",
     [
-        pytest.param(5.1*_x, id="5.1x"),
-        pytest.param(5.1*_x+1, id="5.1x+1"),
-        pytest.param(5*_x+1.1, id="5x+1.1"),
-        pytest.param(5.1*_x+1.1, id="5.1x+1.1"),
-        pytest.param(_N(5.1*_x), id="N(5.1x)"),
-        pytest.param(_N(5.1*_x+1), id="N(5.1x+1)"),
-        pytest.param(_N(5*_x+1.1), id="N(5x+1.1)"),
-        pytest.param(_N(5.1*_x)+1, id="N(5.1x)+1"),
-        pytest.param(_N(5*_x)+1.1, id="N(5x)+1.1"),
-        pytest.param(_N(5.1*_x)+1.1, id="N(5.1x)+1.1"),
-        pytest.param(5.1*_N(_x), id="5.1N(x)"),
-        pytest.param(5.1*_N(_x)+1, id="5.1N(x)+1"),
-        pytest.param(5*_N(_x)+1.1, id="5N(x)+1.1"),
-        pytest.param(5.1*_N(_x)+1.1, id="5.1N(x)+1.1"),
+        pytest.param(5.1 * _x, id="5.1x"),
+        pytest.param(5.1 * _x + 1, id="5.1x+1"),
+        pytest.param(5 * _x + 1.1, id="5x+1.1"),
+        pytest.param(5.1 * _x + 1.1, id="5.1x+1.1"),
+        pytest.param(_N(5.1 * _x), id="N(5.1x)"),
+        pytest.param(_N(5.1 * _x + 1), id="N(5.1x+1)"),
+        pytest.param(_N(5 * _x + 1.1), id="N(5x+1.1)"),
+        pytest.param(_N(5.1 * _x) + 1, id="N(5.1x)+1"),
+        pytest.param(_N(5 * _x) + 1.1, id="N(5x)+1.1"),
+        pytest.param(_N(5.1 * _x) + 1.1, id="N(5.1x)+1.1"),
+        pytest.param(5.1 * _N(_x), id="5.1N(x)"),
+        pytest.param(5.1 * _N(_x) + 1, id="5.1N(x)+1"),
+        pytest.param(5 * _N(_x) + 1.1, id="5N(x)+1.1"),
+        pytest.param(5.1 * _N(_x) + 1.1, id="5.1N(x)+1.1"),
     ],
 )
-def test_validate_symbolic_input_invalid_sympy_object(answer:sp.Expr):
+def test_validate_symbolic_input_invalid_sympy_object(answer: sp.Expr):
     parsed_question = {
         "header": {"part1": {"pl-customizations": {"weight": 1}}},
         "body_parts_split": {"part1": {"content": "..."}},
     }
     data_dict = {"correct_answers": {"part1_ans": phs.sympy_to_json(answer)}}
 
-    with pytest.raises(ValidationError, match=r"The correct answer for part 'part1' contains the floating-point number "):
+    with pytest.raises(
+        ValidationError, match=r"The correct answer for part 'part1' contains the floating-point number "
+    ):
         process_symbolic_input("part1", parsed_question, data_dict)
 
 
@@ -253,7 +260,9 @@ def test_validate_symbolic_input_invalid_string(answer: str, subtests):
             data_dict["params"]["part1"] = {"correct_ans": answer}
 
         with subtests.test(correct_ans_location=location):
-            with pytest.raises(ValidationError, match=r"The correct answer for part 'part1' contains the floating-point number "):
+            with pytest.raises(
+                ValidationError, match=r"The correct answer for part 'part1' contains the floating-point number "
+            ):
                 process_symbolic_input("part1", parsed_question, data_dict)
 
 
@@ -323,7 +332,9 @@ def test_validate_workspace_missing_required_key(key: str):
 
     del parsed_question["header"]["workspaceOptions"][key]
 
-    with pytest.raises(ValidationError, match=r"^\[part 'part1'\]: workspaceOptions must contain image, port, and home keys$"):
+    with pytest.raises(
+        ValidationError, match=r"^\[part 'part1'\]: workspaceOptions must contain image, port, and home keys$"
+    ):
         process_workspace("part1", parsed_question, {})
 
 
@@ -333,31 +344,74 @@ def test_validate_workspace_missing_config():
         "body_parts_split": {"part1": {"content": "..."}},
     }
 
-    with pytest.raises(ValidationError, match=r"^'workspaceOptions' object not found in the question frontmatter, but part 'part1' is a workspace question$"):
+    with pytest.raises(
+        ValidationError,
+        match=r"^'workspaceOptions' object not found in the question frontmatter, but part 'part1' is a workspace question$",
+    ):
         process_workspace("part1", parsed_question, {})
 
 
 def test_validate_workspace_pl_customizations_present():
     parsed_question = {"header": {"part1": {"pl-customizations": {"weight": 1}}}}
 
-    with pytest.raises(ValidationError, match=r"^\[part 'part1'\]: pl-customizations are not supported for workspace questions$"):
+    with pytest.raises(
+        ValidationError, match=r"^\[part 'part1'\]: pl-customizations are not supported for workspace questions$"
+    ):
         process_workspace("part1", parsed_question, {})
 
 
 @pytest.mark.parametrize(
     ("key", "value", "msg"),
     [
-        pytest.param("image", 1, r"^\[part 'part1'\]: workspaceOptions.image must be a string, got 1 instead$", id="image"),
-        pytest.param("port", "1", r"^\[part 'part1'\]: workspaceOptions.port must be an integer, got '1' instead$", id="port"),
-        pytest.param("home", 1, r"^\[part 'part1'\]: workspaceOptions.home must be a string, got 1 instead$", id="home"),
-        pytest.param("gradedFiles", 1, r"^\[part 'part1'\]: workspaceOptions.gradedFiles must be a list of strings, got 1 instead$", id="gradedFiles:wrong-outer-type"),
-        pytest.param("gradedFiles", [1], r"^\[part 'part1'\]: workspaceOptions.gradedFiles must be a list of strings, got \[1\] instead$", id="gradedFiles:wrong-inner-type"),
-        pytest.param("args", 1, r"^\[part 'part1'\]: workspaceOptions.args must be a string, got 1 instead$", id="args"),
-        pytest.param("rewriteUrl", 1, r"^\[part 'part1'\]: workspaceOptions.rewriteUrl must be a boolean, got 1 instead$", id="rewriteUrl"),
-        pytest.param("enableNetworking", 1, r"^\[part 'part1'\]: workspaceOptions.enableNetworking must be a boolean, got 1 instead$", id="enableNetworking"),
-        pytest.param("environment", 1, r"^\[part 'part1'\]: workspaceOptions.environment must be a dictionary of strings, got 1 instead$", id="environment:wrong-outer-type"),
-        pytest.param("environment", {"a": 1}, r"^\[part 'part1'\]: workspaceOptions.environment must be a dictionary of strings, got {'a': 1} instead$", id="environment:wrong-inner-type"),
-    ]
+        pytest.param(
+            "image", 1, r"^\[part 'part1'\]: workspaceOptions.image must be a string, got 1 instead$", id="image"
+        ),
+        pytest.param(
+            "port", "1", r"^\[part 'part1'\]: workspaceOptions.port must be an integer, got '1' instead$", id="port"
+        ),
+        pytest.param(
+            "home", 1, r"^\[part 'part1'\]: workspaceOptions.home must be a string, got 1 instead$", id="home"
+        ),
+        pytest.param(
+            "gradedFiles",
+            1,
+            r"^\[part 'part1'\]: workspaceOptions.gradedFiles must be a list of strings, got 1 instead$",
+            id="gradedFiles:wrong-outer-type",
+        ),
+        pytest.param(
+            "gradedFiles",
+            [1],
+            r"^\[part 'part1'\]: workspaceOptions.gradedFiles must be a list of strings, got \[1\] instead$",
+            id="gradedFiles:wrong-inner-type",
+        ),
+        pytest.param(
+            "args", 1, r"^\[part 'part1'\]: workspaceOptions.args must be a string, got 1 instead$", id="args"
+        ),
+        pytest.param(
+            "rewriteUrl",
+            1,
+            r"^\[part 'part1'\]: workspaceOptions.rewriteUrl must be a boolean, got 1 instead$",
+            id="rewriteUrl",
+        ),
+        pytest.param(
+            "enableNetworking",
+            1,
+            r"^\[part 'part1'\]: workspaceOptions.enableNetworking must be a boolean, got 1 instead$",
+            id="enableNetworking",
+        ),
+        pytest.param(
+            "environment",
+            1,
+            r"^\[part 'part1'\]: workspaceOptions.environment must be a dictionary of strings, got 1 instead$",
+            id="environment:wrong-outer-type",
+        ),
+        pytest.param(
+            "environment",
+            {"a": 1},
+            r"^\[part 'part1'\]: workspaceOptions.environment must be a dictionary of strings, got {'a': 1} instead$",
+            id="environment:wrong-inner-type",
+        ),
+    ],
 )
 def test_validate_workspace_invalid_config_value(key: str, value, msg: str):
     parsed_question = {
@@ -397,7 +451,10 @@ def test_validate_workspace_warn_enable_networking_config_true():
         "body_parts_split": {"part1": {"content": "..."}},
     }
 
-    with pytest.warns(UserWarning, match=r"^\[part 'part1'\]: workspaceOptions.enableNetworking is set to True, which is not recommended for security reasons$"):
+    with pytest.warns(
+        UserWarning,
+        match=r"^\[part 'part1'\]: workspaceOptions.enableNetworking is set to True, which is not recommended for security reasons$",
+    ):
         process_workspace("part1", parsed_question, {})
 
 
@@ -421,5 +478,7 @@ def test_validate_workspace_invalid_config_extra_key():
         "body_parts_split": {"part1": {"content": "..."}},
     }
 
-    with pytest.raises(ValidationError, match=r"^\[part 'part1'\]: workspaceOptions contains one or more unknown keys:"):
+    with pytest.raises(
+        ValidationError, match=r"^\[part 'part1'\]: workspaceOptions contains one or more unknown keys:"
+    ):
         process_workspace("part1", parsed_question, {})

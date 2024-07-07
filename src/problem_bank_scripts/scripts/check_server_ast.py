@@ -9,7 +9,7 @@ import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
-from ..problem_bank_scripts import assemble_server_py, read_md_problem
+from problem_bank_scripts import assemble_server_py, read_md_problem
 
 
 def main(argv: Sequence[str] | None = None) -> int:

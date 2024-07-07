@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import filecmp
 import json
-import os
 import pathlib
 
 import fastjsonschema
@@ -24,12 +23,11 @@ def paths():
     Returns:
         Nothing, it's a fixture that is run before every test.
     """
-    p = {
+    return {
         "inputDest": questions_dir.joinpath("question_inputs"),
         "outputDest": questions_dir.joinpath("question_generated_outputs"),
         "compareDest": questions_dir.joinpath("question_expected_outputs"),
     }
-    return p
 
 
 @pytest.fixture(scope="session")
@@ -40,8 +38,7 @@ def validate_info_json():
         Nothing, it's a fixture that is run before every test.
     """
     with open("tests/infoSchema.json") as file:
-        schema = fastjsonschema.compile(json.load(file))
-    return schema
+        return fastjsonschema.compile(json.load(file))
 
 
 _tested_questions = set()
@@ -91,7 +88,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
     folder = baseFile.parent.stem
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
-        isFile = os.path.isfile(file)
+        isFile = file.is_file()
         hiddenFile = not file.name.startswith(".")
         assetFile = file.name == "question.html" or not file.name.endswith(
             (".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store")
@@ -164,7 +161,7 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
     process_question_md(baseFile, outputFolder.joinpath(baseFile.name), instructor=False)
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
-        isFile = os.path.isfile(file)
+        isFile = file.is_file()
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
         if isFile and notHiddenFile and notImageFile:
@@ -196,7 +193,7 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
     process_question_md(baseFile, outputFolder.joinpath(baseFile.name), instructor=True)
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
-        isFile = os.path.isfile(file)
+        isFile = file.is_file()
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
 

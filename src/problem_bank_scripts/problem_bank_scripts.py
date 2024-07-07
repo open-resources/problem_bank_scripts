@@ -29,7 +29,7 @@ import importlib.resources
 
 ## Topic Validation
 
-path = pathlib.Path().resolve().as_posix()
+path = pathlib.Path.cwd().as_posix()
 topics = {"Template": "000.Template"}  # Start with special cased topics
 
 try:
@@ -104,13 +104,16 @@ def parse_body_part(pnum, md_text):
     level2_headers = [
         i for i, j in enumerate(tokens) if j.tag == "h2" if j.nesting == 1
     ]
-    assert (
-        len(level2_headers) == 1
-    ), "There is a problem in the question, there seem to be multiple level two headers in a body part, or there is a weird edge-case in the parse_body_part() function"
+    if len(level2_headers) != 1:
+        msg = (
+            "There is a problem in the question, there seem to be multiple level two headers in a body part,"
+            " or there is a weird edge-case in the parse_body_part() function"
+        )
+        raise RuntimeError(msg)
 
-    assert (
-        len(tokens[level2_headers[0] + 1].content) < 20
-    ), "There is an (arbitrary/opinionated) restriction on the length of 20 chars for a a 'part' title."
+    if len(tokens[level2_headers[0] + 1].content) >= 20:
+        msg = "There is an (arbitrary/opinionated) restriction on the length of 20 chars for a a 'part' title."
+        raise ValidationError(msg)
 
     nested_dict[part]["title"] = tokens[level2_headers[0] + 1].content
 
@@ -180,108 +183,6 @@ def get_next_headerloc(start, tokens, header_level):
             close = i + start
             break
     return close
-
-
-# def split_body_parts(num_parts, body_parts):
-#     """Parses individual question parts and splits out titles, and content
-
-#     Args:
-#         num_parts (int): An integer corresponding to the number of question parts (from `read_md_problem()`).
-#         body_parts (dict): A dictionary from `read_md_problem()`.
-
-#     Returns:
-#         body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
-#     """
-#     mdit = markdown_it.MarkdownIt()
-#     env = {}
-#     nested_dict = lambda: defaultdict(nested_dict)
-
-#     parts_dict = nested_dict()
-
-#     for pnum in range(1, num_parts + 1):
-
-#         part = "part" + f"{pnum}"
-#         # Set up tokens by parsing the md file
-#         tokens = mdit.parse(body_parts[part], env)
-
-#         ptt = [i for i, j in enumerate(tokens) if j.tag == "h2"]
-#         parts_dict[part]["title"] = (
-#             mdformat.renderer.MDRenderer()
-#             .render(tokens[ptt[0] + 1 : ptt[1]], mdit.options, env)
-#             .strip("\n")
-#         )
-
-#         # Get the "### Answer section from the parts_dict"
-#         pa = [i
-#                 for i, j in enumerate(tokens)
-#                 if j.tag == "h3"
-#                 if "pl-submission-panel" not in j.content
-#                 if "pl-answer-panel" not in j.content
-#             ]
-
-#         try:
-#             parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
-#                 mdformat.renderer.MDRenderer().render(
-#                     tokens[pa[0] + 1 : pa[1]], mdit.options, env
-#                 )
-#             )[0]
-#         except IndexError:
-#             print(
-#                 "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-#             )
-#             raise
-
-#         parts_dict[part]["content"] = codecs.unicode_escape_decode(
-#             mdformat.renderer.MDRenderer().render(
-#                 tokens[ptt[1] + 1 : pa[0]], mdit.options, env
-#             )
-#         )[0]
-#         parts_dict[part]["answer"]["content"] = codecs.unicode_escape_decode(
-#             mdformat.renderer.MDRenderer().render(
-#                 tokens[pa[1] + 1 :], mdit.options, env
-#             )
-#         )[0]
-
-#         # Get the ### pl-submission-panel and ### pl-answer-panel
-#         p_extra = [i
-#                 for i, j in enumerate(tokens)
-#                 if j.tag == "h3"
-#                 if "pl-submission-panel" in j.content
-#                 if "pl-answer-panel" in j.content
-#             ]
-
-#         if p_extra:
-#             try:
-#                 parts_dict[part]["pl-submission-panel"] = codecs.unicode_escape_decode(
-#                     mdformat.renderer.MDRenderer().render(
-#                         tokens[p_extra[0] + 1 : p_extra[1]], mdit.options, env
-#                     )
-#                 )[0]
-#             except IndexError:
-#                 print(
-#                     "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-#                 )
-#                 raise
-
-
-#         # for key in body_parts.keys():
-#         #     print(f'outside: {key}')
-#         #     if key in ['pl-submission-panel','pl-answer-panel']:
-#         #         # Set up tokens by parsing the md file
-#         #         tokens = mdit.parse(body_parts[key], env)
-
-#         #         print(key)
-
-#         #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
-#         #         try:
-#         #             parts_dict[part][key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
-#         #         except IndexError:
-#         #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
-
-#         # Remove parts from body_parts
-#         body_parts.pop(part)
-
-#     return defdict_to_dict(parts_dict, {})
 
 
 def read_md_problem(filepath):
@@ -402,20 +303,18 @@ def read_md_problem(filepath):
     return defdict_to_dict(return_dict, {})
 
 
-def dict_to_md(
-    md_dict,
-    remove_keys=[
-        None,
-    ],
-):
-    """Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).
+def dict_to_md(md_dict: dict, remove_keys: list[str] | None = None) -> str:
+    """Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string that can be written to a file (after removing specified keys).
+
     Args:
         md_dict (dict): A nested dictionary, for e.g. the output of `read_md_problem()`
-        remove_keys (list, optional): Any keys to remove from the dictionary, for instance solutions. Defaults to [None,].
+        remove_keys (list, optional): Any keys to remove from the dictionary, for instance solutions. Defaults to [None]
 
     Returns:
         str: A multi-line string that can be written to a file.
     """
+
+    remove_keys = remove_keys or []
 
     md_string = ""
 
@@ -431,7 +330,7 @@ def dict_to_md(
         if k in remove_keys:
             continue
         else:
-            md_string += "\n" + md_dict[k]
+            md_string += f"\n{v}"
 
     return md_string
 
@@ -523,17 +422,15 @@ def assemble_server_py(parsed_question, location):
 
     server_py += server_dict.get("imports", "") + "\n"
 
-    try:
-        for function, code in server_dict.items():
-            indented_code = code.replace("\n", "\n    ")
-            # With the custom header, add functions to server.py as-is
-            if function == "custom":
-                server_py += f"{code}"
-            else:
-                if code:
-                    server_py += f"def {function}(data):\n    {indented_code}\n"
-            if location == "prairielearn" and function == "generate":
-                server_py += """\
+    for function, code in server_dict.items():
+        indented_code = code.replace("\n", "\n    ")
+        # With the custom header, add functions to server.py as-is
+        if function == "custom":
+            server_py += f"{code}"
+        elif code:
+            server_py += f"def {function}(data):\n    {indented_code}\n"
+        if location == "prairielearn" and function == "generate":
+            server_py += """\
     # Start code added automatically by problem_bank_scripts
 
     # Convert backticks to code blocks/fences in answer choices.
@@ -545,8 +442,6 @@ def assemble_server_py(parsed_question, location):
     # End code added in by problem bank scripts
 
 """
-    except:
-        raise
 
     return server_py
 
@@ -582,7 +477,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
         str: Multiple choice question is returned as a string with PL-compliant syntax.
     """
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     pl_customizations = " ".join(
         [
@@ -603,7 +498,7 @@ def process_multiple_choice(part_name, parsed_question, data_dict):
         units = ""
 
     ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
-    for a in data_dict["params"][f"{part_name}"].keys():
+    for a in data_dict["params"][f"{part_name}"]:
         if "ans" in a:
             if data_dict["params"][f"{part_name}"][f"{a}"]["feedback"]:
                 feedback = f"|@ params.{part_name}.{a}.feedback @|"
@@ -635,10 +530,9 @@ def process_dropdown(part_name, parsed_question, data_dict):
     Returns:
         html: A string of HTML that is part of the final PL question.html file.
     """
-    html = process_multiple_choice(part_name, parsed_question, data_dict).replace(
-        "-multiple-choice", "-dropdown"
-    )
-    return html
+    return process_multiple_choice(
+        part_name, parsed_question, data_dict
+    ).replace("-multiple-choice", "-dropdown")
 
 
 def process_number_input(part_name, parsed_question, data_dict):
@@ -653,7 +547,7 @@ def process_number_input(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
 
-    html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"
 
     pl_customizations = " ".join(
         [
@@ -680,10 +574,9 @@ def process_checkbox(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
     # start with the MCQ version and then...change things for checkbox questions
-    html = process_multiple_choice(part_name, parsed_question, data_dict).replace(
-        "-multiple-choice", "-checkbox"
-    )
-    return html
+    return process_multiple_choice(
+        part_name, parsed_question, data_dict
+    ).replace("-multiple-choice", "-checkbox")
 
 
 def process_symbolic_input(part_name, parsed_question, data_dict):
@@ -698,24 +591,26 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
         html: A string of HTML that is part of the final PL question.html file.
     """
 
-    html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     customizations: dict = parsed_question["header"][part_name]["pl-customizations"]
     allow_complex = customizations.get("allow_complex", False)
 
-    correct_ans = customizations.get("correct-answer", None)
+    correct_ans = customizations.get("correct-answer")
 
     if correct_ans is None:
         correct_ans = data_dict["correct_answers"][f"{part_name}_ans"]
 
     from ._vendored import python_helper_sympy as phs
 
+    is_valid = True
+
     try:
         if isinstance(correct_ans, dict) and correct_ans.get("_type") == "sympy":
             phs.json_to_sympy(phs.cast(phs.SympyJson, correct_ans), allow_complex=allow_complex)
         elif isinstance(correct_ans, str):
-            variables = phs.get_items_list(customizations.get("variables", None))
-            custom_functions = phs.get_items_list(customizations.get("functions", None))
+            variables = phs.get_items_list(customizations.get("variables"))
+            custom_functions = phs.get_items_list(customizations.get("functions"))
             allow_trig = customizations.get("allow-trig-functions", False)
             phs.convert_string_to_sympy(
                 correct_ans,
@@ -725,25 +620,26 @@ def process_symbolic_input(part_name, parsed_question, data_dict):
                 custom_functions=custom_functions,
             )
         else:
-            raise ValidationError(
-                f"The correct answer for part {part_name!r} is not a valid "
-                + f"json-serialized Sympy expression or string: {correct_ans!r}"
-            )
-    except ValidationError:
-        raise
+            is_valid = False
     except phs.HasFloatError as e:
-        raise ValidationError(
+        msg = (
             f"The correct answer for part {part_name!r} contains the floating-point number {e.n}. "
             f"All numbers must be expressed as integers (or ratios of integers)."
-        ).with_traceback(e.__traceback__)
+        )
+        raise ValidationError(msg) from e
     except phs.BaseSympyError as e:
-        raise ValidationError(
-            f"The correct answer for part {part_name!r} is not a valid Sympy expression: {e!r}"
-        ).with_traceback(e.__traceback__)
+        msg = f"The correct answer for part {part_name!r} is not a valid Sympy expression: {e!r}"
+        raise ValidationError(msg) from e
     except Exception as e:
-        raise ValidationError(
-            f"An unexpected error occurred while processing the correct answer for part {part_name!r}: {e!r}"
-        ).with_traceback(e.__traceback__)
+        msg = f"An unexpected error occurred while processing the correct answer for part {part_name!r}: {e!r}"
+        raise ValidationError(msg) from e
+
+    if not is_valid:
+        msg = (
+            f"The correct answer for part {part_name!r} is not a valid "
+            f"json-serialized Sympy expression or string: {correct_ans!r}"
+        )
+        raise ValidationError(msg)
 
     pl_customizations = " ".join(f'{k} = "{v}"' for k, v in customizations.items())  # PL-customizations
 
@@ -771,7 +667,7 @@ def process_longtext(part_name, parsed_question, data_dict):
         ]
     )  # PL-customizations
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     html += f"""<pl-rich-text-editor { pl_customizations } > </pl-rich-text-editor>"""
 
@@ -789,7 +685,7 @@ def process_matching(part_name, parsed_question, data_dict):
         str: Matching question is returned as a string with PL-compliant syntax.
     """
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     pl_customizations = " ".join(
         [
@@ -806,7 +702,7 @@ def process_matching(part_name, parsed_question, data_dict):
     options = ""
     statements = ""
     ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
-    for a in data_dict["params"][f"{part_name}"].keys():
+    for a in data_dict["params"][f"{part_name}"]:
         if "option" in a:
             value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
@@ -850,14 +746,14 @@ def process_file_upload(part_name, parsed_question, data_dict):
         ]
     )  # PL-customizations
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-    html += f"""<pl-file-upload { pl_customizations } > </pl-file-upload>"""
+    html += f"<pl-file-upload {pl_customizations} > </pl-file-upload>"
 
-    html += """<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>"""
+    html += "<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>"
 
     # TODO: remove this! because automatic feedback will be added
-    html += """\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|\n</pl-submission-panel>"""
+    html += "\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|\n</pl-submission-panel>"
 
     # TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
     # TODO: Add support for wildcard *.png
@@ -928,13 +824,18 @@ def process_workspace(part_name, parsed_question, data_dict):
     Returns:
         html: A string of HTML that is part of the final PL question.html file.
     """
-    if "pl-customizations" in parsed_question["header"][part_name]:
-        if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
-            raise ValidationError(f"[part {part_name!r}]: pl-customizations are not supported for workspace questions")
+    if ("pl-customizations" in parsed_question["header"][part_name]
+        and len(parsed_question["header"][part_name]["pl-customizations"]) > 0):
+            msg = f"[part {part_name!r}]: pl-customizations are not supported for workspace questions"
+            raise ValidationError(msg)
 
     workspaceOptions = parsed_question["header"].get("workspaceOptions", None)
     if workspaceOptions is None:
-        raise ValidationError(f"'workspaceOptions' object not found in the question frontmatter, but part {part_name!r} is a workspace question")
+        msg = (
+            "'workspaceOptions' object not found in the question frontmatter, "
+            f"but part {part_name!r} is a workspace question"
+        )
+        raise ValidationError(msg)
 
 
     image = workspaceOptions.get("image", None)
@@ -945,47 +846,60 @@ def process_workspace(part_name, parsed_question, data_dict):
     rewriteUrl = workspaceOptions.get("rewriteUrl", None)
     enableNetworking = workspaceOptions.get("enableNetworking", None)
     environment = workspaceOptions.get("environment", None)
-    if image is None or port is None or home is None:
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions must contain image, port, and home keys")
-    if not isinstance(image, str):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.image must be a string, got {image!r} instead")
-    if not isinstance(port, int):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.port must be an integer, got {port!r} instead")
-    if not isinstance(home, str):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.home must be a string, got {home!r} instead")
-    if gradedFiles is not None and (not isinstance(gradedFiles, list) or not all(isinstance(f, str) for f in gradedFiles)):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.gradedFiles must be a list of strings, got {gradedFiles!r} instead")
-    if args is not None and not isinstance(args, str):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.args must be a string, got {args!r} instead")
-    if rewriteUrl is not None and not isinstance(rewriteUrl, bool):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.rewriteUrl must be a boolean, got {rewriteUrl!r} instead")
-    if enableNetworking is not None and not isinstance(enableNetworking, bool):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.enableNetworking must be a boolean, got {enableNetworking!r} instead")
-    elif enableNetworking is True:
-        warnings.warn(f"[part {part_name!r}]: workspaceOptions.enableNetworking is set to True, which is not recommended for security reasons")
-    if environment is not None and (not isinstance(environment, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in environment.items())):
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions.environment must be a dictionary of strings, got {environment!r} instead")
+    err = None
 
-    valid_keys = {"image", "port", "home", "gradedFiles", "args", "rewriteUrl", "enableNetworking", "environment", "comment"}
+    if image is None or port is None or home is None:
+        err = "workspaceOptions must contain image, port, and home keys"
+    elif not isinstance(image, str):
+        err = f"workspaceOptions.image must be a string, got {image!r} instead"
+    elif not isinstance(port, int):
+        err = f"workspaceOptions.port must be an integer, got {port!r} instead"
+    elif not isinstance(home, str):
+        err = f"workspaceOptions.home must be a string, got {home!r} instead"
+    elif gradedFiles is not None and (
+        not isinstance(gradedFiles, list) or not all(isinstance(f, str) for f in gradedFiles)
+        ):
+        err = f"workspaceOptions.gradedFiles must be a list of strings, got {gradedFiles!r} instead"
+    elif args is not None and not isinstance(args, str):
+        err = f"workspaceOptions.args must be a string, got {args!r} instead"
+    elif rewriteUrl is not None and not isinstance(rewriteUrl, bool):
+        err = f"workspaceOptions.rewriteUrl must be a boolean, got {rewriteUrl!r} instead"
+    elif enableNetworking is not None and not isinstance(enableNetworking, bool):
+        err = f"workspaceOptions.enableNetworking must be a boolean, got {enableNetworking!r} instead"
+    elif environment is not None and not (
+        isinstance(environment, dict) and all(isinstance(k, str) and isinstance(v, str) for k, v in environment.items())
+        ):
+        err = f"workspaceOptions.environment must be a dictionary of strings, got {environment!r} instead"
+    
+    if err is not None:
+        err = f"[part {part_name!r}]: {err}"
+        raise ValidationError(err)
+
+    if enableNetworking is True:
+        msg = "workspaceOptions.enableNetworking is set to True, which is not recommended for security reasons"
+        warnings.warn(f"[part {part_name!r}]: {msg}", UserWarning, stacklevel=2)
+
+    valid_keys = {
+        "image", "port", "home", "gradedFiles", "args", "rewriteUrl", "enableNetworking", "environment", "comment"
+    }
 
     if not valid_keys.issuperset(workspaceOptions):
         unknown_keys = set(workspaceOptions) - valid_keys
         formatted_unknown_keys = ", ".join(f"{k!r}" for k in unknown_keys)
-        raise ValidationError(f"[part {part_name!r}]: workspaceOptions contains one or more unknown keys: {formatted_unknown_keys}")
+        err = f"[part {part_name!r}]: workspaceOptions contains one or more unknown keys: {formatted_unknown_keys}"
+        raise ValidationError(err)
 
     html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
-    html += """<pl-workspace></pl-workspace>"""
+    html += "pl-workspace></pl-workspace>\n<pl-submission-panel>"
 
-    html += """\n<pl-submission-panel>"""
-
-    if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
-        html += """\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>\n</pl-submission-panel>"""
+    if parsed_question["header"][part_name].get("gradingMethod") == "External":
+        html += "\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>"
     else:
-        html += """\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
+        html += "\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>"
 
 
-    return replace_tags(html)
+    return replace_tags(html + "\n</pl-submission-panel>")
 
 
 def process_matrix_component_input(part_name, parsed_question, data_dict):
@@ -1007,9 +921,9 @@ def process_matrix_component_input(part_name, parsed_question, data_dict):
         ]
     )  # PL-customizations
 
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-    html += f"""<pl-matrix-component-input answers-name="{part_name}_ans" { pl_customizations } ></pl-matrix-component-input>"""
+    html += f'<pl-matrix-component-input answers-name="{part_name}_ans" {pl_customizations} ></pl-matrix-component-input>'
 
     return replace_tags(html)
 
@@ -1080,10 +994,7 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
 
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
 
-    if none_of_the_above in {"correct", "random"}:
-        return True
-
-    return False
+    return none_of_the_above in {"correct", "random"}
 
 
 def replace_tags(string):
@@ -1150,10 +1061,11 @@ def process_attribution(attribution):
         return _ATTRIBUTIONS[attribution]
 
     except KeyError:
-        print(
-            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {_KNOWN_ATTRIBUTIONS}. You need to update your md file and fix the `attribution` in the header"
+        msg = (
+            f"`Attribution` value of '{attribution}' is not recognized. Currently, the only possible values are: "
+            f"{_KNOWN_ATTRIBUTIONS}. You need to update your md file and fix the `attribution` in the header"
         )
-        raise
+        raise ValidationError(msg) from None
 
 
 def process_question_md(source_filepath, output_path=None, instructor=False):
@@ -1164,17 +1076,13 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         raise
 
     if output_path is None:
-        if instructor:
-            path_replace = "output/instructor"
-        else:
-            path_replace = "output/public"
+        path_replace = "output/instructor" if instructor else "output/public"
 
         if "source" in source_filepath:
             output_path = pathlib.Path(source_filepath.replace("source", path_replace))
         else:
-            raise NotImplementedError(
-                "Check the source filepath; it does not have 'source' in it!! "
-            )
+            msg = "Check the source filepath; it does not have 'source' in it!!"
+            raise NotImplementedError(msg)
     else:
         ## TODO: Make this a bit more robust, perhaps by switching encodings!?
         output_path = pathlib.Path(output_path)
@@ -1204,7 +1112,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
     server_py = assemble_server_py(parsed_q, "local")
 
     spec = importlib.util.spec_from_loader("server", loader=None)
-    server = importlib.util.module_from_spec(spec)
+    server = importlib.util.module_from_spec(spec)  # pyright: ignore[reportArgumentType]
     exec(server_py, server.__dict__)
 
     data2 = pbh.create_data2()
@@ -1225,7 +1133,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         #### GitHub issue: https://github.com/executablebooks/MyST-Parser/issues/761
 
         df = pd.json_normalize(data2_sanitized, sep="_")
-        data2_sanitized_flattened = df.to_dict(orient="records")[0]
+        data2_sanitized_flattened: dict[str, Any] = df.to_dict(orient="records")[0]  # pyright: ignore[reportAssignmentType]
 
         repl_keys = {
             k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())
@@ -1376,8 +1284,8 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
                 os_errors.append(str(e))
 
     if os_errors:
-        error_msg = "\n    ".join(os_errors)
-        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
+        error_msg = f"Error(s) copying specified files:\n    {'\n    '.join(os_errors)}"
+        raise FileNotFoundError(error_msg)
 
 
 def process_question_pl(source_filepath, output_path=None, dev=False):
@@ -1388,16 +1296,19 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         raise
 
     if not _path.exists():
-        raise FileNotFoundError(f"[Errno 2] No such file or directory: '{source_filepath}'")
+        msg = f"[Errno 2] No such file or directory: '{source_filepath}'"
+        raise FileNotFoundError(msg)
     
     if not _path.is_file():
-        raise IsADirectoryError(f"[Errno 21] Is a directory: '{source_filepath}'")
+        msg = f"[Errno 21] Is a directory: '{source_filepath}'"
+        raise IsADirectoryError(msg)
 
     if output_path is None:
         if "source" in str(_path):
             output_path = pathlib.Path(_path.as_posix().replace("source", "output/prairielearn")).parent
         else:
-            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!!")
+            msg = "Check the source filepath; it does not have 'source' in it!!"
+            raise NotImplementedError(msg)
     else:
         ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
         output_path = pathlib.Path(output_path).parent
@@ -1417,7 +1328,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     server_py = assemble_server_py(parsed_q, "local")
 
     spec = importlib.util.spec_from_loader("server", loader=None)
-    server = importlib.util.module_from_spec(spec)
+    server = importlib.util.module_from_spec(spec)  # pyright: ignore[reportArgumentType]
     exec(server_py, server.__dict__)
 
     data2 = pbh.create_data2()
@@ -1476,10 +1387,11 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
         if "multiple-choice" in q_type:
             if not validate_multiple_choice(part,parsed_q,data2):
-                raise ValidationError(
+                err = (
                     f"Multiple choice question {part} does not have a correct answer and "
                     " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
                 )
+                raise ValidationError(err)
             question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
         elif "number-input" in q_type:
             question_html += f"{process_number_input(part,parsed_q,data2)}"
@@ -1508,9 +1420,8 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         elif "integer-input" in q_type:
             question_html += f"{process_integer_input(part,parsed_q,data2)}"
         else:
-            raise NotImplementedError(
-                f"This question type ({q_type}) is not yet implemented."
-            )
+            msg = f"This question type ({q_type}) is not yet implemented."
+            raise NotImplementedError(msg)
 
         if parsed_q["num_parts"] > 1:
             question_html += "</div>\n</div>\n"
@@ -1616,8 +1527,8 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
                 os_errors.append(f"{e} {e.filename}")
 
     if os_errors:
-        error_msg = "\n    ".join(os_errors)
-        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
+        error_msg = f"Error(s) copying specified files:\n    {'\n    '.join(os_errors)}"
+        raise FileNotFoundError(error_msg)
 
 
 def pl_image_path(html):
@@ -1667,5 +1578,6 @@ def validate_header(header_dict):
     # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
 
     if topics.get(topic := header_dict["topic"], None) is None:
-        raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+        msg = f"topic '{topic}' is not listed in the learning outcomes"
+        raise ValidationError(msg)
 
