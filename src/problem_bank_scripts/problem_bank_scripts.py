@@ -973,6 +973,21 @@ def process_integer_input(part_name, parsed_question, data_dict):
     return html.replace("-number-input", "-integer-input")
 
 
+def process_custom_input(part_name: str, parsed_question: dict, data_dict: dict) -> str:
+    """Processes markdown format custom input questions and returns PL HTML
+
+    Args:
+        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
+        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
+        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
+
+    Returns:
+        html: A string of HTML that is part of the final PL question.html file.
+    """
+
+    return f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
+
+
 def validate_multiple_choice(part_name, parsed_question, data_dict):
     """Validates a markdown format multiple-choice question
     Args:
@@ -1434,6 +1449,8 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
             question_html += process_matrix_input(part, parsed_q, data2)
         elif "integer-input" in q_type:
             question_html += f"{process_integer_input(part,parsed_q,data2)}"
+        elif "custom-input" in q_type:
+            question_html += f"{process_custom_input(part,parsed_q,data2)}"
         else:
             raise NotImplementedError(
                 f"This question type ({q_type}) is not yet implemented."
