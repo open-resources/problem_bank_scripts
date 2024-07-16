@@ -4,7 +4,7 @@
 import argparse
 import pathlib
 
-from ..problem_bank_scripts import process_question_pl
+from problem_bank_scripts import process_question_pl
 
 
 def main():
@@ -48,7 +48,7 @@ def main():
 
     except Exception as e:
         print(f"There is an error in this problem: \n\t- File path: {question}\n\t- Error: {e}")
-        raise e
+        return -1
 
 
 if __name__ == "__main__":
