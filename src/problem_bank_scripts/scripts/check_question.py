@@ -6,6 +6,8 @@ import pathlib
 
 from problem_bank_scripts import process_question_pl
 
+from . import check_server_ast
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -38,6 +40,9 @@ def main():
     # Process md file
     try:
         print(f"Processing question: {question}")
+
+        if check_server_ast.main([question.as_posix()]) != 0:
+            return -1
 
         process_question_pl(question.as_posix(), output_path=output_dir)
 

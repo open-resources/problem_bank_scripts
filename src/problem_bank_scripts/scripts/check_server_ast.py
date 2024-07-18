@@ -4,12 +4,11 @@ from __future__ import annotations
 import argparse
 import ast
 import platform
-import sys
 import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
-from ..problem_bank_scripts import assemble_server_py, read_md_problem
+from problem_bank_scripts import assemble_server_py, read_md_problem
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -17,7 +16,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument('filenames', nargs='*')
     args = parser.parse_args(argv)
     impl = platform.python_implementation()
-    version = sys.version.split()[0]
+    version = platform.python_version()
 
     retval = 0
     for filename in args.filenames:

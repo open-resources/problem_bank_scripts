@@ -7,7 +7,7 @@ import pathlib
 
 import git
 
-from ..problem_bank_scripts import process_question_md, process_question_pl
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 def _bool(v: str | bool):
@@ -99,7 +99,7 @@ def main():
 
         except Exception as e:
             print(f"There is an error in this problem: \n\t- File path: {md_file}\n\t- Error: {e}")
-            raise e
+            raise
 
 
 if __name__ == "__main__":

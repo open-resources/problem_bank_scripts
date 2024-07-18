@@ -7,7 +7,7 @@ import pathlib
 import shutil
 import sys
 
-from ..problem_bank_scripts import process_question_md, process_question_pl
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 def _bool(v: str | bool):
