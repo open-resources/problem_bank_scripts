@@ -49,11 +49,13 @@ myst-nb = "^1.1.1"
 myst-parser = "^3.0.1"
 
 [tool.poetry.scripts]
-lint_server = 'problem_bank_scripts.scripts.lint_server:main'
-check_server_ast = 'problem_bank_scripts.scripts.check_server_ast:main'
-process = 'problem_bank_scripts.scripts.process:main'
-process_q = 'problem_bank_scripts.scripts.process_q:main'
-checkq = 'problem_bank_scripts.scripts.check_question:main'
+pbs-cli = "problem_bank_scripts.scripts.cli:main"
+lint_server = "problem_bank_scripts.scripts.lint_server:main"
+check_server_ast = "problem_bank_scripts.scripts.check_server_ast:main"
+process = "problem_bank_scripts.scripts.process:main"
+process_q = "problem_bank_scripts.scripts.process_q:main"
+checkq = "problem_bank_scripts.scripts.check_question:main"
+
 
 [tool.pytest.ini_options]
 filterwarnings = ["error", "ignore::DeprecationWarning:problem_bank_helpers"]

@@ -9,10 +9,24 @@ from textwrap import indent
 from black import format_str
 from black.mode import Mode, TargetVersion
 
-from ..problem_bank_scripts import read_md_problem
+from problem_bank_scripts import read_md_problem
 
 
-def main(argv: Sequence[str] | None = None) -> int:
+def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.ArgumentParser:
+    if subparsers is None:
+        parser = argparse.ArgumentParser()
+    else:
+        parser = subparsers.add_parser(
+            "lint-server",
+            description="Lint the server code ast for one or more markdown files.",
+            help="Lint the server code ast for one or more markdown files.",
+        )
+    parser.add_argument('filenames', nargs='*')
+    parser.set_defaults(func=_do_run)
+    return parser
+
+
+def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     """Pre-Commit hook to lint server.py sections in OPB problems
 
     Args:
@@ -21,10 +35,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     Returns:
         code: A return code of 0 indicates success, 1 indicates failure, similar to bash return codes.
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("filenames", nargs="*")
-    args = parser.parse_args(argv)
-
     retval = 0
     for filename in args.filenames:
         if "source" not in filename or "README.md" in filename:
@@ -71,6 +81,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             continue
 
     return retval
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = create_parser(None)
+    args = parser.parse_args(argv)
+    return args.func(args, parser)
 
 
 if __name__ == "__main__":

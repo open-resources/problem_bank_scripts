@@ -4,15 +4,24 @@
 import argparse
 import pathlib
 
-from ..problem_bank_scripts import process_question_pl
+from problem_bank_scripts import process_question_pl
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Syntax check on an individual question.",
-        allow_abbrev=False,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
+def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.ArgumentParser:
+    if subparsers is None:
+        parser = argparse.ArgumentParser(
+            description="Syntax check on an individual question.",
+            allow_abbrev=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        )
+    else:
+        parser = subparsers.add_parser(
+            "checkq",
+            description="Syntax check on an individual question.",
+            allow_abbrev=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            help="Check the syntax of a single question."
+        )
     parser.add_argument(
         "md_file",
         type=pathlib.Path,
@@ -26,7 +35,11 @@ def main():
         help="Location where the question folder should export.",
         metavar="<str>",
     )
-    args = parser.parse_args()
+    parser.set_defaults(func=_do_run)
+    return parser
+
+
+def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     output_root: pathlib.Path = args.output_root 
     question: pathlib.Path = args.md_file
 
@@ -48,8 +61,13 @@ def main():
 
     except Exception as e:
         print(f"There is an error in this problem: \n\t- File path: {question}\n\t- Error: {e}")
-        raise e
+        raise
 
+
+def main():
+    parser = create_parser(None)
+    args = parser.parse_args()
+    return args.func(args, parser)
 
 if __name__ == "__main__":
     main()

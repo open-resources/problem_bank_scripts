@@ -7,7 +7,7 @@ import pathlib
 
 import git
 
-from ..problem_bank_scripts import process_question_md, process_question_pl
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 def _bool(v: str | bool):
@@ -25,16 +25,28 @@ def _bool(v: str | bool):
 
 _base_args = {"type": _bool, "action": "store", "default": True, "metavar": "<bool>"}
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Syntax check on an individual question.",
-        allow_abbrev=False,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        usage="""
+_usage = """
   %(prog)s [--instructor <bool>] [--public <bool>] [--prairielearn <bool>] [--temp_output_root <str>] md_file
   %(prog)s [--instructor <bool>] [--public <bool>] [--prairielearn <bool>] [--temp_output_root <str>] [--pullrequest <bool>]\
-""",
-    )
+"""
+
+def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.ArgumentParser:
+    if subparsers is None:
+        parser = argparse.ArgumentParser(
+            description="Syntax check on an individual question.",
+            allow_abbrev=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            usage=_usage,
+        )
+    else:
+        parser = subparsers.add_parser(
+            "process-q",
+            description="Syntax check on an individual question.",
+            allow_abbrev=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            usage=_usage,
+            help="Check the syntax of a single question.",
+        )
     parser.add_argument("md_file", action="store", help="Path to the source md file.", nargs="?")
     parser.add_argument("--instructor", help="Exports md version of question.", **_base_args)
     parser.add_argument("--public", help="Exports md version of question with the answers removed.", **_base_args)
@@ -47,9 +59,11 @@ def main():
         action="store",
         default=False,
     )
+    parser.set_defaults(func=_do_run)
+    return parser
 
-    args = parser.parse_args()
 
+def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     questions: list[str] = []
 
     temp_output_root = args.temp_output_root
@@ -99,7 +113,13 @@ def main():
 
         except Exception as e:
             print(f"There is an error in this problem: \n\t- File path: {md_file}\n\t- Error: {e}")
-            raise e
+            raise
+
+
+def main() -> int:
+    parser = create_parser(None)
+    args = parser.parse_args()
+    return args.func(args, parser)
 
 
 if __name__ == "__main__":

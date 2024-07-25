@@ -7,7 +7,7 @@ import pathlib
 import shutil
 import sys
 
-from ..problem_bank_scripts import process_question_md, process_question_pl
+from problem_bank_scripts import process_question_md, process_question_pl
 
 
 def _bool(v: str | bool):
@@ -27,19 +27,30 @@ def _bool(v: str | bool):
 _base_args = {"type": _bool, "action": "store", "default": False, "metavar": "<bool>"}
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Processes all questions.",
-        allow_abbrev=False,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
+def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.ArgumentParser:
+    if subparsers is None:
+        parser = argparse.ArgumentParser(
+            description="Processes all questions.",
+            allow_abbrev=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        )
+    else:
+        parser = subparsers.add_parser(
+            "process",
+            description="Processes all questions.",
+            allow_abbrev=False,
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+            help="Processes all questions.",
+        )
     parser.add_argument("source_root", action="store", help="Root of all the md source files.")
     parser.add_argument("--instructor", help="Exports md version of question.", **_base_args)
     parser.add_argument("--public", help="Exports md version of question with the answers removed.", **_base_args)
     parser.add_argument("--prairielearn", help="Exports info.json, server.py, and question.html..", **_base_args)
+    parser.set_defaults(func=_do_run)
+    return parser
 
-    args = parser.parse_args()
 
+def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     source_root = pathlib.Path().joinpath(args.source_root).resolve()
 
     if not source_root.exists():
@@ -92,6 +103,12 @@ def main():
     except FileNotFoundError as e:
         print(e)
         print("Skipping the copying of html sources; directories not correct.")
+
+
+def main() -> int:
+    parser = create_parser(None)
+    args = parser.parse_args()
+    return args.func(args, parser)
 
 
 if __name__ == "__main__":

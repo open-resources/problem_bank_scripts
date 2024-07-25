@@ -9,13 +9,24 @@ import traceback
 from collections.abc import Sequence
 from pathlib import Path
 
-from ..problem_bank_scripts import assemble_server_py, read_md_problem
+from problem_bank_scripts import assemble_server_py, read_md_problem
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser()
+def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.ArgumentParser:
+    if subparsers is None:
+        parser = argparse.ArgumentParser()
+    else:
+        parser = subparsers.add_parser(
+            "check-server-ast",
+            description="Check server code ast for one or more markdown files.",
+            help="Check server code ast for one or more markdown files.",
+        )
     parser.add_argument('filenames', nargs='*')
-    args = parser.parse_args(argv)
+    parser.set_defaults(func=_do_run)
+    return parser
+
+
+def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     impl = platform.python_implementation()
     version = sys.version.split()[0]
 
@@ -33,6 +44,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f'\n{tb}')
             retval = 1
     return retval
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = create_parser(None)
+    args = parser.parse_args(argv)
+    return args.func(args, parser)
 
 
 if __name__ == '__main__':
