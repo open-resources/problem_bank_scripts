@@ -1,3 +1,4 @@
+import importlib.resources
 import itertools
 import json
 import os
@@ -30,7 +31,7 @@ TOPICS = {
     "8": "Foundations for inference",  # for openstax
     "9": "Multiple and logistic regression",
 }
-
+TEMPLATE = string.Template(importlib.resources.files().joinpath("question.md.template").read_text())
 
 def _update_globals():
     global MY_NAME, MY_INITIALS
@@ -583,6 +584,7 @@ def write_md(exercise: dict):
         "title": exercise["title"],
         "topic": TOPICS[chapter],
         "author": MY_NAME,
+        "attribution": exercise["attribution"],
         "outcomes": suggested_outcomes(exercise),
         "tags": f"- {MY_INITIALS}",
         "file": DEFAULT_CODE,
@@ -665,10 +667,7 @@ def write_md(exercise: dict):
 
     template_items["question"] = "\n".join(question_body)
 
-    template = string.Template(
-        pathlib.Path(__file__).parent.joinpath("question.md.template").read_text()
-    )
-    filled = template.safe_substitute({k: v.rstrip() for k, v in template_items.items()})
+    filled = TEMPLATE.safe_substitute({k: v.rstrip() for k, v in template_items.items()})
 
     print("WRITING TO", path)
 

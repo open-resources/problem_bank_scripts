@@ -1,3 +1,5 @@
+import importlib.resources
+import json
 import os
 import pathlib
 import shlex
@@ -10,13 +12,17 @@ from copy import deepcopy
 import questionary
 
 
-from problem_bank_scripts import process_question_pl
+from problem_bank_scripts import KNOWN_ATTRIBUTIONS, process_question_pl
 from problem_bank_scripts.scripts.lint_server import main as lint_server
 from .utils import write_json, read_json, split_comma
 from .generate_questions import generate_true_false_choices, generate_yes_no_choices
 from .write_md import write_md
 from .inputs import ask_int
 
+KNOWN_QUESTIONS: dict[str, dict] = {
+    file.name: json.loads(file.read_bytes())
+    for file in importlib.resources.files().glob("known_questions/*.json")  # pyright: ignore[reportAttributeAccessIssue]
+}
 
 ch1_matching_type = {
     "type": "matching",
@@ -204,8 +210,6 @@ def set_default(exercise: dict, key: str, value: str | list, saved: pathlib.Path
 
 
 def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.Path = pathlib.Path("saved.json")):
-    textbook_file = read_json(pathlib.Path(__file__).parent / './questions.json')
-
     exercise = {}
     variables = {}
     if saved.exists() and questionary.confirm("Would you like to use saved data?").ask():
@@ -213,8 +217,21 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
         if "variables" in exercise:
             variables = exercise["variables"]
     try:
-        set_default(exercise, "assets", [], saved=saved)
-        chapter = ask_if_not_exists(exercise, key="chapter", question="Chapter", saved=saved, variables=variables)
+        set_default(exercise, key="assets", value=[], saved=saved)
+
+        textbook = exercise.get("attribution", None)
+        if textbook is None:
+            textbook = questionary.select(
+                message="What textbook is this from? (Select standard if not from any on the list)",
+                choices=KNOWN_ATTRIBUTIONS,
+            ).ask()
+            exercise["attribution"] = textbook
+        
+        textbook_file = KNOWN_QUESTIONS.get(textbook)
+
+        chapter = ask_if_not_exists(
+            exercise, key="chapter", question="Chapter", saved=saved, variables=variables
+        )
 
         question_numbers = ask_if_not_exists(
             exercise,
@@ -224,14 +241,27 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
             parser=lambda x: [int(s) for s in split_comma(x)],
             saved=saved,
         )
-        file_question_index = next(i for i,v in enumerate(textbook_file["questions"][str(chapter)]) if next((True for x in v["parts"] if x["questionNumber"]==question_numbers[0]), False))
-        file_question = textbook_file["questions"][str(chapter)][file_question_index]
-        file_question["parts"] = [x for x in file_question["parts"] if x["questionNumber"] in question_numbers]
-        file_parts = file_question["parts"]
-        file_solutions = {str(key): textbook_file["solutions"][str(chapter)][str(key)] for key in question_numbers if str(key) in textbook_file["solutions"][str(chapter)]}
-        print("here is a link to the question section (or nearby)\n", file_question["sectionHref"])
+        if textbook_file is not None:
+            file_question_index = next(
+                i
+                for i, v in enumerate(textbook_file["questions"][str(chapter)])
+                if any(x["questionNumber"] == question_numbers[0] for x in v["parts"])
+            )
+            file_question = textbook_file["questions"][str(chapter)][file_question_index]
+            file_question["parts"] = [x for x in file_question["parts"] if x["questionNumber"] in question_numbers]
+            file_parts = file_question["parts"]
+            file_solutions = {
+                str(key): textbook_file["solutions"][str(chapter)][str(key)]
+                for key in question_numbers
+                if str(key) in textbook_file["solutions"][str(chapter)]
+            }
+            print("here is a link to the question section (or nearby)\n", file_question["sectionHref"])
+        else:
+            file_question = {}
+            file_parts = []
+            file_solutions = {}
 
-        branch_name = f"openstax_C{chapter}_Q{'_Q'.join([str(x) for x in question_numbers])}"
+        branch_name = f"{textbook.split('.')[0]}_C{chapter}{''.join(f'_Q{x}' for x in question_numbers)}"
         exercise["branch_name"] = branch_name
         exercise["path"] = f"{branch_name}.md"
         issues = ask_if_not_exists(
@@ -245,16 +275,17 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
         title = ask_if_not_exists(exercise, key="title", question="Title", variables=variables, saved=saved)
         desc = ask_if_not_exists(exercise, key="description", question="Description", saved=saved, variables=variables, default=file_question["description"])
 
-        part_tables = [{"matrix": table} for p in file_parts if "tables" in p for table in p["tables"]]
-        solution_tables = [{"matrix": table} for p in file_solutions.values() if "tables" in p for table in p["tables"]]
-        exercise['tables'] = part_tables + solution_tables
-        if ("tables" in file_question):
-            # next((True for x in v["parts"] if x["questionNumber"]==question_numbers[0]), False)
-            exercise['tables'] += file_question["tables"]
-        if len(exercise['tables']) > 0:
-            print(f"this question has {len(exercise['tables'])} table(s), we've included it already. Only select it below (in 'Select extra') if you have additional tables.")
-        else:
-            del exercise['tables']
+        if textbook_file is not None:
+            part_tables = [{"matrix": table} for p in file_parts if "tables" in p for table in p["tables"]]
+            solution_tables = [{"matrix": table} for p in file_solutions.values() if "tables" in p for table in p["tables"]]
+            exercise['tables'] = part_tables + solution_tables
+            if ("tables" in file_question):
+                # next((True for x in v["parts"] if x["questionNumber"]==question_numbers[0]), False)
+                exercise['tables'] += file_question["tables"]
+            if len(exercise['tables']) > 0:
+                print(f"this question has {len(exercise['tables'])} table(s), we've included it already. Only select it below (in 'Select extra') if you have additional tables.")
+            else:
+                del exercise['tables']
 
         if "extras" not in exercise:
             exercise["extras"] = questionary.checkbox(
@@ -363,8 +394,12 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
         #         "options": options_sampling_2
         #     }
 
-        use_questions_as_parts = num_parts == len(question_numbers)
-        solution_choices = [sol["questionText"] for sol in file_solutions.values()]
+        if textbook_file is not None:
+            use_questions_as_parts = num_parts == len(question_numbers)
+            solution_choices: list[str] = [sol["questionText"] for sol in file_solutions.values()]
+        else:
+            use_questions_as_parts = False
+            solution_choices = []
 
         print(f"{title} v1")
         variant = {"desc": desc, "parts": set_default(exercise, "parts", [], saved=saved)}
@@ -373,7 +408,10 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
         # parts_start_at = 0 if "parts" not in exercise else len(exercise["parts"])
         for p in range(num_parts):
             if p >= len(solutions):
-                default_solution = file_solutions.get(str(file_parts[p]["questionNumber"]), {}).get("questionText", "") if use_questions_as_parts else ""
+                if use_questions_as_parts:
+                    default_solution = file_solutions.get(str(file_parts[p]["questionNumber"]), {}).get("questionText", "")
+                else:
+                    default_solution = ""
                 cur_solution = questionary.autocomplete(f"pt.{p+1} solution? (press tab to see helpers)", default=default_solution, choices=solution_choices).ask()
                 solutions.append(cur_solution)
         print("solutions", solutions)
@@ -384,7 +422,10 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
 
             if "question" not in part:
                 part["question"] = extract_variables(
-                    questionary.text(f"Question text for v1 - pt.{p+1}", default=file_parts[p]["questionText"] if use_questions_as_parts else '').ask(), variables=variables
+                    questionary.text(
+                        f"Question text for v1 - pt.{p+1}",
+                        default=file_parts[p]["questionText"] if use_questions_as_parts else "",
+                    ).ask(), variables=variables
                 )
 
             if "type" not in part:
