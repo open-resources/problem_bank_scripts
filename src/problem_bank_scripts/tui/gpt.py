@@ -1,6 +1,6 @@
 import ast
-import json
 import os
+import re
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -8,10 +8,18 @@ from openai import OpenAI
 
 load_dotenv()
 
+MODEL = "gpt-4o-mini"
+
 client = OpenAI(
     # This is the default and can be omitted
     api_key=os.environ.get("OPENAI_API_KEY"),
 )
+
+
+REGEX = re.compile(r"^(?P<start>```)?(?(start)python\n|)(?P<code>.*)\n(?P=start)$", re.DOTALL)
+
+def remove_codetags(text: str) -> str:
+    return REGEX.sub(r"\g<code>", text)
 
 
 def ask_number_code(question: str, answer: str | float | int, additional_info: str = "") -> str:
@@ -26,17 +34,18 @@ def ask_number_code(question: str, answer: str | float | int, additional_info: s
 
                 The correct answer is "{answer}".
                 Write me the python code to solve the question. Use variables when possible.
-                Answer with only the python code. Do not use the input() function.""",
+                Answer with only the python code. Do not use the input and print functions.""",
             }
         ],
-        model="gpt-3.5-turbo",
+        model=MODEL,
     )
     for choice in chat_completion.choices:
-        print(choice.message.content)
+        if content := choice.message.content:
+            print(remove_codetags(content))
     res = chat_completion.choices[0].message.content
     # check that res is a list of strings
     assert isinstance(res, str)
-    return res
+    return remove_codetags(text=res)
 
 
 def ask_mc_options(
@@ -51,20 +60,19 @@ def ask_mc_options(
                 Answer with only a python list of strings.""",
             }
         ],
-        model="gpt-3.5-turbo",
+        model=MODEL,
     )
     for choice in chat_completion.choices:
-        print(choice.message.content)
+        if content := choice.message.content:
+            print(remove_codetags(content))
+    content = chat_completion.choices[0].message.content
     try:
-        res = ast.literal_eval(chat_completion.choices[0].message.content)  # pyright: ignore[reportArgumentType]
+        res = ast.literal_eval(remove_codetags(content)) if content else []
     except Exception as e:
         print(e)
-        res = "\n".split(chat_completion.choices[0].message.content)
+        res = content.split("\n") if content else []
     # check that res is a list of strings
     assert isinstance(res, list)
     assert all(isinstance(x, str) for x in res)
     return res
 
-
-def dict_to_string(dict: dict) -> str:
-    return json.dumps(dict, indent=2)

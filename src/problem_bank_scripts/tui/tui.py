@@ -20,7 +20,7 @@ from .write_md import write_md
 from .inputs import ask_int
 
 KNOWN_QUESTIONS: dict[str, dict] = {
-    file.name: json.loads(file.read_bytes())
+    file.stem: json.loads(file.read_bytes())
     for file in importlib.resources.files("problem_bank_scripts.tui").glob("known_questions/*.json")  # pyright: ignore[reportAttributeAccessIssue]
 }
 
@@ -266,6 +266,7 @@ def run_tui(
             saved=saved,
         )
         if textbook_file is not None:
+            print(f"Loading known question and solution data for {textbook!r}")
             file_question_index = next(
                 i
                 for i, v in enumerate(textbook_file["questions"][str(chapter)])
@@ -285,12 +286,13 @@ def run_tui(
                 "here is a link to the question section (or nearby)\n", file_question["sectionHref"]
             )
         else:
+            print(f"No known question and solution data known for {textbook!r}")
             file_question = {}
             file_parts = []
             file_solutions = {}
 
         branch_name = (
-            f"{textbook.split('.')[0]}_C{chapter}{''.join(f'_Q{x}' for x in question_numbers)}"
+            f"{textbook.split('-')[0]}_C{chapter}{''.join(f'_Q{x}' for x in question_numbers)}"
         )
         exercise["branch_name"] = branch_name
         exercise["path"] = f"{branch_name}.md"
