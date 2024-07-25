@@ -273,7 +273,7 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
             saved=saved,
         )
         title = ask_if_not_exists(exercise, key="title", question="Title", variables=variables, saved=saved)
-        desc = ask_if_not_exists(exercise, key="description", question="Description", saved=saved, variables=variables, default=file_question["description"])
+        desc = ask_if_not_exists(exercise, key="description", question="Description", saved=saved, variables=variables, default=file_question.get("description", ""))
 
         if textbook_file is not None:
             part_tables = [{"matrix": table} for p in file_parts if "tables" in p for table in p["tables"]]
