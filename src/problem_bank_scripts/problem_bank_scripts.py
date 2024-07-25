@@ -16,6 +16,8 @@ import importlib.util
 import problem_bank_helpers as pbh
 import pandas as pd
 import warnings
+import tempfile
+import traceback
 
 ## Parse Markdown
 import markdown_it
@@ -1144,13 +1146,20 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
     # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
 
     server_py = assemble_server_py(parsed_q, "local")
-
-    spec = importlib.util.spec_from_loader("server", loader=None)
-    server = importlib.util.module_from_spec(spec)
-    exec(server_py, server.__dict__)
-
+    server = {}
     data2 = pbh.create_data2()
-    server.generate(data2)
+
+    with tempfile.TemporaryDirectory(suffix=f"_{output_path.stem}", ignore_cleanup_errors=True) as dirpath:
+        file = pathlib.Path(dirpath).joinpath("server.py")
+        file.write_text(server_py, encoding="utf8")
+        try:
+            code = compile(server_py, file.as_posix(), "exec")
+            exec(code, server)        
+            server["generate"](data2)
+        except Exception as e:
+            msg = f"Error in running the server code, please review the below traceback: \n\n{traceback.format_exc()}"
+            raise type(e)(msg) from None
+
     #################################################################################
 
     # Remove the solutions from the server section
@@ -1357,14 +1366,20 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
 
     server_py = assemble_server_py(parsed_q, "local")
-
-    spec = importlib.util.spec_from_loader("server", loader=None)
-    server = importlib.util.module_from_spec(spec)
-    exec(server_py, server.__dict__)
-
+    server = {}
     data2 = pbh.create_data2()
 
-    server.generate(data2)
+    with tempfile.TemporaryDirectory(suffix=f"_{output_path.stem}", ignore_cleanup_errors=True) as dirpath:
+        file = pathlib.Path(dirpath).joinpath("server.py")
+        file.write_text(server_py, encoding="utf8")
+        try:
+            code = compile(server_py, file.as_posix(), "exec")
+            exec(code, server)        
+            server["generate"](data2)
+        except Exception as e:
+            msg = f"Error in running the server code, please review the below traceback: \n\n{traceback.format_exc()}"
+            raise type(e)(msg) from None
+
     #################################################################################
 
     if dev:

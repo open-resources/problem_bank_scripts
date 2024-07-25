@@ -4,7 +4,6 @@ from __future__ import annotations
 import argparse
 import ast
 import platform
-import sys
 import traceback
 from collections.abc import Sequence
 from pathlib import Path
@@ -28,7 +27,7 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
 
 def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     impl = platform.python_implementation()
-    version = sys.version.split()[0]
+    version = platform.python_version()
 
     retval = 0
     for filename in args.filenames:
