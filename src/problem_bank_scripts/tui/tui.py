@@ -21,7 +21,7 @@ from .inputs import ask_int
 
 KNOWN_QUESTIONS: dict[str, dict] = {
     file.name: json.loads(file.read_bytes())
-    for file in importlib.resources.files().glob("known_questions/*.json")  # pyright: ignore[reportAttributeAccessIssue]
+    for file in importlib.resources.files("problem_bank_scripts.tui").glob("known_questions/*.json")  # pyright: ignore[reportAttributeAccessIssue]
 }
 
 ch1_matching_type = {

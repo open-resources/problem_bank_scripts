@@ -1076,7 +1076,7 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
-_ATTRIBUTIONS: dict[str, str] = json.loads(importlib.resources.files().joinpath("attributions.json").read_bytes())
+_ATTRIBUTIONS: dict[str, str] = json.loads(importlib.resources.files("problem_bank_scripts").joinpath("attributions.json").read_bytes())
 KNOWN_ATTRIBUTIONS: list[str] = list(_ATTRIBUTIONS.keys())
 
 def process_attribution(attribution):

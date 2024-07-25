@@ -31,7 +31,9 @@ TOPICS = {
     "8": "Foundations for inference",  # for openstax
     "9": "Multiple and logistic regression",
 }
-TEMPLATE = string.Template(importlib.resources.files().joinpath("question.md.template").read_text())
+TEMPLATE = string.Template(
+    importlib.resources.files("problem_bank_scripts.tui").joinpath("question.md.template").read_text()
+)
 
 def _update_globals():
     global MY_NAME, MY_INITIALS
