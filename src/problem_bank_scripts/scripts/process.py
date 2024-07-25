@@ -6,6 +6,7 @@ import os
 import pathlib
 import shutil
 import sys
+from collections.abc import Sequence
 
 from problem_bank_scripts import process_question_md, process_question_pl
 
@@ -44,8 +45,12 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
         )
     parser.add_argument("source_root", action="store", help="Root of all the md source files.")
     parser.add_argument("--instructor", help="Exports md version of question.", **_base_args)
-    parser.add_argument("--public", help="Exports md version of question with the answers removed.", **_base_args)
-    parser.add_argument("--prairielearn", help="Exports info.json, server.py, and question.html..", **_base_args)
+    parser.add_argument(
+        "--public", help="Exports md version of question with the answers removed.", **_base_args
+    )
+    parser.add_argument(
+        "--prairielearn", help="Exports info.json, server.py, and question.html..", **_base_args
+    )
     parser.set_defaults(func=_do_run)
     return parser
 
@@ -105,9 +110,9 @@ def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
         print("Skipping the copying of html sources; directories not correct.")
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = create_parser(None)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     return args.func(args, parser)
 
 

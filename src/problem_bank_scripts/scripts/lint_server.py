@@ -21,7 +21,7 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
             description="Lint the server code ast for one or more markdown files.",
             help="Lint the server code ast for one or more markdown files.",
         )
-    parser.add_argument('filenames', nargs='*')
+    parser.add_argument("filenames", nargs="*")
     parser.set_defaults(func=_do_run)
     return parser
 

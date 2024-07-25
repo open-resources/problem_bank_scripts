@@ -32,8 +32,11 @@ TOPICS = {
     "9": "Multiple and logistic regression",
 }
 TEMPLATE = string.Template(
-    importlib.resources.files("problem_bank_scripts.tui").joinpath("question.md.template").read_text()
+    importlib.resources.files("problem_bank_scripts.tui")
+    .joinpath("question.md.template")
+    .read_text()
 )
+
 
 def _update_globals():
     global MY_NAME, MY_INITIALS
@@ -306,8 +309,9 @@ def write_code(exercise: dict):
                     [
                         f'data2["params"]["part{part_num+1}"]["statement{s_num}"]["value"] = "{statement_info["value"]}"',
                         f'data2["params"]["part{part_num+1}"]["statement{s_num}"]["matches"] = "{statement_info["matches"]}"',
-                    ] for s_num, statement_info in enumerate(part["info"]["statements"], start=1)
-                )   
+                    ]
+                    for s_num, statement_info in enumerate(part["info"]["statements"], start=1)
+                )
             )
             lines.append("")
         if part["info"]["type"] in {"number-input", "integer-input"}:

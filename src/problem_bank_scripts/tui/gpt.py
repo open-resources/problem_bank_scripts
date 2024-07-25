@@ -13,7 +13,8 @@ client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),
 )
 
-def ask_number_code(question: str, answer: str | float | int, additional_info: str ="") -> str:
+
+def ask_number_code(question: str, answer: str | float | int, additional_info: str = "") -> str:
     extra_info = f"Additional context: {additional_info}" if additional_info else ""
     chat_completion = client.chat.completions.create(
         messages=[
@@ -38,7 +39,9 @@ def ask_number_code(question: str, answer: str | float | int, additional_info: s
     return res
 
 
-def ask_mc_options(options: list[str], answer: str, question: str, num_to_generate: int) -> list[str]:
+def ask_mc_options(
+    options: list[str], answer: str, question: str, num_to_generate: int
+) -> list[str]:
     chat_completion = client.chat.completions.create(
         messages=[
             {

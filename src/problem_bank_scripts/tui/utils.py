@@ -30,7 +30,9 @@ def handle_word(wordV: str, params_dict: dict) -> str:
     word = word.replace(",", "")  # ex. 1,000,000
 
     for value, param_name in params_dict.items():
-        if word == value or (string_is_numeric(word) and isinstance(value, float) and float(word) == value):
+        if word == value or (
+            string_is_numeric(word) and isinstance(value, float) and float(word) == value
+        ):
             if string_is_numeric(word) and not ("$" in prefix or "$" in suffix):
                 return f'{prefix}${{{{ params.{param_name.replace("_", ".")} }}}}${suffix}'
             return f'{prefix}{{{{ params.{param_name.replace("_", ".")} }}}}{suffix}'

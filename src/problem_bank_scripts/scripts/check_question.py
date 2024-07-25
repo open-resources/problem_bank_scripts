@@ -3,6 +3,7 @@
 
 import argparse
 import pathlib
+from collections.abc import Sequence
 
 from problem_bank_scripts import process_question_pl
 
@@ -22,7 +23,7 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
             description="Syntax check on an individual question.",
             allow_abbrev=False,
             formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-            help="Check the syntax of a single question."
+            help="Check the syntax of a single question.",
         )
     parser.add_argument(
         "md_file",
@@ -42,7 +43,7 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
 
 
 def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
-    output_root: pathlib.Path = args.output_root 
+    output_root: pathlib.Path = args.output_root
     question: pathlib.Path = args.md_file
 
     if question.suffix.lower() != ".md":
@@ -69,10 +70,11 @@ def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
         return -1
 
 
-def main():
+def main(argv: Sequence[str] | None = None) -> int:
     parser = create_parser(None)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     return args.func(args, parser)
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -56,7 +56,10 @@ def generate_given_choices(options: list[str], answer: str, question: str, use_g
         else:
             options += ["Placeholder"] * num_empty
 
-    choices = [{"value": f'"{option}"', "correct": False, "feedback": '"Try again please!"'} for option in options]
+    choices = [
+        {"value": f'"{option}"', "correct": False, "feedback": '"Try again please!"'}
+        for option in options
+    ]
 
     correct = len(choices)
     if answer in options:
@@ -85,6 +88,7 @@ QUESTION_TYPES = {
     "symbolic-input": {},
 }
 
+
 def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None = None):
     key = part["type"]
     question = part["question"]
@@ -97,7 +101,9 @@ def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None =
             # answer = questionary.text("Solution").ask()
             num_options = ask_int("Number of options (excluding solution)", default=3)
             for i in range(num_options):
-                options.append(questionary.text(f"Option {i+1}. Press enter to generate with GPT.").ask())
+                options.append(
+                    questionary.text(f"Option {i+1}. Press enter to generate with GPT.").ask()
+                )
             info["choices"] = generate_given_choices(options, solution, question, use_gpt)
         case "yes-no":
             info["choices"] = generate_yes_no_choices(solution)
@@ -131,9 +137,14 @@ def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None =
             for statement in statements:
                 if statement:
                     info["statements"].append(
-                        {"value": statement, "matches": questionary.text(f"{statement} matches").ask()}
+                        {
+                            "value": statement,
+                            "matches": questionary.text(f"{statement} matches").ask(),
+                        }
                     )
-            extra_options_str = questionary.text("List the extra (unused) options, comma separated").ask()
+            extra_options_str = questionary.text(
+                "List the extra (unused) options, comma separated"
+            ).ask()
             info["options"] = split_comma(extra_options_str)
         case "integer-input":
             prefix = questionary.text("Prefix", default="$p=$").ask()
@@ -192,7 +203,15 @@ def question_type_from_solution(solution: str) -> str | None:
     return None
 
 
-def ask_if_not_exists(exercise: dict, key: str, question: str, variables: dict, saved: pathlib.Path, default="", parser=lambda x: x):
+def ask_if_not_exists(
+    exercise: dict,
+    key: str,
+    question: str,
+    variables: dict,
+    saved: pathlib.Path,
+    default="",
+    parser=lambda x: x,
+):
     if key not in exercise:
         value = parser(questionary.text(question, default=default).ask())
         if isinstance(value, str):
@@ -209,7 +228,12 @@ def set_default(exercise: dict, key: str, value: str | list, saved: pathlib.Path
     return exercise[key]
 
 
-def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.Path = pathlib.Path("saved.json")):
+def run_tui(
+    *,
+    create_pr: bool = False,
+    use_gpt: bool = False,
+    saved: pathlib.Path = pathlib.Path("saved.json"),
+):
     exercise = {}
     variables = {}
     if saved.exists() and questionary.confirm("Would you like to use saved data?").ask():
@@ -226,7 +250,7 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
                 choices=KNOWN_ATTRIBUTIONS,
             ).ask()
             exercise["attribution"] = textbook
-        
+
         textbook_file = KNOWN_QUESTIONS.get(textbook)
 
         chapter = ask_if_not_exists(
@@ -248,20 +272,26 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
                 if any(x["questionNumber"] == question_numbers[0] for x in v["parts"])
             )
             file_question = textbook_file["questions"][str(chapter)][file_question_index]
-            file_question["parts"] = [x for x in file_question["parts"] if x["questionNumber"] in question_numbers]
+            file_question["parts"] = [
+                x for x in file_question["parts"] if x["questionNumber"] in question_numbers
+            ]
             file_parts = file_question["parts"]
             file_solutions = {
                 str(key): textbook_file["solutions"][str(chapter)][str(key)]
                 for key in question_numbers
                 if str(key) in textbook_file["solutions"][str(chapter)]
             }
-            print("here is a link to the question section (or nearby)\n", file_question["sectionHref"])
+            print(
+                "here is a link to the question section (or nearby)\n", file_question["sectionHref"]
+            )
         else:
             file_question = {}
             file_parts = []
             file_solutions = {}
 
-        branch_name = f"{textbook.split('.')[0]}_C{chapter}{''.join(f'_Q{x}' for x in question_numbers)}"
+        branch_name = (
+            f"{textbook.split('.')[0]}_C{chapter}{''.join(f'_Q{x}' for x in question_numbers)}"
+        )
         exercise["branch_name"] = branch_name
         exercise["path"] = f"{branch_name}.md"
         issues = ask_if_not_exists(
@@ -272,20 +302,38 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
             parser=split_comma,
             saved=saved,
         )
-        title = ask_if_not_exists(exercise, key="title", question="Title", variables=variables, saved=saved)
-        desc = ask_if_not_exists(exercise, key="description", question="Description", saved=saved, variables=variables, default=file_question.get("description", ""))
+        title = ask_if_not_exists(
+            exercise, key="title", question="Title", variables=variables, saved=saved
+        )
+        desc = ask_if_not_exists(
+            exercise,
+            key="description",
+            question="Description",
+            saved=saved,
+            variables=variables,
+            default=file_question.get("description", ""),
+        )
 
         if textbook_file is not None:
-            part_tables = [{"matrix": table} for p in file_parts if "tables" in p for table in p["tables"]]
-            solution_tables = [{"matrix": table} for p in file_solutions.values() if "tables" in p for table in p["tables"]]
-            exercise['tables'] = part_tables + solution_tables
-            if ("tables" in file_question):
+            part_tables = [
+                {"matrix": table} for p in file_parts if "tables" in p for table in p["tables"]
+            ]
+            solution_tables = [
+                {"matrix": table}
+                for p in file_solutions.values()
+                if "tables" in p
+                for table in p["tables"]
+            ]
+            exercise["tables"] = part_tables + solution_tables
+            if "tables" in file_question:
                 # next((True for x in v["parts"] if x["questionNumber"]==question_numbers[0]), False)
-                exercise['tables'] += file_question["tables"]
-            if len(exercise['tables']) > 0:
-                print(f"this question has {len(exercise['tables'])} table(s), we've included it already. Only select it below (in 'Select extra') if you have additional tables.")
+                exercise["tables"] += file_question["tables"]
+            if len(exercise["tables"]) > 0:
+                print(
+                    f"this question has {len(exercise['tables'])} table(s), we've included it already. Only select it below (in 'Select extra') if you have additional tables."
+                )
             else:
-                del exercise['tables']
+                del exercise["tables"]
 
         if "extras" not in exercise:
             exercise["extras"] = questionary.checkbox(
@@ -299,15 +347,21 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
             ).ask()
 
         if "image" in exercise["extras"]:
-            exercise["assets"] += split_comma(questionary.text("Image paths (comma separated)").ask())
+            exercise["assets"] += split_comma(
+                questionary.text("Image paths (comma separated)").ask()
+            )
         if "table" in exercise["extras"]:
             num_tables = ask_int("How many tables", default=1)
             tables = []
             for i in range(num_tables):
                 table = {"matrix": []}
                 table_str: str = questionary.text("Paste in table").ask()
-                table["first_row_is_header"] = questionary.confirm("Is the first row a header?").ask()
-                table["first_col_is_header"] = questionary.confirm("Is the first column a header?").ask()
+                table["first_row_is_header"] = questionary.confirm(
+                    "Is the first row a header?"
+                ).ask()
+                table["first_col_is_header"] = questionary.confirm(
+                    "Is the first column a header?"
+                ).ask()
                 rows = table_str.split("\n")
                 for row_str in rows:
                     row_str = row_str.strip()  # ruff # noqa: PLW2901
@@ -328,7 +382,10 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
                 matrices.append(questionary.text(f"Matrix {i+1}? ex. [1,2,3]").ask())
             exercise["matrices"] = matrices
         if "graph" in exercise["extras"]:
-            num_graphs = ask_int("How many graphs", default=1 if "graphs" not in exercise else len(exercise["graphs"]))
+            num_graphs = ask_int(
+                "How many graphs",
+                default=1 if "graphs" not in exercise else len(exercise["graphs"]),
+            )
             exercise["graphs"] = exercise.get("graphs", [])
             graphs_done = len(exercise["graphs"])
             for i in range(graphs_done, num_graphs):
@@ -376,14 +433,18 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
                 if "median" in known_info and "mean" in known_info:
                     print("Cannot have both mean and median. Only median will be applied.")
                 for op in known_info:
-                    graph["variables"][op] = questionary.text(f"{i+1}) {graph['type']} {op} =").ask()
+                    graph["variables"][op] = questionary.text(
+                        f"{i+1}) {graph['type']} {op} ="
+                    ).ask()
                 if len(exercise["graphs"]) > i:
                     exercise["graphs"][i] = graph
                 else:
                     exercise["graphs"].append(graph)
                 write_json(exercise, saved)
 
-        num_parts = ask_int("Number of parts", default=len(exercise["parts"]) if "parts" in exercise else "")
+        num_parts = ask_int(
+            "Number of parts", default=len(exercise["parts"]) if "parts" in exercise else ""
+        )
         print("num_parts", num_parts)
         #     {
         #         "question": f"A market researcher polls every {nth} person who walks into a store.",
@@ -403,16 +464,24 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
 
         print(f"{title} v1")
         variant = {"desc": desc, "parts": set_default(exercise, "parts", [], saved=saved)}
-        solutions = exercise.get("solutions", None) or [part["solution"] for part in variant["parts"]]
+        solutions = exercise.get("solutions", None) or [
+            part["solution"] for part in variant["parts"]
+        ]
         # solutions = [] if "solutions" not in exercise else exercise["solutions"]
         # parts_start_at = 0 if "parts" not in exercise else len(exercise["parts"])
         for p in range(num_parts):
             if p >= len(solutions):
                 if use_questions_as_parts:
-                    default_solution = file_solutions.get(str(file_parts[p]["questionNumber"]), {}).get("questionText", "")
+                    default_solution = file_solutions.get(
+                        str(file_parts[p]["questionNumber"]), {}
+                    ).get("questionText", "")
                 else:
                     default_solution = ""
-                cur_solution = questionary.autocomplete(f"pt.{p+1} solution? (press tab to see helpers)", default=default_solution, choices=solution_choices).ask()
+                cur_solution = questionary.autocomplete(
+                    f"pt.{p+1} solution? (press tab to see helpers)",
+                    default=default_solution,
+                    choices=solution_choices,
+                ).ask()
                 solutions.append(cur_solution)
         print("solutions", solutions)
         # create_part
@@ -425,7 +494,8 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
                     questionary.text(
                         f"Question text for v1 - pt.{p+1}",
                         default=file_parts[p]["questionText"] if use_questions_as_parts else "",
-                    ).ask(), variables=variables
+                    ).ask(),
+                    variables=variables,
                 )
 
             if "type" not in part:
@@ -460,10 +530,12 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
         full_path = pathlib.Path(write_md(exercise))
         lint_server([str(full_path)])
         if create_pr:
-            GITHUB_USERNAME = os.environ.get("GITHUB_USERNAME")
+            GITHUB_USERNAME: str = os.environ["GITHUB_USERNAME"]
             WRITE_PATH = pathlib.Path(os.environ["WRITE_PATH"])
             print(f"Copying question to {WRITE_PATH / full_path.parent.name}")
-            shutil.copytree(src=full_path.parent, dst=WRITE_PATH / full_path.parent.name, dirs_exist_ok=True)
+            shutil.copytree(
+                src=full_path.parent, dst=WRITE_PATH / full_path.parent.name, dirs_exist_ok=True
+            )
             CWD = WRITE_PATH / full_path.parent.name
             pr_body = [f"Closes #{issue}" for issue in issues]
             pr_body.append(
@@ -488,7 +560,9 @@ def run_tui(*, create_pr: bool = False, use_gpt: bool = False, saved : pathlib.P
                 )
                 print(ret.stdout)
         PL_QUESTION_PATH = pathlib.Path(os.environ["PL_QUESTION_PATH"])
-        process_question_pl(full_path, output_path=PL_QUESTION_PATH / full_path.parent.name, dev=True)
+        process_question_pl(
+            full_path, output_path=PL_QUESTION_PATH / full_path.parent.name, dev=True
+        )
         print(variant)
     except Exception as e:
         write_json(exercise, saved)

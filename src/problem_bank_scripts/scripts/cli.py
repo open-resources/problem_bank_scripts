@@ -1,6 +1,7 @@
 # Top level script for running various scripts in PBS via subcommands.
 
 import argparse
+from collections.abc import Sequence
 
 from .check_question import create_parser as checkq_parser
 from .check_server_ast import create_parser as check_server_ast_parser
@@ -16,7 +17,7 @@ except ImportError:
     tui_parser = None
 
 
-def main():
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="OPB Problem Bank Scripts CLI",
     )
@@ -28,7 +29,7 @@ def main():
     process_parser(subparsers)
     if tui_parser is not None:
         tui_parser(subparsers)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     return args.func(args, parser) or 0
 
 

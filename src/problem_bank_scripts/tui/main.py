@@ -10,7 +10,9 @@ from .tui import run_tui
 
 
 REQUIRED_ENV_VARS = ["GITHUB_USERNAME", "WRITE_PATH", "PL_QUESTION_PATH", "MY_NAME", "MY_INITIALS"]
-_REQ_VARS_TEXT = ", ".join(f"{var!r}" for var in REQUIRED_ENV_VARS[:-1]) + f", and {REQUIRED_ENV_VARS[-1]!r}"
+_REQ_VARS_TEXT = (
+    ", ".join(f"{var!r}" for var in REQUIRED_ENV_VARS[:-1]) + f", and {REQUIRED_ENV_VARS[-1]!r}"
+)
 
 
 class _Formatter(argparse.HelpFormatter):
@@ -28,6 +30,7 @@ _epilog = (
     "This program requires both 'git' and 'gh' to be installed to create PRs. "
     "You can find the installation instructions for 'gh' at https://github.com/cli/cli#installation."
 )
+
 
 def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.ArgumentParser:
     if subparsers is None:
@@ -83,6 +86,7 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
     parser.set_defaults(func=_do_run)
     return parser
 
+
 def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
     CREATE_PR = args.create_pr
     USE_GPT = args.gpt
@@ -93,7 +97,9 @@ def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
         load_dotenv(ENV_FILE)
 
     if USE_GPT and "OPENAI_API_KEY" not in os.environ:
-        parser.error("The 'OPENAI_API_KEY' environment variable is required when using the --gpt flag.")
+        parser.error(
+            "The 'OPENAI_API_KEY' environment variable is required when using the --gpt flag."
+        )
 
     if CREATE_PR and shutil.which("gh") is None:
         parser.error(
@@ -117,9 +123,8 @@ def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
 
     return run_tui(create_pr=CREATE_PR, use_gpt=USE_GPT) or 0
 
+
 def main():  # ruff: #noqa: ANN201
     parser = create_parser(None)
     args = parser.parse_args()
     return args.func(args, parser)
-
-
