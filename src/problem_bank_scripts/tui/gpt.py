@@ -25,7 +25,7 @@ def ask_number_code(question: str, answer: str | float | int, additional_info: s
 
                 The correct answer is "{answer}".
                 Write me the python code to solve the question. Use variables when possible.
-                Answer with only the python code.""",
+                Answer with only the python code. Do not use the input() function.""",
             }
         ],
         model="gpt-3.5-turbo",

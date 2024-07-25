@@ -33,9 +33,7 @@ TOPICS = {
 
 
 def _update_globals():
-    global WRITE_PATH, MY_NAME, MY_INITIALS
-    if WRITE_PATH == "./questions":
-        WRITE_PATH = os.environ.get("WRITE_PATH") or "./questions"
+    global MY_NAME, MY_INITIALS
 
     if MY_NAME is None:
         MY_NAME = os.environ.get("MY_NAME")
@@ -296,14 +294,14 @@ def write_code(exercise: dict):
             lines.append("")
         if part["info"]["type"] == "matching":
             lines += [
-                f'data2["params"]["part{part_num+1}"]["option{i}"]["value"] = {value}'
+                f'data2["params"]["part{part_num+1}"]["option{i}"]["value"] = "{value}"'
                 for i, value in enumerate(part["info"]["options"])
             ]
             lines.append("")
             lines.extend(
                 itertools.chain.from_iterable(
                     [
-                        f'data2["params"]["part{part_num+1}"]["statement{s_num}"]["value"] = {statement_info["value"]}',
+                        f'data2["params"]["part{part_num+1}"]["statement{s_num}"]["value"] = "{statement_info["value"]}"',
                         f'data2["params"]["part{part_num+1}"]["statement{s_num}"]["matches"] = "{statement_info["matches"]}"',
                     ] for s_num, statement_info in enumerate(part["info"]["statements"], start=1)
                 )   
