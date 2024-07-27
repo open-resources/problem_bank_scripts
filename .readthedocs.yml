@@ -3,12 +3,14 @@ version: 2
 
 # Image to use
 build:
-  image: latest
+  os: "ubuntu-22.04"
+  tools:
+    python: "3.10"
 
 # Configuration
 python:
-  version: 3.8
   install:
     - requirements: docs/requirements.txt
-    - method: pip
-      path: .
+
+sphinx:
+  configuration: docs/source/conf.py
