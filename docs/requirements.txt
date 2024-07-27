@@ -1,4 +1,8 @@
-ipykernel
-nbsphinx
-sphinx-autoapi
-sphinx-rtd-theme
+Sphinx ~= 7.3.7
+ipykernel ~= 6.29.5
+nbsphinx ~= 0.8.5
+sphinx-autoapi ~= 3.1.2
+sphinx-rtd-theme ~= 2.0.0
+sphinxcontrib-napoleon ~= 0.7
+myst-nb ~= 1.1.1
+myst-parser ~= 3.0.1
