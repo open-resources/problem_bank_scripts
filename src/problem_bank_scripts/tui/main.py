@@ -57,7 +57,7 @@ def create_parser(subparsers: argparse._SubParsersAction | None) -> argparse.Arg
         "--gpt",
         action="store_true",
         help=(
-            "Use ChatGPT gpt-3.5-turbo to generate the MCQ options and number input code. "
+            "Use ChatGPT gpt-4o-mini to generate the MCQ options and number input code. "
             "If this is specified, the environment variable 'OPENAI_API_KEY' is also required "
             "to be available, or be in the env file specified by --env-file. (default: %(default)s)"
         ),
