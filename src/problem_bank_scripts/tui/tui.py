@@ -245,7 +245,7 @@ def run_tui(
 
         textbook = exercise.get("attribution", None)
         if textbook is None:
-            textbook = questionary.select(
+            textbook = os.environ.get("TEXTBOOK") or questionary.select(
                 message="What textbook is this from? (Select standard if not from any on the list)",
                 choices=KNOWN_ATTRIBUTIONS,
             ).ask()
