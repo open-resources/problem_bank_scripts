@@ -29,7 +29,6 @@ MY_INITIALS=
 
 # OPTIONAL VARIABLES
 TEXTBOOK=            # ex. openstax-stats-2e
-GITHUB_ACCESS_TOKEN= # allows writing PRs
 OPENAI_API_KEY=      # allows using OpenAI API
 ```
 
@@ -92,6 +91,10 @@ You will be given the option to use this file the next time you run `pbs-cli cre
 
 ## Creating a PR
 To automatically have your generated Markdown question committed to Github with a draft PR created for it, add the `--create-pr` flag to the command. Make sure `WRITE_PATH` in your `.env` file is set correctly.
+
+`gh` must be installed and authenticated for this to work.
+- To install, follow the instructions at [https://github.com/cli/cli#installation](https://github.com/cli/cli#installation).
+- To authenticate, run `gh auth login`.
 
 ## GPT
 > [!WARNING]
