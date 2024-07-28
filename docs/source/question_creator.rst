@@ -89,7 +89,7 @@ would result in the following being generated in the ``generate`` function:
 
 .. code-block:: yaml
 
-    question: |
+    generate: |
         ...
 
         percent_senior = round(random.uniform(11.3, 13.9), 1)  # 12.6
