@@ -23,13 +23,27 @@ extensions = [
 ]
 autoapi_type = "python"
 autoapi_dirs = ["../../src"]
+autoapi_ignore = [
+    "*/_vendored/*",
+    "*/scripts/*",
+    "*/tui/*",
+    "*/prairielearn*",
+]
+autoapi_options =  [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]
 napoleon_numpy_docstring = True
 nbsphinx_execute = "always"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "_vendored", "tui", "scripts"]
 
 # -- Options for HTML output -------------------------------------------------
 
