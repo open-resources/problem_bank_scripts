@@ -101,7 +101,8 @@ jobs:
             repo: open-resources/instructor_stats_bank
         exclude:
           - python-version: 3.12
-            bank.name: Physics
+            bank:
+              name: Physics
     steps:
       - name: Checkout ${{ matrix.bank.name }} Problem Bank
         uses: actions/checkout@v4
