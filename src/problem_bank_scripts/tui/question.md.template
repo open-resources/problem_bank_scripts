@@ -1,0 +1,55 @@
+---
+title: ${title}
+topic: ${topic}
+author: ${author}
+source: original
+template_version: 1.4
+attribution: ${attribution}
+partialCredit: true
+singleVariant: false
+showCorrectAnswer: false
+outcomes:
+${outcomes}
+difficulty:
+- undefined
+randomization:
+- undefined
+taxonomy:
+- undefined
+span:
+- undefined
+length:
+- undefined
+tags:
+${tags}
+assets:${assets}
+server:
+  imports: |
+${imports}
+  generate: |
+${generate}
+  file: |
+${file}
+  prepare: |
+${prepare}
+  parse: |
+${parse}
+  grade: |
+${grade}
+${parts_yaml}
+---
+# {{ params.vars.title }}
+
+${question}
+
+## Rubric
+
+This should be hidden from students until after the deadline.
+
+## Solution
+
+This should never be revealed to students.
+
+## Comments
+
+These are random comments associated with this question.

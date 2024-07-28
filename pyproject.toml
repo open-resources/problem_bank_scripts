@@ -17,7 +17,6 @@ repository = "https://github.com/open-resources/problem_bank_scripts"
 python = ">=3.10"
 pandas = "^2.2.2"
 PyYAML = "^6.0.1"
-docopt = "^0.6.2"
 numpy = "^1.26.4"
 markdown-it-py = "^3.0.0"
 mdformat = "^0.7.14"
@@ -27,6 +26,15 @@ typing-extensions = "^4.12.2"
 black = "^24.4.2"
 gitpython = "^3.1.43"
 exceptiongroup = {version = "^1.2.1", python = "<3.11"}
+questionary = {version = "^2.0.1", optional = true}
+nltk = {version = "^3.8.1", optional = true}
+openai = {version = "^1.35.15", optional = true}
+pdf2image = {version = "^1.17.0", optional = true}
+scikit-learn = {version = "^1.5.1", optional = true}
+python-dotenv = {version = "^1.0.1", optional = true}
+
+[tool.poetry.extras]
+tui = ["questionary", "nltk", "openai", "pdf2image", "scikit-learn", "python-dotenv"]
 
 [tool.poetry.group.dev.dependencies]
 Sphinx = "^7.3.7"
@@ -40,11 +48,13 @@ myst-nb = "^1.1.1"
 myst-parser = "^3.0.1"
 
 [tool.poetry.scripts]
-lint_server = 'problem_bank_scripts.scripts.lint_server:main'
-check_server_ast = 'problem_bank_scripts.scripts.check_server_ast:main'
-process = 'problem_bank_scripts.scripts.process:main'
-process_q = 'problem_bank_scripts.scripts.process_q:main'
-checkq = 'problem_bank_scripts.scripts.check_question:main'
+pbs-cli = "problem_bank_scripts.scripts.cli:main"
+lint_server = "problem_bank_scripts.scripts.lint_server:main"
+check_server_ast = "problem_bank_scripts.scripts.check_server_ast:main"
+process = "problem_bank_scripts.scripts.process:main"
+process_q = "problem_bank_scripts.scripts.process_q:main"
+checkq = "problem_bank_scripts.scripts.check_question:main"
+
 
 [tool.pytest.ini_options]
 filterwarnings = ["error", "ignore::DeprecationWarning:problem_bank_helpers"]

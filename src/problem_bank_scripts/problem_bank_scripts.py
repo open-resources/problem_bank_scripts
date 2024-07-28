@@ -1076,9 +1076,8 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
-with importlib.resources.files("problem_bank_scripts").joinpath("attributions.json").open("rb") as file:
-    _ATTRIBUTIONS = json.load(file)
-    _KNOWN_ATTRIBUTIONS = list(_ATTRIBUTIONS.keys())
+_ATTRIBUTIONS: dict[str, str] = json.loads(importlib.resources.files("problem_bank_scripts").joinpath("attributions.json").read_bytes())
+KNOWN_ATTRIBUTIONS: list[str] = list(_ATTRIBUTIONS.keys())
 
 def process_attribution(attribution):
     """Takes in a string and returns the HTML for the attribution
@@ -1095,7 +1094,9 @@ def process_attribution(attribution):
 
     except KeyError:
         print(
-            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {_KNOWN_ATTRIBUTIONS}. You need to update your md file and fix the `attribution` in the header"
+            f"`Attribution` value of {attribution} is not recognized.",
+            f"Currently, the only possible values are: {KNOWN_ATTRIBUTIONS}.",
+            "You need to update your md file and fix the `attribution` in the header",
         )
         raise
 

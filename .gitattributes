@@ -9,3 +9,4 @@
 
 **/_vendored/*.py     generated
 tests/infoSchema.json generated
+**/known_questions/*.json generated binary
