@@ -37,6 +37,9 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
 }
 
+show_warning_types = True
+suppress_warnings = ["docutils"]
+
 nitpick_ignore = [
     ("py:class", "optional"),
     ("py:class", "number"),
