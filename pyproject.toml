@@ -38,13 +38,13 @@ ipykernel = {version = "^6.29.5", optional = true}
 sphinx-rtd-theme = {version = "^2.0.0", optional = true}
 myst-nb = {version = "^1.1.1", optional = true}
 myst-parser = {version = "^3.0.1", optional = true}
+pytest = {version = "^8.2.2", optional = true}
+fastjsonschema  = {version = "^2.20.0", optional = true}
 
 [tool.poetry.extras]
 tui = ["questionary", "nltk", "openai", "pdf2image", "scikit-learn", "python-dotenv"]
 docs = ["Sphinx", "nbsphinx", "ipykernel", "sphinx-rtd-theme", "myst-nb", "myst-parser"]
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.2.2"
+tests = ["pytest", "fastjsonschema"]
 
 [tool.poetry.scripts]
 pbs-cli = "problem_bank_scripts.scripts.cli:main"
@@ -53,7 +53,6 @@ check_server_ast = "problem_bank_scripts.scripts.check_server_ast:main"
 process = "problem_bank_scripts.scripts.process:main"
 process_q = "problem_bank_scripts.scripts.process_q:main"
 checkq = "problem_bank_scripts.scripts.check_question:main"
-
 
 [tool.pytest.ini_options]
 filterwarnings = ["error", "ignore::DeprecationWarning:problem_bank_helpers"]

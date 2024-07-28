@@ -258,7 +258,7 @@ def write_code(exercise: dict):
         for i, table in enumerate(exercise["tables"], start=1):
             lines.append(f"table{i} = {table['matrix']}")
             lines.append(
-                f'data2["params"]["table{i}"] = pbh.create_html_table(table{i+1}, width="550px", '
+                f'data2["params"]["table{i}"] = pbh.create_html_table(table{i}, width="550px", '
                 f'first_row_is_header={table.get("first_row_is_header", True)}, first_col_is_header={table.get("first_col_is_header", False)},)'
             )
 
