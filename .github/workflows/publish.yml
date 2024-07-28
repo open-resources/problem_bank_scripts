@@ -43,6 +43,25 @@ jobs:
           name: dist
           path: dist/
 
+  build-docs:
+    name: Build Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Install dependencies
+        run: poetry install --with docs
+      - name: Build docs
+        shell: bash
+        run: |
+          cd docs
+          poetry run sphinx-build -b html -j auto -a -n -T -W --keep-going source _build/html
+
   test-dists:
     name: Test Built ${{ matrix.dist.name }} (${{ matrix.python-version }})
     runs-on: ubuntu-latest
@@ -136,6 +155,7 @@ jobs:
     needs:
       - test-dists
       - test-banks
+      - build-docs
     runs-on: ubuntu-latest
     # Specifying a GitHub environment so manual approval by an approved user to create a release is required
     # https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules

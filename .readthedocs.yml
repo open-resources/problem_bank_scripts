@@ -1,5 +1,7 @@
 # Required
 version: 2
+formats:
+  - pdf
 
 # Image to use
 build:
@@ -10,7 +12,10 @@ build:
 # Configuration
 python:
   install:
-    - requirements: docs/requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
 
 sphinx:
   configuration: docs/source/conf.py

@@ -5,6 +5,7 @@
 
 # Imports
 ## Loading and Saving files & others
+import errno
 import uuid
 import json
 import pathlib
@@ -18,6 +19,7 @@ import pandas as pd
 import warnings
 import tempfile
 import traceback
+import os
 
 ## Parse Markdown
 import markdown_it
@@ -45,7 +47,6 @@ for subject in subjects:
     topics |= learning_outcomes[["Topic", "Numbered Topic"]].drop_duplicates().values
 
 # Start of reading/parsing functions
-
 
 def defdict_to_dict(defdict, finaldict):
     """Convert a defaultdict (nested) to a regular dictionary.
@@ -992,6 +993,7 @@ def process_custom_input(part_name: str, parsed_question: dict, data_dict: dict)
 
 def validate_multiple_choice(part_name, parsed_question, data_dict):
     """Validates a markdown format multiple-choice question
+    
     Args:
         part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
         parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
@@ -1024,10 +1026,7 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
 
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
 
-    if none_of_the_above in {"correct", "random"}:
-        return True
-
-    return False
+    return none_of_the_above in {"correct", "random"}
 
 
 def replace_tags(string):
@@ -1101,25 +1100,33 @@ def process_attribution(attribution):
         raise
 
 
-def process_question_md(source_filepath, output_path=None, instructor=False):
+def process_question_md(
+    source_filepath: os.PathLike[str] | str,
+    output_path: os.PathLike[str] | str | None = None,
+    instructor: bool = False,
+    ) -> None:
+    """Processes an OPB markdown file and writes the output to a file.
+
+    Args:
+        source_filepath (os.PathLike[str] | str): Path to the markdown file to be processed.
+        output_path (os.PathLike[str] | str, optional): Path to the output file. Defaults to None.
+        instructor (bool, optional): Flag to determine if the output is for an instructor or not. Defaults to False.
+            This determines if the solutions are included in the output or not.
+    """
     try:
-        pathlib.Path(source_filepath)
+        source_filepath = pathlib.Path(source_filepath).resolve(strict=True)
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
 
     if output_path is None:
-        if instructor:
-            path_replace = "output/instructor"
-        else:
-            path_replace = "output/public"
+        path_replace = "output/instructor" if instructor else "output/public"
 
-        if "source" in source_filepath:
-            output_path = pathlib.Path(source_filepath.replace("source", path_replace))
+        if "source" in (_src := str(source_filepath)):
+            output_path = pathlib.Path(_src.replace("source", path_replace))
         else:
-            raise NotImplementedError(
-                "Check the source filepath; it does not have 'source' in it!! "
-            )
+            msg = f"Check the source filepath; it does not have 'source' in it: {source_filepath}"
+            raise ValueError(msg)
     else:
         ## TODO: Make this a bit more robust, perhaps by switching encodings!?
         output_path = pathlib.Path(output_path)
@@ -1329,10 +1336,21 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
-        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), f"Error(s) copying specified files:\n    {error_msg}")
 
 
-def process_question_pl(source_filepath, output_path=None, dev=False):
+def process_question_pl(
+    source_filepath: os.PathLike[str] | str,
+    output_path: os.PathLike[str] | str | None = None,
+    dev: bool = False,
+    ):
+    """Processes an OPB markdown file and converts it to a prairielearn compatible question.
+
+    Args:
+        source_filepath (os.PathLike[str] | str): Path to the markdown file to be processed.
+        output_path (os.PathLike[str] | str, optional): Path to the output file. Defaults to None.
+        dev (bool, optional): Flag to determine if the question is under development. Defaults to False.
+    """
     try:
         _path = pathlib.Path(source_filepath).resolve()
     except:
@@ -1340,16 +1358,17 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         raise
 
     if not _path.exists():
-        raise FileNotFoundError(f"[Errno 2] No such file or directory: '{source_filepath}'")
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), source_filepath)
     
     if not _path.is_file():
-        raise IsADirectoryError(f"[Errno 21] Is a directory: '{source_filepath}'")
+        raise IsADirectoryError(errno.EISDIR, os.strerror(errno.EISDIR), source_filepath)
 
     if output_path is None:
         if "source" in str(_path):
             output_path = pathlib.Path(_path.as_posix().replace("source", "output/prairielearn")).parent
         else:
-            raise NotImplementedError("Check the source filepath; it does not have 'source' in it!!")
+            msg = f"Check the source filepath; it does not have 'source' in it: {source_filepath}"
+            raise ValueError(msg)
     else:
         ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
         output_path = pathlib.Path(output_path).parent
@@ -1577,7 +1596,7 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
-        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def pl_image_path(html):

@@ -32,20 +32,19 @@ openai = {version = "^1.35.15", optional = true}
 pdf2image = {version = "^1.17.0", optional = true}
 scikit-learn = {version = "^1.5.1", optional = true}
 python-dotenv = {version = "^1.0.1", optional = true}
+Sphinx = {version = "^7.3.7", optional = true}
+nbsphinx = {version = "^0.8.5", optional = true}
+ipykernel = {version = "^6.29.5", optional = true}
+sphinx-rtd-theme = {version = "^2.0.0", optional = true}
+myst-nb = {version = "^1.1.1", optional = true}
+myst-parser = {version = "^3.0.1", optional = true}
 
 [tool.poetry.extras]
 tui = ["questionary", "nltk", "openai", "pdf2image", "scikit-learn", "python-dotenv"]
+docs = ["Sphinx", "nbsphinx", "ipykernel", "sphinx-rtd-theme", "myst-nb", "myst-parser"]
 
 [tool.poetry.group.dev.dependencies]
-Sphinx = "^7.3.7"
-nbsphinx = "^0.8.5"
-ipykernel = "^6.29.5"
-sphinx-autoapi = "^3.1.2"
-sphinx-rtd-theme = "^2.0.0"
-sphinxcontrib-napoleon = "^0.7"
 pytest = "^8.2.2"
-myst-nb = "^1.1.1"
-myst-parser = "^3.0.1"
 
 [tool.poetry.scripts]
 pbs-cli = "problem_bank_scripts.scripts.cli:main"

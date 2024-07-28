@@ -12,9 +12,9 @@ Getting started
 
 Install the package via pip:
 
-.. code-block:: console
+.. code-block:: shell
 
-    $ pip install "problem_bank_scripts[tui] @ git+https://github.com/open-resources/problem_bank_scripts"
+    pip install "problem_bank_scripts[tui] @ git+https://github.com/open-resources/problem_bank_scripts"
 
 
 Create a ``.env`` file in the directory you will be running the TUI.
