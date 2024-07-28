@@ -94,7 +94,7 @@ jobs:
           cache: poetry
       - name: Install dependencies
         run: |
-          poetry install --with dev
+          poetry install -E tests
       - name: Run tests
         run: |
           poetry run pytest tests
