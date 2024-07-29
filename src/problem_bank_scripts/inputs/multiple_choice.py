@@ -1,3 +1,5 @@
+import warnings
+
 from .utils import replace_tags
 
 
@@ -14,8 +16,7 @@ class MCInputConverter:
     Arguments
     ---------
         pl_tag (str):
-            The tag to be used for the input type, such as ``multiple-choice`` (for ``pl-multiple-choice``)
-            or ``dropdown`` (for ``pl-dropdown``).
+            The tag to be used for the input type, such as ``multiple-choice`` (for ``pl-multiple-choice``).
     """
 
     def __init__(self, pl_tag: str):
@@ -49,7 +50,22 @@ class MCInputConverter:
                 ].items()
             ]
         )  # PL-customizations
-        html += f'<pl-{self._pl_tag} answers-name="{part_name}_ans" {pl_customizations} >\n'
+
+        tag = self._pl_tag
+        if tag == "dropdown":
+            tag = "multiple-choice"
+            pl_customizations += ' display = "dropdown"'
+            warnings.warn(
+                f"[{part_name}]: The 'pl-dropdown' tag is deprecated."
+                " Please use 'pl-multiple-choice' with the 'dropdown' customization instead"
+                " or if multiple parts have dropdowns, consider using the matching input type."
+                " This input type is automatically converted to 'pl-multiple-choice' with the 'dropdown' customization."
+                "\nSee https://prairielearn.readthedocs.io/en/latest/elements/#pl-dropdown-element for more details",
+                FutureWarning,
+                stacklevel=2,
+            )
+
+        html += f'<pl-{tag} answers-name="{part_name}_ans" {pl_customizations} >\n'
 
         ###### LOOKHERE
         if (data_dict["params"]["vars"]["units"]) and (
@@ -70,10 +86,6 @@ class MCInputConverter:
                 correctness = f"|@ params.{part_name}.{a}.correct @|"
                 value = f"|@|@ params.{part_name}.{a}.value @|@|"
 
-                ## Hack to remove feedback for Dropdown questions
-                if self._pl_tag == "dropdown":
-                    html += f"\t<pl-answer correct= {correctness} > {value} {units} </pl-answer>\n"
-                else:
-                    html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
+                html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
 
-        return replace_tags(f"{html}</pl-{self._pl_tag}>\n")
+        return replace_tags(f"{html}</pl-{tag}>\n")

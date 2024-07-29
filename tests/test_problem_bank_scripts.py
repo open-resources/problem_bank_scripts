@@ -61,7 +61,11 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str, d
     baseFile = paths["inputDest"] / question / f"{question}.md"
     folder = baseFile.parent.stem
     outputFolder = outputPath.joinpath(folder)
-    process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
+    if question in {"q03_dropdown", "q05_multi-part_feedback"}:
+        with pytest.warns(FutureWarning, match="The 'pl-dropdown' tag is deprecated."):
+            process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
+    else:
+        process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
 
 
 @pytest.mark.parametrize(
