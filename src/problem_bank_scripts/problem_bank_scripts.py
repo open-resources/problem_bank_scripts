@@ -31,6 +31,8 @@ import yaml
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
 
+from .inputs import INPUT_TYPE_PROCESSORS
+
 ## Topic Validation
 
 path = pathlib.Path().resolve().as_posix()
@@ -181,108 +183,6 @@ def get_next_headerloc(start, tokens, header_level):
     return close
 
 
-# def split_body_parts(num_parts, body_parts):
-#     """Parses individual question parts and splits out titles, and content
-
-#     Args:
-#         num_parts (int): An integer corresponding to the number of question parts (from `read_md_problem()`).
-#         body_parts (dict): A dictionary from `read_md_problem()`.
-
-#     Returns:
-#         body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
-#     """
-#     mdit = markdown_it.MarkdownIt()
-#     env = {}
-#     nested_dict = lambda: defaultdict(nested_dict)
-
-#     parts_dict = nested_dict()
-
-#     for pnum in range(1, num_parts + 1):
-
-#         part = "part" + f"{pnum}"
-#         # Set up tokens by parsing the md file
-#         tokens = mdit.parse(body_parts[part], env)
-
-#         ptt = [i for i, j in enumerate(tokens) if j.tag == "h2"]
-#         parts_dict[part]["title"] = (
-#             mdformat.renderer.MDRenderer()
-#             .render(tokens[ptt[0] + 1 : ptt[1]], mdit.options, env)
-#             .strip("\n")
-#         )
-
-#         # Get the "### Answer section from the parts_dict"
-#         pa = [i
-#                 for i, j in enumerate(tokens)
-#                 if j.tag == "h3"
-#                 if "pl-submission-panel" not in j.content
-#                 if "pl-answer-panel" not in j.content
-#             ]
-
-#         try:
-#             parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
-#                 mdformat.renderer.MDRenderer().render(
-#                     tokens[pa[0] + 1 : pa[1]], mdit.options, env
-#                 )
-#             )[0]
-#         except IndexError:
-#             print(
-#                 "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-#             )
-#             raise
-
-#         parts_dict[part]["content"] = codecs.unicode_escape_decode(
-#             mdformat.renderer.MDRenderer().render(
-#                 tokens[ptt[1] + 1 : pa[0]], mdit.options, env
-#             )
-#         )[0]
-#         parts_dict[part]["answer"]["content"] = codecs.unicode_escape_decode(
-#             mdformat.renderer.MDRenderer().render(
-#                 tokens[pa[1] + 1 :], mdit.options, env
-#             )
-#         )[0]
-
-#         # Get the ### pl-submission-panel and ### pl-answer-panel
-#         p_extra = [i
-#                 for i, j in enumerate(tokens)
-#                 if j.tag == "h3"
-#                 if "pl-submission-panel" in j.content
-#                 if "pl-answer-panel" in j.content
-#             ]
-
-#         if p_extra:
-#             try:
-#                 parts_dict[part]["pl-submission-panel"] = codecs.unicode_escape_decode(
-#                     mdformat.renderer.MDRenderer().render(
-#                         tokens[p_extra[0] + 1 : p_extra[1]], mdit.options, env
-#                     )
-#                 )[0]
-#             except IndexError:
-#                 print(
-#                     "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-#                 )
-#                 raise
-
-
-#         # for key in body_parts.keys():
-#         #     print(f'outside: {key}')
-#         #     if key in ['pl-submission-panel','pl-answer-panel']:
-#         #         # Set up tokens by parsing the md file
-#         #         tokens = mdit.parse(body_parts[key], env)
-
-#         #         print(key)
-
-#         #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
-#         #         try:
-#         #             parts_dict[part][key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
-#         #         except IndexError:
-#         #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
-
-#         # Remove parts from body_parts
-#         body_parts.pop(part)
-
-#     return defdict_to_dict(parts_dict, {})
-
-
 def read_md_problem(filepath):
     """Reads a MystMarkdown problem file and returns a dictionary of the header and body
 
@@ -290,11 +190,11 @@ def read_md_problem(filepath):
         filepath (str): Path of file to read.
 
     Returns:
-        dict: In this dictionary there are three keys containing useful portions of the parsed md file:
-            - `header` - Header of the problem file (nested dictionary).
-            - `body_parts` - Body text of the problem file (nested dictionary).
-            - `num_parts` - Number of parts in the problem (integer).
-            - `body_parts_split` - Dictionary with each part split into individual components.
+        dict: In this dictionary there are four keys containing useful portions of the parsed md file:
+            - ``header`` - Header of the problem file (nested dictionary).
+            - ``body_parts`` - Body text of the problem file (nested dictionary).
+            - ``num_parts`` - Number of parts in the problem (integer).
+            - ``body_parts_split`` - Dictionary with each part split into individual components.
     """
 
     mdtext = pathlib.Path(filepath).read_text(encoding="utf8")
@@ -401,12 +301,7 @@ def read_md_problem(filepath):
     return defdict_to_dict(return_dict, {})
 
 
-def dict_to_md(
-    md_dict,
-    remove_keys=[
-        None,
-    ],
-):
+def dict_to_md(md_dict, remove_keys=[None]):
     """Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).
     Args:
         md_dict (dict): A nested dictionary, for e.g. the output of `read_md_problem()`
@@ -498,9 +393,11 @@ def write_info_json(output_path, parsed_question):
         port = "port" in info_json["workspaceOptions"]
         home = "home" in info_json["workspaceOptions"]
         if not (image and port and home):
-            raise SyntaxError("workspaceOptions must contain image, port, and home keys")
+            msg = "workspaceOptions must contain image, port, and home keys"
+            raise SyntaxError(msg)
         if not isinstance(info_json["workspaceOptions"]["port"], int):
-            raise TypeError(f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead")
+            msg = f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead"
+            raise TypeError(msg)
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
@@ -511,7 +408,7 @@ def assemble_server_py(parsed_question, location):
     """Assembles a string version of the server.py file from the YAML header of the md file.
 
     Args:
-        parsed_question (_type_): dictionary that is created upon reading of the md problem.
+        parsed_question (dict): dictionary that is created upon reading of the md problem.
         location (string): 'local' or 'prairielearn' ; the import statements are different depending on if it's local or on a PL server.
     """
 
@@ -527,21 +424,20 @@ def assemble_server_py(parsed_question, location):
     if "import problem_bank_helpers as pbh" not in server_dict["imports"]:
         server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
 
-    server_py = """"""
+    server_py = ""
 
     server_py += server_dict.get("imports", "") + "\n"
 
-    try:
-        for function, code in server_dict.items():
-            indented_code = code.replace("\n", "\n    ")
-            # With the custom header, add functions to server.py as-is
-            if function == "custom":
-                server_py += f"{code}"
-            else:
-                if code:
-                    server_py += f"def {function}(data):\n    {indented_code}\n"
-            if location == "prairielearn" and function == "generate":
-                server_py += """\
+    for function, code in server_dict.items():
+        indented_code = code.replace("\n", "\n    ")
+        # With the custom header, add functions to server.py as-is
+        if function == "custom":
+            server_py += f"{code}"
+        else:
+            if code:
+                server_py += f"def {function}(data):\n    {indented_code}\n"
+        if location == "prairielearn" and function == "generate":
+            server_py += """\
     # Start code added automatically by problem_bank_scripts
 
     # Convert backticks to code blocks/fences in answer choices.
@@ -553,8 +449,6 @@ def assemble_server_py(parsed_question, location):
     # End code added in by problem bank scripts
 
 """
-    except:
-        raise
 
     return server_py
 
@@ -577,418 +471,6 @@ def write_server_py(output_path, parsed_question):
 
     # Write server.py
     (output_path / "server.py").write_text(server_file, encoding="utf8")
-
-
-def process_multiple_choice(part_name, parsed_question, data_dict):
-    """Processes markdown format multiple-choice questions and returns PL HTML
-    Args:
-        output_path (Path): [description]
-        parsed_question (dict): [description]
-        data_dict (dict)
-
-    Returns:
-        str: Multiple choice question is returned as a string with PL-compliant syntax.
-    """
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-    html += f"""<pl-multiple-choice answers-name="{part_name}_ans" {pl_customizations} >\n"""
-
-    ###### LOOKHERE
-    if (data_dict["params"]["vars"]["units"]) and (
-        "units" in parsed_question["body_parts_split"][part_name]["answer"]
-    ):
-        units = "|@ params.vars.units @|"
-    else:
-        units = ""
-
-    ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
-    for a in data_dict["params"][f"{part_name}"].keys():
-        if "ans" in a:
-            if data_dict["params"][f"{part_name}"][f"{a}"]["feedback"]:
-                feedback = f"|@ params.{part_name}.{a}.feedback @|"
-            else:
-                feedback = "Feedback for this choice is not available yet."
-
-            correctness = f"|@ params.{part_name}.{a}.correct @|"
-            value = f"|@|@ params.{part_name}.{a}.value @|@|"
-
-            ## Hack to remove feedback for Dropdown questions
-            if parsed_question["header"][part_name]["type"] == "dropdown":
-                html += f"\t<pl-answer correct= {correctness} > {value} {units} </pl-answer>\n"
-            else:
-                html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
-
-    html += "</pl-multiple-choice>\n"
-
-    return replace_tags(html)
-
-
-def process_dropdown(part_name, parsed_question, data_dict):
-    """Processes markdown format dropdown questions and returns PL HTML
-
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    html = process_multiple_choice(part_name, parsed_question, data_dict).replace(
-        "-multiple-choice", "-dropdown"
-    )
-    return html
-
-
-def process_number_input(part_name, parsed_question, data_dict):
-    """Processes markdown format number-input questions and returns PL HTML
-
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-
-    html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
-
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-    html += f"""<pl-number-input answers-name="{part_name}_ans" {pl_customizations} ></pl-number-input>\n"""
-
-    return replace_tags(html)
-
-
-def process_checkbox(part_name, parsed_question, data_dict):
-    """Processes markdown format checkbox (select all that apply) questions and returns PL HTML
-
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    # start with the MCQ version and then...change things for checkbox questions
-    html = process_multiple_choice(part_name, parsed_question, data_dict).replace(
-        "-multiple-choice", "-checkbox"
-    )
-    return html
-
-
-def process_symbolic_input(part_name, parsed_question, data_dict):
-    """Processes markdown format symbolic questions and returns PL HTML
-
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-
-    html = f"""<pl-question-panel>\n\t<markdown>{parsed_question['body_parts_split'][part_name]['content']}\t</markdown>\n</pl-question-panel>\n\n"""
-
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-    html += f"""<pl-symbolic-input answers-name="{part_name}_ans" {pl_customizations} ></pl-symbolic-input>\n"""
-
-    return replace_tags(html).replace("\\\\", "\\")
-
-
-def process_longtext(part_name, parsed_question, data_dict):
-    """Processes markdown format of long-text questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-rich-text-editor { pl_customizations } > </pl-rich-text-editor>"""
-
-    return replace_tags(html)
-
-
-def process_matching(part_name, parsed_question, data_dict):
-    """Processes markdown format matching questions and returns PL HTML
-    Args:
-        output_path (Path): [description]
-        parsed_question (dict): [description]
-        data_dict (dict)
-
-    Returns:
-        str: Matching question is returned as a string with PL-compliant syntax.
-    """
-    print("Processing matching question...")
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-    html += (
-        f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
-    )
-
-    options = ""
-    statements = ""
-    ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
-    for a in data_dict["params"][f"{part_name}"].keys():
-        if "option" in a:
-            value = f"|@|@ params.{part_name}.{a}.value @|@|"
-
-            if name := data_dict["params"][f"{part_name}"][a].get("name"):
-                options += f"\t<pl-option name='{name}' > {value} </pl-option>\n"
-            else:
-                options += f"\t<pl-option> {value} </pl-option>\n"
-
-        if "statement" in a:
-            matches_with = f"|@ params.{part_name}.{a}.matches @|"
-            value = f"|@|@ params.{part_name}.{a}.value @|@|"
-
-            statements += (
-                f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
-            )
-
-    html += statements
-    html += options
-
-    html += "</pl-matching>\n"
-
-    return replace_tags(html)
-
-
-def process_file_upload(part_name, parsed_question, data_dict):
-    """Processes markdown format of file-upload questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-file-upload { pl_customizations } > </pl-file-upload>"""
-
-    html += """<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>"""
-
-    # TODO: remove this! because automatic feedback will be added
-    html += """\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|\n</pl-submission-panel>"""
-
-    # TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
-    # TODO: Add support for wildcard *.png
-    # TODO: Add better message telling students the question needs to be manually graded.
-
-    return replace_tags(html)
-
-
-def process_file_editor(part_name, parsed_question, data_dict):
-    """Processes markdown format of code-input questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-file-editor { pl_customizations } > </pl-file-editor>"""
-
-    return replace_tags(html)
-
-
-def process_string_input(part_name, parsed_question, data_dict):
-    """Processes markdown format of string-input questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-string-input { pl_customizations } ></pl-string-input>"""
-
-    return replace_tags(html)
-
-
-def process_workspace(part_name, parsed_question, data_dict):
-    """Processes markdown format of workspace questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    if "pl-customizations" in parsed_question["header"][part_name]:
-        if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
-            raise ValueError("pl-customizations are not supported for workspace questions")
-
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += """<pl-workspace></pl-workspace>"""
-
-    html += """\n<pl-submission-panel>"""
-
-    if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
-        html += """\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>\n</pl-submission-panel>"""
-    else:
-        html += """\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
-
-
-    return replace_tags(html)
-
-
-def process_matrix_component_input(part_name, parsed_question, data_dict):
-    """Processes markdown format of matrix-component-input questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-matrix-component-input answers-name="{part_name}_ans" { pl_customizations } ></pl-matrix-component-input>"""
-
-    return replace_tags(html)
-
-
-def process_matrix_input(part_name, parsed_question, data_dict):
-    """Processes markdown format of matrix-input questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    return process_matrix_component_input(
-        part_name, parsed_question, data_dict
-    ).replace("-matrix-component-input", "-matrix-input")
-
-
-def process_integer_input(part_name, parsed_question, data_dict):
-    """Processes markdown format integer-input questions and returns PL HTML
-
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-
-    html = process_number_input(part_name, parsed_question, data_dict)
-
-    return html.replace("-number-input", "-integer-input")
-
-
-def process_custom_input(part_name: str, parsed_question: dict, data_dict: dict) -> str:
-    """Processes markdown format custom input questions and returns PL HTML
-
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-
-    return f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
 
 
 def validate_multiple_choice(part_name, parsed_question, data_dict):
@@ -1027,23 +509,6 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
 
     return none_of_the_above in {"correct", "random"}
-
-
-def replace_tags(string):
-    """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
-
-    Args:
-        string (str): String to be processed, can be multi-line.
-
-    Returns:
-        string (str): returns string with tags replaced with curly braces.
-    """
-    return (
-        string.replace("|@|@", "{{{")
-        .replace("@|@|", "}}}")
-        .replace("|@", "{{")
-        .replace("@|", "}}")
-    )
 
 
 def remove_correct_answers(data2_dict):
@@ -1187,7 +652,7 @@ def process_question_md(
         data2_sanitized_flattened = df.to_dict(orient="records")[0]
 
         repl_keys = {
-            k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())
+            k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())  # pyright: ignore[reportAttributeAccessIssue]
         }
 
         text = dict_to_md(
@@ -1451,45 +916,19 @@ def process_question_pl(
 <div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
 <div class="card-body">\n\n"""
 
-        if "multiple-choice" in q_type:
-            if not validate_multiple_choice(part,parsed_q,data2):
-                raise ValueError(
+        if "multiple-choice" in q_type and not validate_multiple_choice(part,parsed_q,data2):
+                msg = (
                     f"Multiple choice question {part} does not have a correct answer and "
-                    " the pl-customization `none-of-the-above` was not set to `correct` or `random`."
+                    "the pl-customization `none-of-the-above` was not set to `correct` or `random`."
                 )
-            question_html += f"{process_multiple_choice(part,parsed_q,data2)}"
-        elif "number-input" in q_type:
-            question_html += f"{process_number_input(part,parsed_q,data2)}"
-        elif "checkbox" in q_type:
-            question_html += process_checkbox(part, parsed_q, data2)
-        elif "symbolic-input" in q_type:
-            question_html += process_symbolic_input(part, parsed_q, data2)
-        elif "dropdown" in q_type:
-            question_html += process_dropdown(part, parsed_q, data2)
-        elif "longtext" in q_type:
-            question_html += process_longtext(part, parsed_q, data2)
-        elif "file-upload" in q_type:
-            question_html += process_file_upload(part, parsed_q, data2)
-        elif "file-editor" in q_type:
-            question_html += process_file_editor(part, parsed_q, data2)
-        elif "string-input" in q_type:
-            question_html += process_string_input(part, parsed_q, data2)
-        elif "matching" in q_type:
-            question_html += process_matching(part, parsed_q, data2)
-        elif "workspace" in q_type:
-            question_html += process_workspace(part, parsed_q, data2)
-        elif "matrix-component-input" in q_type:
-            question_html += process_matrix_component_input(part, parsed_q, data2)
-        elif "matrix-input" in q_type:
-            question_html += process_matrix_input(part, parsed_q, data2)
-        elif "integer-input" in q_type:
-            question_html += f"{process_integer_input(part,parsed_q,data2)}"
-        elif "custom-input" in q_type:
-            question_html += f"{process_custom_input(part,parsed_q,data2)}"
+                raise ValueError(msg)
+        
+        converter = INPUT_TYPE_PROCESSORS.get(q_type)
+        if converter is None:
+            msg = f"The question type ({q_type}) is not yet implemented."
+            raise NotImplementedError(msg)
         else:
-            raise NotImplementedError(
-                f"This question type ({q_type}) is not yet implemented."
-            )
+            question_html += f"{converter(part,parsed_q,data2)}"
 
         if parsed_q["num_parts"] > 1:
             question_html += "</div>\n</div>\n"
@@ -1646,5 +1085,6 @@ def validate_header(header_dict):
     # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
 
     if topics.get(topic := header_dict["topic"], None) is None:
-        raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+        msg = f"topic '{topic}' is not listed in the learning outcomes"
+        raise ValueError(msg)
 
