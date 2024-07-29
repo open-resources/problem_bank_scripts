@@ -2270,6 +2270,21 @@ tomli = {version = ">=1", markers = "python_version < \"3.11\""}
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-subtests"
+version = "0.13.1"
+description = "unittest subTest() support and subtests fixture"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "pytest_subtests-0.13.1-py3-none-any.whl", hash = "sha256:ab616a22f64cd17c1aee65f18af94dbc30c444f8683de2b30895c3778265e3bd"},
+    {file = "pytest_subtests-0.13.1.tar.gz", hash = "sha256:989e38f0f1c01bc7c6b2e04db7d9fd859db35d77c2c1a430c831a70cbf3fde2d"},
+]
+
+[package.dependencies]
+attrs = ">=19.2.0"
+pytest = ">=7.0"
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
@@ -3369,10 +3384,10 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 
 [extras]
 docs = ["Sphinx", "ipykernel", "myst-nb", "myst-parser", "nbsphinx", "sphinx-rtd-theme"]
-tests = ["fastjsonschema", "pytest"]
+tests = ["fastjsonschema", "pytest", "pytest-subtests"]
 tui = ["nltk", "openai", "pdf2image", "python-dotenv", "questionary", "scikit-learn"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10"
-content-hash = "31558ee17b93f9d0e03dcb4390970ccc8b1f0873088b0226593e6cf7fbdd915c"
+content-hash = "89ebd7e3d8f6200fd365c67cb0a33cebd90ae5680255a42c545bbe34276e1170"
