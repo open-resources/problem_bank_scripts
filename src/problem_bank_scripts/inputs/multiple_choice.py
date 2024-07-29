@@ -56,9 +56,8 @@ class MCInputConverter:
             tag = "multiple-choice"
             pl_customizations += ' display = "dropdown"'
             warnings.warn(
-                f"[{part_name}]: The 'pl-dropdown' tag is deprecated."
-                " Please use 'pl-multiple-choice' with the 'dropdown' customization instead"
-                " or if multiple parts have dropdowns, consider using the matching input type."
+                "The 'pl-dropdown' tag is deprecated. Please use 'pl-multiple-choice' with the 'dropdown'"
+                " customization instead, or if multiple parts have dropdowns, consider using the matching input type."
                 " This input type is automatically converted to 'pl-multiple-choice' with the 'dropdown' customization."
                 "\nSee https://prairielearn.readthedocs.io/en/latest/elements/#pl-dropdown-element for more details",
                 FutureWarning,
