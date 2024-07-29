@@ -28,7 +28,7 @@ def process_matching(part_name: str, parsed_question: dict, data_dict: dict) -> 
     """
     print("Processing matching question...")
 
-    html = f'<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n'
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     pl_customizations = " ".join(
         [
@@ -88,7 +88,7 @@ def process_file_upload(part_name: str, parsed_question: dict, data_dict: dict) 
         ]
     )  # PL-customizations
 
-    html = f'<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n'
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     html += f"<pl-file-upload {pl_customizations} > </pl-file-upload>"
 
@@ -128,7 +128,7 @@ def process_workspace(part_name: str, parsed_question: dict, data_dict: dict) ->
         msg = "pl-customizations are not supported for workspace questions"
         raise ValueError(msg)
 
-    html = f'<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n'
+    html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
     html += "<pl-workspace></pl-workspace>\n<pl-submission-panel>"
 
@@ -158,4 +158,4 @@ def process_custom_input(part_name: str, parsed_question: dict, data_dict: dict)
             A string of HTML that is part of the final PL question.html file.
     """
 
-    return f'<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n'
+    return f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"

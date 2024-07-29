@@ -48,7 +48,7 @@ class BasicInputConverter:
             ]
         )  # PL-customizations
 
-        html = f'<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n'
+        html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
         if "answers-name" in pl_customizations or self._ans_name is False:
             html += f'<pl-{self._pl_tag} {pl_customizations} ></pl-{self._pl_tag}>\n'

@@ -39,7 +39,7 @@ class MCInputConverter:
             html : str
                 A string of HTML that is part of the final PL question.html file.
         """
-        html = f'<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n'
+        html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
         pl_customizations = " ".join(
             [
