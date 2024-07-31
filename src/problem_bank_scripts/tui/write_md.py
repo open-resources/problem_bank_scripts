@@ -34,7 +34,7 @@ TOPICS = {
 TEMPLATE = string.Template(
     importlib.resources.files("problem_bank_scripts.tui")
     .joinpath("question.md.template")
-    .read_text()
+    .read_text(encoding="utf-8")
 )
 
 
@@ -677,7 +677,7 @@ def write_md(exercise: dict):
 
     print("WRITING TO", path)
 
-    path.write_text(filled)
+    path.write_text(filled, encoding="utf-8")
 
     if has_long_text:
         dir_path.joinpath("sample.html").touch()
