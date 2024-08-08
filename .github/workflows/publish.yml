@@ -43,6 +43,37 @@ jobs:
           name: dist
           path: dist/
 
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python-version }}"
+          cache: poetry
+      - name: Install dependencies
+        run: poetry install -E tests
+      - name: Run tests
+        id: test
+        run: poetry run pytest tests
+      - name: Upload generated files
+        if: failure() && steps.test.outcome == 'failure' && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-generated-files-${{ github.event_name }}
+          path: tests/test_question_templates/question_generated_outputs/
+          if-no-files-found: ignore
+          retention-days: 5
+
   build-docs:
     name: Build Docs
     runs-on: ubuntu-latest
@@ -151,6 +182,7 @@ jobs:
     if: github.event_name == 'release' # only publish to PyPI on releases
     # Ensure tests have passed and problem banks can be built
     needs:
+      - tests
       - test-dists
       - test-banks
       - build-docs

@@ -19,7 +19,7 @@ curl --silent https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/master
 sed -i "s/import prairielearn as pl/from . import prairielearn as pl/g" src/problem_bank_scripts/_vendored/python_helper_sympy.py
 
 # commit the changes
-git add src/problem_bank_scripts/__init__.py tests/test_problem_bank_scripts.py pyproject.toml src/problem_bank_scripts/_vendored/python_helper_sympy.py
+git add pyproject.toml src/problem_bank_scripts/_vendored/python_helper_sympy.py
 git commit -m "Increment version from $FROM to $TO"
 
 # create a tag
