@@ -9,29 +9,20 @@ The plates are ${{params.d}} \textrm{ mm}$ apart.
 
 <!-- ######## Start of Part 1 ######## -->
 
-<div class="card my-2">
-<div class="card-header">Part 1</div>
-
-<div class="card-body">
-
+<pl-card header="Part 1">
 <pl-question-panel>
 <markdown>What is the magnitude of the electric field at the centre of the region between the plates?
 </markdown>
 </pl-question-panel>
 
 <pl-number-input answers-name="part1_ans" rtol = "0.05" label = "$E=$" allow-blank = "False" show-correct-answer = "True" show-help-text = "True" suffix = "$\rm\ N/C$" weight = "1" ></pl-number-input>
-</div>
-</div>
+</pl-card>
 
 <!-- ######## End of Part 1 ######## -->
 
 <!-- ######## Start of Part 2 ######## -->
 
-<div class="card my-2">
-<div class="card-header">Part 2</div>
-
-<div class="card-body">
-
+<pl-card header="Part 2">
 <pl-question-panel>
 <markdown>What is the direction of the electric field at the centre of the region between the plates?
 </markdown>
@@ -42,15 +33,14 @@ The plates are ${{params.d}} \textrm{ mm}$ apart.
 	<pl-answer correct= {{ params.part2.ans2.correct }} feedback = 'Feedback for this choice is not available yet.' > {{{ params.part2.ans2.value }}}  </pl-answer>
 	<pl-answer correct= {{ params.part2.ans3.correct }} feedback = 'Feedback for this choice is not available yet.' > {{{ params.part2.ans3.value }}}  </pl-answer>
 </pl-multiple-choice>
-</div>
-</div>
+</pl-card>
 
 <pl-submission-panel>{{ submitted_answers.part1_ans_str }}
 {{ feedback.part1_ans }}
- </pl-submission-panel>
+</pl-submission-panel>
 
 <pl-answer-panel>$E=$ {{ correct_answers.part1_ans_str }} $\mathrm{N}/\mathrm{C}$
- </pl-answer-panel>
+</pl-answer-panel>
 
 <!-- ######## End of Part 2 ######## -->
 

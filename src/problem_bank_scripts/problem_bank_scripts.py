@@ -912,9 +912,7 @@ def process_question_pl(
         question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
 
         if parsed_q["num_parts"] > 1:
-            question_html += f"""<div class="card my-2">
-<div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
-<div class="card-body">\n\n"""
+            question_html += f'<pl-card header="{parsed_q["body_parts_split"][part]["title"]}">\n'
 
         if "multiple-choice" in q_type and not validate_multiple_choice(part,parsed_q,data2):
                 msg = (
@@ -931,18 +929,16 @@ def process_question_pl(
             question_html += f"{converter(part,parsed_q,data2)}"
 
         if parsed_q["num_parts"] > 1:
-            question_html += "</div>\n</div>\n"
+            question_html += "</pl-card>\n"
 
         # Add pl-submission-panel and pl-answer-panel (if they exist)
         subm_panel = parsed_q["body_parts_split"][part].get("pl-submission-panel", None)
         q_panel = parsed_q["body_parts_split"][part].get("pl-answer-panel", None)
 
         if subm_panel:
-            question_html += (
-                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
-            )
+            question_html += f"\n<pl-submission-panel>{subm_panel}</pl-submission-panel>\n"
         if q_panel:
-            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
+            question_html += f"\n<pl-answer-panel>{q_panel}</pl-answer-panel>\n"
 
         # TODO: Add support for other panels here as well !
 
