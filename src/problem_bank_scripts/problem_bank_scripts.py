@@ -886,22 +886,13 @@ def process_question_pl(
         question_html = ""
 
     # Useful info panel
-    useful_info = parsed_q["body_parts"].get("Useful_info", None)
 
-    # TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
-    if useful_info:
-        question_html += f"""<p>
-   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-   <i class="fa fa-info-circle" aria-hidden="true"></i> Helpful Information
-   </button>
-</p>
-<div class="collapse" id="collapseExample">
-   <div class="card card-body">
-      <markdown>
-{parsed_q['body_parts']['Useful_info']}
-      </markdown>
-   </div>
-</div>"""
+    if (useful_info := parsed_q["body_parts"].get("Useful_info", None)) is not None:
+        useful_info = useful_info.replace("## Useful Info\n", "")
+        question_html += f"""<pl-hidden-hints>
+<pl-hint hint-name="Helpful Information"><markdown>{useful_info}</markdown></pl-hint>
+</pl-hidden-hints>
+"""
 
     # Single and Multi-part question construction
 

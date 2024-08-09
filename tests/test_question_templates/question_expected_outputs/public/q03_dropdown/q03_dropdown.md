@@ -56,6 +56,10 @@ myst:
 ---
 # {{ params_vars_title }}
 
+## Useful Info
+
+This element is depreciated and `pl-multiple-choice` (or `pl-matching`) should be used instead. See https://prairielearn.readthedocs.io/en/latest/elements/#pl-dropdown-element for more information.
+
 ## Question Text
 
 {{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
