@@ -7,7 +7,7 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 </markdown>
 </pl-question-panel>
 
-<pl-multiple-choice answers-name="part1_ans" weight = "1" blank = "true" display = "dropdown" >
+<pl-multiple-choice answers-name="part1_ans" weight = "1" display = "dropdown" allow-blank = "true" >
 	<pl-answer correct= {{ params.part1.ans1.correct }} feedback = '{{ params.part1.ans1.feedback }}' > {{{ params.part1.ans1.value }}} {{ params.vars.units }} </pl-answer>
 	<pl-answer correct= {{ params.part1.ans2.correct }} feedback = '{{ params.part1.ans2.feedback }}' > {{{ params.part1.ans2.value }}} {{ params.vars.units }} </pl-answer>
 	<pl-answer correct= {{ params.part1.ans3.correct }} feedback = '{{ params.part1.ans3.feedback }}' > {{{ params.part1.ans3.value }}} {{ params.vars.units }} </pl-answer>
