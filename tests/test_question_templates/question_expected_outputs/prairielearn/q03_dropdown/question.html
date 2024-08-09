@@ -1,3 +1,8 @@
+<pl-hidden-hints>
+<pl-hint hint-name="Helpful Information"><markdown>
+This element is depreciated and `pl-multiple-choice` (or `pl-matching`) should be used instead. See https://prairielearn.readthedocs.io/en/latest/elements/#pl-dropdown-element for more information.
+</markdown></pl-hint>
+</pl-hidden-hints>
 
 <!-- ######## Start of Part 1 ######## -->
 
@@ -7,7 +12,7 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 </markdown>
 </pl-question-panel>
 
-<pl-multiple-choice answers-name="part1_ans" weight = "1" blank = "true" display = "dropdown" >
+<pl-multiple-choice answers-name="part1_ans" weight = "1" display = "dropdown" allow-blank = "true" >
 	<pl-answer correct= {{ params.part1.ans1.correct }} feedback = '{{ params.part1.ans1.feedback }}' > {{{ params.part1.ans1.value }}} {{ params.vars.units }} </pl-answer>
 	<pl-answer correct= {{ params.part1.ans2.correct }} feedback = '{{ params.part1.ans2.feedback }}' > {{{ params.part1.ans2.value }}} {{ params.vars.units }} </pl-answer>
 	<pl-answer correct= {{ params.part1.ans3.correct }} feedback = '{{ params.part1.ans3.feedback }}' > {{{ params.part1.ans3.value }}} {{ params.vars.units }} </pl-answer>
@@ -18,11 +23,11 @@ How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming t
 
 <pl-submission-panel>Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
- </pl-submission-panel>
+</pl-submission-panel>
 
 <pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
- </pl-answer-panel>
+</pl-answer-panel>
 
 <!-- ######## End of Part 1 ######## -->
 

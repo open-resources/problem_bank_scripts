@@ -8,55 +8,45 @@
 
 <!-- ######## Start of Part 1 ######## -->
 
-<div class="card my-2">
-<div class="card-header">Part 1</div>
-
-<div class="card-body">
-
+<pl-card header="Part 1">
 <pl-question-panel>
 <markdown>How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 </markdown>
 </pl-question-panel>
 
 <pl-number-input answers-name="part1_ans" rtol = "0.05" weight = "1" allow-blank = "True" label = "$d= $" suffix = "m" ></pl-number-input>
-</div>
-</div>
+</pl-card>
 
 <pl-submission-panel>{{ feedback.part1_ans }}
 
 Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
- </pl-submission-panel>
+</pl-submission-panel>
 
 <pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
- </pl-answer-panel>
+</pl-answer-panel>
 
 <!-- ######## End of Part 1 ######## -->
 
 <!-- ######## Start of Part 2 ######## -->
 
-<div class="card my-2">
-<div class="card-header">Part 2</div>
-
-<div class="card-body">
-
+<pl-card header="Part 2">
 <pl-question-panel>
 <markdown>How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 </markdown>
 </pl-question-panel>
 
 <pl-number-input answers-name="part2_ans" rtol = "0.05" weight = "1" allow-blank = "True" label = "$d= $" suffix = "m" ></pl-number-input>
-</div>
-</div>
+</pl-card>
 
 <pl-submission-panel>{{ feedback.part1_ans }}
 
 Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
- </pl-submission-panel>
+</pl-submission-panel>
 
 <pl-answer-panel>Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
- </pl-answer-panel>
+</pl-answer-panel>
 
 <!-- ######## End of Part 2 ######## -->
 
