@@ -1030,46 +1030,16 @@ def process_question_pl(
 
 
 def pl_image_path(html):
-    """Adds `{{options.client_files_question_url}}` directory before the path automatically"""
+    """Adds ``{{options.client_files_question_url}}`` directory before the path automatically"""
 
-    # TODO: Figure out the regex to make this into a single expression, maybe with |
+    ext_group = r"((?!http).*\.(?:png|gif|jpg|jpeg))"
+    base_repl = r"{{options.client_files_question_url}}/\1"
+
     # If image files are included as markdown format, add {{options.client_files_question_url}}
-    res = re.subn(
-        r"\(((?!http).*\.png)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.gif)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.jpeg)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.jpg)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
+    res = re.sub(rf"\({ext_group}\)", rf"({base_repl})", html)
 
     # If image files are included as html format, add {{options.client_files_question_url}}
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.png)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.gif)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.jpeg)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.jpg)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-
-    return res[0]
+    return re.sub(rf"src[\s,=]*\"{ext_group}", f'src="{base_repl}', res)
 
 
 def validate_header(header_dict):
