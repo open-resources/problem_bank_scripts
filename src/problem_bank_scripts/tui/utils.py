@@ -2,7 +2,6 @@ import json
 import pathlib
 import typing
 
-
 def apply_indent(lines: list[str], indent: str = " " * 8) -> list[str]:
     return [indent + x for x in lines]
 
@@ -10,6 +9,14 @@ def apply_indent(lines: list[str], indent: str = " " * 8) -> list[str]:
 def string_is_numeric(s: str) -> bool:
     return s.lstrip("-").replace(".", "", 1).isdigit()
 
+def string_is_number_range(s: str) -> bool:
+    split: list[str] = s.split('-')
+    return len(split) == 2 and string_is_numeric(split[0].strip()) and string_is_numeric(split[1].strip())
+
+def string_is_int(s: str) -> bool:
+    if s[0] in ('-', '+'):
+        return s[1:].isdigit()
+    return s.isdigit()
 
 possible_prefixes = ["(", "[", "{", r"\$", "|"]
 possible_suffixes = [".", ",", "?", "!", ":", ";", ")", "]", "}", "\\%", "%", "|", "\\"]
