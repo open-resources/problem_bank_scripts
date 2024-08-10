@@ -687,33 +687,8 @@ def process_question_md(
         data2_sanitized = defdict_to_dict(data2, {})
         data2_sanitized = defdict_to_dict(remove_correct_answers(data2_sanitized), {})
 
-        ####################################################
-        #### Start Temporary Fix for issue of myst no longer permitting nested dicts
-        #### GitHub issue: https://github.com/executablebooks/MyST-Parser/issues/761
-
-        df = pd.json_normalize(data2_sanitized, sep="_")
-        data2_sanitized_flattened = df.to_dict(orient="records")[0]
-
-        repl_keys = {
-            k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())  # pyright: ignore[reportAttributeAccessIssue]
-        }
-
-        text = dict_to_md(
-            body_parts,
-            remove_keys=[
-                "Rubric",
-                "Solution",
-                "Comments",
-                "pl-submission-panel",
-                "pl-answer-panel",
-            ],
-        )
-
-        for k, v in repl_keys.items():
-            text = text.replace(k, v)
-
         # Update the YAML header to add substitutions
-        header.update({"myst": {"substitutions": data2_sanitized_flattened}})
+        header.update({"myst": {"substitutions": data2_sanitized} })
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
@@ -724,42 +699,20 @@ def process_question_md(
             "---\n"
             + header_yml
             + "---\n"
-            + text
+            + dict_to_md(
+                body_parts,
+                remove_keys=[
+                    "Rubric",
+                    "Solution",
+                    "Comments",
+                    "pl-submission-panel",
+                    "pl-answer-panel",
+                ],
+            )
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),
             encoding="utf8",
         )
-
-        ####################################################
-        #### End Temporary Fix for issue of myst no longer permitting nested dicts
-        #### Uncomment below when the fix is implemented to recover past behaviour
-
-        # # Update the YAML header to add substitutions
-        # header.update({"myst": {"substitutions": data2_sanitized} })
-
-        # # Update the YAML header to add substitutions, unsort it, and process for file
-        # header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
-
-        # # Write the YAML to a file
-        # output_path.parent.mkdir(parents=True, exist_ok=True)
-        # output_path.write_text(
-        #     "---\n"
-        #     + header_yml
-        #     + "---\n"
-        #     + dict_to_md(
-        #         body_parts,
-        #         remove_keys=[
-        #             "Rubric",
-        #             "Solution",
-        #             "Comments",
-        #             "pl-submission-panel",
-        #             "pl-answer-panel",
-        #         ],
-        #     )
-        #     + "\n## Attribution\n\n"
-        #     + process_attribution(header.get("attribution")),
-        #     encoding="utf8",
-        # )
 
     else:
         # Update the YAML header to add substitutions

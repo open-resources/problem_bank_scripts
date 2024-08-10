@@ -29,9 +29,11 @@ part1:
     file-names: file.png, file.jpg, file.pdf, filename space.png
 myst:
   substitutions:
-    params_vars_title: File Upload
+    params:
+      vars:
+        title: File Upload
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 

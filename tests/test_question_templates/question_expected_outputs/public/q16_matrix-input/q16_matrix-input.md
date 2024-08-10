@@ -40,8 +40,9 @@ part2:
     comparison: decdig
 myst:
   substitutions:
-    params_title: Matrix Input
-    params_matrixA: null
+    params:
+      title: Matrix Input
+      matrixA: null
 ---
 # {{ params.vars.title }}
 Given the following matrix, please return the inverse of the matrix.

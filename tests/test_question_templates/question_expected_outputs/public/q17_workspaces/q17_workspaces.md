@@ -47,9 +47,11 @@ part1:
   type: workspace
 myst:
   substitutions:
-    params_vars_title: Moving and copying files
+    params:
+      vars:
+        title: Moving and copying files
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 

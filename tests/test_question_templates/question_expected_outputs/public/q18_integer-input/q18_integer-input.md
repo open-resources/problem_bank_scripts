@@ -32,16 +32,17 @@ part1:
     label: $n= $
 myst:
   substitutions:
-    params_numbers:
-    - 22
-    - 25
-    - 28
-    - 41
-    - 51
-    - 54
-    - 64
-    - 79
-    - 81
+    params:
+      numbers:
+      - 22
+      - 25
+      - 28
+      - 41
+      - 51
+      - 54
+      - 64
+      - 79
+      - 81
 ---
 # {{ params.vars.title }}
 Given a list of numbers ${{ params.vars.numbers }}$, what is the `median` of the list?

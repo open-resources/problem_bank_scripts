@@ -32,48 +32,57 @@ part1:
     weight: 1
 myst:
   substitutions:
-    params_vars_title: Kinematics
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
-    params_vars_units: m/s
-    params_v: 5
-    params_t: 6
-    params_part1_ans1_value: '`42`'
-    params_part1_ans1_feedback: This is a random number, you probably selected this
-      choice by mistake! Try again please!
-    params_part1_ans2_value: '`30`'
-    params_part1_ans2_feedback: Great! You got it.
-    params_part1_ans3_value: '`11`'
-    params_part1_ans3_feedback: Hmm, does it make sense to add a velocity and a time?
-      Check the units!
-    params_part1_ans4_value: '`0.833`'
-    params_part1_ans4_feedback: 'Hmm, check the units of the resulting answer: v/t.'
-    params_part1_ans5_value: '`-1`'
-    params_part1_ans5_feedback: Hmm, does it make sense to subtract a velocity and
-      a time? Check the units!
-    params_part1_ans6_value: '`-1.3`'
-    params_part1_ans6_feedback: Hmm, does it make sense to subtract a velocity and
-      a time? Check the units!
+    params:
+      vars:
+        title: Kinematics
+        name: Maya
+        vehicle: a unicycle
+        units: m/s
+      v: 5
+      t: 6
+      part1:
+        ans1:
+          value: '`42`'
+          feedback: This is a random number, you probably selected this choice by
+            mistake! Try again please!
+        ans2:
+          value: '`30`'
+          feedback: Great! You got it.
+        ans3:
+          value: '`11`'
+          feedback: Hmm, does it make sense to add a velocity and a time? Check the
+            units!
+        ans4:
+          value: '`0.833`'
+          feedback: 'Hmm, check the units of the resulting answer: v/t.'
+        ans5:
+          value: '`-1`'
+          feedback: Hmm, does it make sense to subtract a velocity and a time? Check
+            the units!
+        ans6:
+          value: '`-1.3`'
+          feedback: Hmm, does it make sense to subtract a velocity and a time? Check
+            the units!
 ---
-# {{ params_vars_title }}
-{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
+# {{ params.vars.title }}
+{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
 
 <img src="test1.png">
 
 ## Part 1
 
-How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 <img src="test2.png">
 
 ### Answer Section
 
-- {{ params_part1_ans1_value }} {{ params_vars_units}}
-- {{ params_part1_ans2_value }} {{ params_vars_units}}
-- {{ params_part1_ans3_value }} {{ params_vars_units}}
-- {{ params_part1_ans4_value }} {{ params_vars_units}}
-- {{ params_part1_ans5_value }} {{ params_vars_units}}
-- {{ params_part1_ans6_value }} {{ params_vars_units}}
+- {{ params.part1.ans1.value }} {{ params.vars.units}}
+- {{ params.part1.ans2.value }} {{ params.vars.units}}
+- {{ params.part1.ans3.value }} {{ params.vars.units}}
+- {{ params.part1.ans4.value }} {{ params.vars.units}}
+- {{ params.part1.ans5.value }} {{ params.vars.units}}
+- {{ params.part1.ans6.value }} {{ params.vars.units}}
 
 ## Attribution
 

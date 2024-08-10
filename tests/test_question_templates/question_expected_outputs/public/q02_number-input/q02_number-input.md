@@ -42,31 +42,33 @@ part2:
     suffix: m
 myst:
   substitutions:
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
-    params_vars_title: Distance travelled
-    params_vars_units: m/s
-    params_v: 5
-    params_t: 6
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Distance travelled
+        units: m/s
+      v: 5
+      t: 6
 ---
-# {{ params_vars_title }}
-{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
+# {{ params.vars.title }}
+{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
 
 ## Part 1
 
-How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params_vars_units }}.
+Please enter in a numeric value in {{ params.vars.units }}.
 
 ## Part 2
 
-How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params_vars_units }}.
+Please enter in a numeric value in {{ params.vars.units }}.
 
 ## Attribution
 

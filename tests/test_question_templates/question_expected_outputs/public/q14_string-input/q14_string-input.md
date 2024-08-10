@@ -33,18 +33,21 @@ part1:
     ignore-case: true
 myst:
   substitutions:
-    params_vars_title: Code Output
-    params_vars_a: 2
-    params_vars_stringname: love
+    params:
+      vars:
+        title: Code Output
+        a: 2
+        stringname: love
+      part1: {}
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
 For the following python code snippet, enter below the resulting string:
 
 ```python
-a = "{{ params_vars_stringname }}" * {{ params_vars_a }}
+a = "{{ params.vars.stringname }}" * {{ params.vars.a }}
 ```
 
 ### Answer Section

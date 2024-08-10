@@ -34,9 +34,11 @@ part1:
     source-file-name: sample.html
 myst:
   substitutions:
-    params_vars_title: Describe an Experiment
+    params:
+      vars:
+        title: Describe an Experiment
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 

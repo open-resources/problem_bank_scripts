@@ -42,48 +42,57 @@ part2:
     weight: 1
 myst:
   substitutions:
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
-    params_vars_title: Distance travelled
-    params_vars_units: m/s
-    params_v: 5
-    params_t: 6
-    params_part2_ans1_value: 42
-    params_part2_ans2_value: 30
-    params_part2_ans3_value: 11
-    params_part2_ans4_value: 0.833
-    params_part2_ans5_value: -1
-    params_part2_ans6_value: -1.3
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Distance travelled
+        units: m/s
+      v: 5
+      t: 6
+      part2:
+        ans1:
+          value: 42
+        ans2:
+          value: 30
+        ans3:
+          value: 11
+        ans4:
+          value: 0.833
+        ans5:
+          value: -1
+        ans6:
+          value: -1.3
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 This part of the question is common to both Parts 1 and 2.
 
 <img src="test1.png" width=400>
 
 ## Part 1
 
-{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
-How far does {{ vars.name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
+{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+How far does {{ vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 <img src="test2.png" width=400>
 
 ### Answer Section
 
-Please enter in a numeric value in {{ params_vars_units }}.
+Please enter in a numeric value in {{ params.vars.units }}.
 
 ## Part 2
 
-{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
-How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
+{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
 
-- {{ params_part2_ans1_value}} {{ params_vars_units}}
-- {{ params_part2_ans2_value}} {{ params_vars_units}}
-- {{ params_part2_ans3_value}} {{ params_vars_units}}
-- {{ params_part2_ans4_value}} {{ params_vars_units}}
-- {{ params_part2_ans5_value}} {{ params_vars_units}}
-- {{ params_part2_ans6_value}} {{ params_vars_units}}
+- {{ params.part2.ans1.value}} {{ params.vars.units}}
+- {{ params.part2.ans2.value}} {{ params.vars.units}}
+- {{ params.part2.ans3.value}} {{ params.vars.units}}
+- {{ params.part2.ans4.value}} {{ params.vars.units}}
+- {{ params.part2.ans5.value}} {{ params.vars.units}}
+- {{ params.part2.ans6.value}} {{ params.vars.units}}
 
 ## Attribution
 
