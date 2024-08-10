@@ -952,11 +952,6 @@ def process_question_pl(
     # Also see https://github.com/open-resources/problem_bank_scripts/pull/92
     question_html = question_html.replace("\\_", "_").replace("\\[","[").replace("\\]","]")
     question_html = question_html.replace("\\*", "*").replace("\\<","<").replace("\\`","`")
-    # Fix empty <markdown> block
-    # See this issue: https://github.com/PrairieLearn/PrairieLearn/issues/8346
-    # TODO: this can be removed once issue 8346 is resolved
-    question_html = question_html.replace("<markdown></markdown>", 
-                                          "<markdown> </markdown>")
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
