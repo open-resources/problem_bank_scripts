@@ -92,10 +92,6 @@ Please remove this section if it is not application for this question.
 Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
 
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-
 ## Rubric
 
 This should be hidden from students until after the deadline.

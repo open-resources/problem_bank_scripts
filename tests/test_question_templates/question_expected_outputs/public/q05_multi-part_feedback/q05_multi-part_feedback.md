@@ -70,15 +70,6 @@ What is the direction of the electric field at the centre of the region between 
 - {{ params_part2.ans2.value }}
 - {{ params_part2.ans3.value }}
 
-### pl-submission-panel
-
-{{ submitted_answers.part1_ans_str }}
-{{ feedback.part1_ans }}
-
-### pl-answer-panel
-
-$E=$ {{ correct_answers.part1_ans_str }} $\mathrm{N}/\mathrm{C}$
-
 ## Attribution
 
 Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)

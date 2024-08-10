@@ -83,16 +83,6 @@ myst:
 
 import math
 
-### pl-submission-panel
-
-<pl-external-grader-results></pl-external-grader-results>
-<pl-file-preview></pl-file-preview>
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
 ## Attribution
 
 Problem is licensed under the [CC-BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).<br> ![The Creative Commons 4.0 license requiring attribution-BY, non-commercial-NC, and share-alike-SA license.](https://raw.githubusercontent.com/firasm/bits/master/by-nc-sa.png)

@@ -75,16 +75,6 @@ How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming t
 - {{ params_part1_ans5_value }} {{ params_vars_units}}
 - {{ params_part1_ans6_value }} {{ params_vars_units}}
 
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
 ## Attribution
 
 Problem is from the [OpenStax University Physics Volume 2](https://openstax.org/details/books/university-physics-volume-2) textbook, licensed under the [CC-BY 4.0 license](https://creativecommons.org/licenses/by/4.0/).<br>![Image representing the Creative Commons 4.0 BY license.](https://raw.githubusercontent.com/firasm/bits/master/by.png)

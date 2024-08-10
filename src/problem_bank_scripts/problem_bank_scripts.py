@@ -301,31 +301,74 @@ def read_md_problem(filepath):
     return defdict_to_dict(return_dict, {})
 
 
-def dict_to_md(md_dict, remove_keys=[None]):
+def _remove_l3_headers(text: str, remove: set[str]) -> str:
+    """Removes specific level 3+ headers from a markdown string
+    
+    Args:
+        text (str): Markdown text to process
+        remove (set[str]): Set of strings to remove from the markdown text
+
+    Returns:
+        str: Processed markdown text
+    """
+    tokens_to_rerender = []
+    next_is_new_header_text = False
+    current_header_text = None
+
+    mdit = markdown_it.MarkdownIt()
+    env = {}
+    tokens = mdit.parse(text, env)
+
+    for token in tokens:
+        if token.type == "heading_open":
+            next_is_new_header_text = True
+            tokens_to_rerender.append(token)
+            current_header_text = None
+            continue
+
+        if next_is_new_header_text:
+            next_is_new_header_text = False
+            current_header_text = token.content
+        
+            if current_header_text in remove:
+                tokens_to_rerender.pop()
+        
+        if current_header_text not in remove:
+            tokens_to_rerender.append(token)
+    
+    return (
+        mdformat.renderer.MDRenderer()
+        .render(tokens_to_rerender, mdit.options, env)
+        .replace(r"\\", "\\")
+    )
+
+
+def dict_to_md(md_dict: dict[str, str], remove_keys=None):
     """Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).
     Args:
         md_dict (dict): A nested dictionary, for e.g. the output of `read_md_problem()`
-        remove_keys (list, optional): Any keys to remove from the dictionary, for instance solutions. Defaults to [None,].
+        remove_keys (list[str], optional): Any keys to remove from the dictionary, for instance solutions. Defaults to removing no keys.
 
     Returns:
         str: A multi-line string that can be written to a file.
     """
 
-    md_string = ""
-
-    md_dict = defdict_to_dict(md_dict, {})
+    # md_dict: dict[str, str] = defdict_to_dict(md_dict, {})
 
     # Question Title and Preamble
-    md_string += md_dict.pop("title", None)
-    md_string += md_dict.pop("preamble", None)
+    md_string = md_dict.pop("title", "")
+    md_string += md_dict.pop("preamble", "")
 
-    # TODO: Refactor this to use the elegant solution provided here: https://stackoverflow.com/a/49723101/2217577
+    _remove = set() if remove_keys is None else set(remove_keys)
 
-    for k, v in md_dict.items():
-        if k in remove_keys:
+    for heading, content in md_dict.items():
+        if heading in _remove:
             continue
+        
+        if _remove and "###" in content:
+            md_string += "\n" + _remove_l3_headers(content, _remove)
         else:
-            md_string += "\n" + md_dict[k]
+            md_string += "\n" + content
 
     return md_string
 
@@ -661,8 +704,8 @@ def process_question_md(
                 "Rubric",
                 "Solution",
                 "Comments",
-                "pl-submission-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
-                "pl-answer-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
+                "pl-submission-panel",
+                "pl-answer-panel",
             ],
         )
 
@@ -709,8 +752,8 @@ def process_question_md(
         #             "Rubric",
         #             "Solution",
         #             "Comments",
-        #             "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
-        #             "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
+        #             "pl-submission-panel",
+        #             "pl-answer-panel",
         #         ],
         #     )
         #     + "\n## Attribution\n\n"

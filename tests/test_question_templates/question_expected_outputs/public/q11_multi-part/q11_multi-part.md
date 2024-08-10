@@ -71,16 +71,6 @@ How far does {{ vars.name }} travel in {{ params_t }} seconds, assuming they con
 
 Please enter in a numeric value in {{ params_vars_units }}.
 
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
 ## Part 2
 
 {{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
@@ -94,16 +84,6 @@ How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming t
 - {{ params_part2_ans4_value}} {{ params_vars_units}}
 - {{ params_part2_ans5_value}} {{ params_vars_units}}
 - {{ params_part2_ans6_value}} {{ params_vars_units}}
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 
