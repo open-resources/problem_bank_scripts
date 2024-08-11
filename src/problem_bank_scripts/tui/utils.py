@@ -102,17 +102,17 @@ def count_decimal_places(num: float) -> int:
 
 
 def write_json(data: dict, filename: str | pathlib.Path = "saved.json") -> None:
-    with open(filename, "w") as f:
+    with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 def write_file(data: str, filename: str | pathlib.Path = "saved.json") -> None:
-    with open(filename, "w") as f:
+    with open(filename, "w", encoding="utf-8") as f:
         f.write(data)
 
 
 def read_json(filename: str | pathlib.Path = "saved.json") -> typing.Any:
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         return json.load(f)
 
 

@@ -12,9 +12,15 @@ Getting started
 
 Install the package via pip:
 
-.. code-block:: console
+.. code-block:: shell
 
-    $ pip install "problem_bank_scripts[tui] @ git+https://github.com/open-resources/problem_bank_scripts"
+    pip install "problem_bank_scripts[tui]>=0.12.0rc0"
+
+Or, install the latest development version from the repository:
+
+.. code-block:: shell
+
+    pip install "problem_bank_scripts[tui] @ git+https://github.com/open-resources/problem_bank_scripts"
 
 
 Create a ``.env`` file in the directory you will be running the TUI.
@@ -89,7 +95,7 @@ would result in the following being generated in the ``generate`` function:
 
 .. code-block:: yaml
 
-    question: |
+    generate: |
         ...
 
         percent_senior = round(random.uniform(11.3, 13.9), 1)  # 12.6

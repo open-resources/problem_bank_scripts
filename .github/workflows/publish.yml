@@ -43,6 +43,56 @@ jobs:
           name: dist
           path: dist/
 
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.10"
+          - "3.12"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "${{ matrix.python-version }}"
+          cache: poetry
+      - name: Install dependencies
+        run: poetry install -E tests
+      - name: Run tests
+        id: test
+        run: poetry run pytest tests
+      - name: Upload generated files
+        if: failure() && steps.test.outcome == 'failure' && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-generated-files-${{ github.event_name }}
+          path: tests/test_question_templates/question_generated_outputs/
+          if-no-files-found: ignore
+          retention-days: 5
+
+  build-docs:
+    name: Build Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Install dependencies
+        run: poetry install -E docs
+      - name: Build docs
+        shell: bash
+        run: |
+          cd docs
+          poetry run sphinx-build -b html -j auto -a -n -T -W --keep-going source _build/html
+
   test-dists:
     name: Test Built ${{ matrix.dist.name }} (${{ matrix.python-version }})
     runs-on: ubuntu-latest
@@ -74,10 +124,8 @@ jobs:
         run: |
           export path_to_file=$(find dist -type f -name "problem_bank_scripts-*.${{ matrix.dist.extension }}")
           echo "::notice::Installing ${{ matrix.dist.name }}: $path_to_file"
-          python -m pip install --user $path_to_file
+          python -m pip install --user "$path_to_file[tests]"
           python -m pip list
-      - name: Install test dependencies
-        run: python -m pip install --user  pytest fastjsonschema
       - name: Run tests against installed wheel
         run: rm -rf src/ && pytest tests/
 
@@ -99,6 +147,10 @@ jobs:
             repo: open-resources/instructor_datascience_bank
           - name: Statistics
             repo: open-resources/instructor_stats_bank
+        exclude:
+          - python-version: 3.12
+            bank:
+              name: Physics
     steps:
       - name: Checkout ${{ matrix.bank.name }} Problem Bank
         uses: actions/checkout@v4
@@ -130,8 +182,10 @@ jobs:
     if: github.event_name == 'release' # only publish to PyPI on releases
     # Ensure tests have passed and problem banks can be built
     needs:
+      - tests
       - test-dists
       - test-banks
+      - build-docs
     runs-on: ubuntu-latest
     # Specifying a GitHub environment so manual approval by an approved user to create a release is required
     # https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import filecmp
 import json
-import os
 import pathlib
 
 import fastjsonschema
@@ -24,12 +23,11 @@ def paths():
     Returns:
         Nothing, it's a fixture that is run before every test.
     """
-    p = {
+    return  {
         "inputDest": questions_dir.joinpath("question_inputs"),
         "outputDest": questions_dir.joinpath("question_generated_outputs"),
         "compareDest": questions_dir.joinpath("question_expected_outputs"),
     }
-    return p
 
 
 @pytest.fixture(scope="session")
@@ -40,9 +38,7 @@ def validate_info_json():
         Nothing, it's a fixture that is run before every test.
     """
     with open("tests/infoSchema.json") as file:
-        schema = fastjsonschema.compile(json.load(file))
-    return schema
-
+        return fastjsonschema.compile(json.load(file))
 
 _tested_questions = set()
 
@@ -65,7 +61,11 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str, d
     baseFile = paths["inputDest"] / question / f"{question}.md"
     folder = baseFile.parent.stem
     outputFolder = outputPath.joinpath(folder)
-    process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
+    if question in {"q03_dropdown", "q05_multi-part_feedback"}:
+        with pytest.warns(FutureWarning, match="The 'pl-dropdown' tag is deprecated."):
+            process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
+    else:
+        process_question_pl(baseFile, outputFolder.joinpath(baseFile.name), devmode)
 
 
 @pytest.mark.parametrize(
@@ -76,7 +76,7 @@ def run_prairie_learn_generator(paths: dict[str, pathlib.Path], question: str, d
         for dev in [False, True]
     ],
 )
-def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: bool):
+def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: bool, subtests):
     """Tests the PrairieLearn `process_question_pl()`
 
     Args:
@@ -91,7 +91,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
     folder = baseFile.parent.stem
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
-        isFile = os.path.isfile(file)
+        isFile = file.is_file()
         hiddenFile = not file.name.startswith(".")
         assetFile = file.name == "question.html" or not file.name.endswith(
             (".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store")
@@ -100,17 +100,18 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
         infoJSON = not file.name.endswith("info.json")
 
         if isFile and hiddenFile and assetFile and infoJSON:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
 
-            try:
-                filecmp.cmp(file, outputPath / file.relative_to(comparePath))
-            except FileNotFoundError:
-                print(file, folder, outputFolder, outputPath / file.relative_to(comparePath))
+                try:
+                    filecmp.cmp(file, outputPath / file.relative_to(comparePath))
+                except FileNotFoundError:
+                    print(file, folder, outputFolder, outputPath / file.relative_to(comparePath))
 
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath)
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath)
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
 @pytest.mark.parametrize(
@@ -144,11 +145,11 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, devmode: bool,
         expected = expected_json[key]
         if isinstance(expected, list):
             expected = sorted(expected)
-        assert expected == generated, f"info.json key {key} for {question} did not match with expected output."
+        assert expected == generated, f"info.json key {key!r} for {question} did not match with expected output."
 
 
 @pytest.mark.parametrize("question", files)
-def test_public(paths: dict[str, pathlib.Path], question: str):
+def test_public(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the PrairieLearn `process_question_md()`
 
     Args:
@@ -164,31 +165,28 @@ def test_public(paths: dict[str, pathlib.Path], question: str):
     process_question_md(baseFile, outputFolder.joinpath(baseFile.name), instructor=False)
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
-        isFile = os.path.isfile(file)
+        isFile = file.is_file()
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
         if isFile and notHiddenFile and notImageFile:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath), shallow=False
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath), shallow=False
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
 @pytest.mark.parametrize("question", files)
-def test_instructor(paths: dict[str, pathlib.Path], question: str):
+def test_instructor(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the PrairieLearn `process_question_md(instructor=True)`
 
     Args:
         paths (dict): set by the fixture paths()
         question (str): the name of the question to test, set by the parametrize decorator
     """
-    outputPath = paths["outputDest"].joinpath(
-        "instructor/"
-    )  # the path to where the newly generated file will be stored
-    comparePath = paths["compareDest"].joinpath(
-        "instructor/"
-    )  # the path to where the existing files to be compared are stored
+    outputPath = paths["outputDest"].joinpath("instructor")  # the path to where the newly generated file will be stored
+    comparePath = paths["compareDest"].joinpath("instructor")  # the path to where the existing files to be compared are stored
 
     baseFile = paths["inputDest"] / question / f"{question}.md"
     folder = baseFile.parent.stem
@@ -196,16 +194,17 @@ def test_instructor(paths: dict[str, pathlib.Path], question: str):
     process_question_md(baseFile, outputFolder.joinpath(baseFile.name), instructor=True)
 
     for file in sorted(comparePath.joinpath(f"{folder}/").glob("**/*")):
-        isFile = os.path.isfile(file)
+        isFile = file.is_file()
         notHiddenFile = not file.name.startswith(".")
         notImageFile = not file.name.endswith(".png")
 
         if isFile and notHiddenFile and notImageFile:
-            folder = file.parent.name
-            outputFolder = outputPath.joinpath(folder)
-            assert filecmp.cmp(
-                file, outputPath / file.relative_to(comparePath), shallow=False
-            ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
+            with subtests.test("Check Generated File Matches Expected", file=file.name):
+                folder = file.parent.name
+                outputFolder = outputPath.joinpath(folder)
+                assert filecmp.cmp(
+                    file, outputPath / file.relative_to(comparePath), shallow=False
+                ), f"File: {'/'.join(file.parts[-2:])} did not match with expected output."
 
 
 def test_validate_multiple_choice_valid_has_correct_answer():

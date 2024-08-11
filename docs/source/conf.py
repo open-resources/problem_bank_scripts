@@ -6,9 +6,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u"Problem Bank Scripts"
-copyright = u"2021, Open Problem Bank Team"
-author = u"Open Problem Bank Team"
+project = "Problem Bank Scripts"
+copyright = "2021-Present, Open Problem Bank Team"
+author = "Open Problem Bank Team"
 
 # -- General configuration ---------------------------------------------------
 
@@ -17,33 +17,44 @@ author = u"Open Problem Bank Team"
 # ones.
 extensions = [
     "myst_nb",
-    "autoapi.extension",
     "sphinx.ext.napoleon",
+    "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
-]
-autoapi_type = "python"
-autoapi_dirs = ["../../src"]
-autoapi_ignore = [
-    "*/_vendored/*",
-    "*/scripts/*",
-    "*/tui/*",
-    "*/prairielearn*",
-]
-autoapi_options =  [
-    "members",
-    "undoc-members",
-    "show-inheritance",
-    "show-module-summary",
-    "special-members",
-    "imported-members",
+    "sphinx.ext.intersphinx",
 ]
 napoleon_numpy_docstring = True
 nbsphinx_execute = "always"
+autodoc_member_order = "bysource"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "_vendored", "tui", "scripts"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+# Links used for cross-referencing stuff in other documentation
+intersphinx_mapping = {
+    "py": ("https://docs.python.org/3", None),
+    "matplotlib": ("https://matplotlib.org/stable", None),
+}
+
+show_warning_types = True
+suppress_warnings = ["docutils"]
+
+nitpick_ignore = [
+    ("py:class", "optional"),
+    ("py:class", "number"),
+    ("py:class", "float/str"),
+    ("py:class", "color"),
+    ("py:class", "x; μ"),
+    ("py:class", "\u03C3"),
+    ("py:class", "'"),
+]
+
+nitpick_ignore_regex = [
+    ("py:class", r".*2 floats"),
+    ("py:class", r"\d"),
+    ("py:class", r"default:.*"),
+]
 
 # -- Options for HTML output -------------------------------------------------
 
