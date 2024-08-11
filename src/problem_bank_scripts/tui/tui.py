@@ -521,7 +521,7 @@ def run_tui(
                 cur_solution = questionary.autocomplete(
                     f"pt.{p+1} solution? (press tab to see helpers)",
                     default=default_solution,
-                    choices=[c for c in question_solutions],
+                    choices=question_solutions,
                 ).ask()
                 solutions.append(cur_solution)
         print("solutions", solutions)
