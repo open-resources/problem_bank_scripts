@@ -13,7 +13,7 @@ import questionary
 
 from problem_bank_scripts import KNOWN_ATTRIBUTIONS, process_question_pl
 from problem_bank_scripts.scripts.lint_server import main as lint_server
-from .utils import write_json, read_json, split_comma, string_is_numeric, string_is_int, string_is_number_range
+from .utils import write_json, read_json, split_comma, string_is_int, string_is_number_range, get_number_suffix, string_is_approx_numeric, string_num_digits_after_decimal, remove_edge_non_numeric
 from .generate_questions import generate_true_false_choices, generate_yes_no_choices
 from .write_md import write_md
 from .inputs import ask_int
@@ -87,6 +87,20 @@ QUESTION_TYPES = {
     "symbolic-input": {},
 }
 
+def convert_solution_to_type(solution: str, key: str):
+    if key == "number-input":
+        # remove ',' from solution
+        return remove_edge_non_numeric(solution.replace(",", ""))
+    elif key == "integer-input":
+        return remove_edge_non_numeric(solution.replace(",", ""))
+    if key == "matrix" or key == "matrix-component-input":
+        if solution.startswith('[') and solution.endswith(']'):
+            return solution
+        if '-' in solution and len(solution.split('-')) == 2:
+            split = solution.split('-')
+            return f'[{split[0].strip()}, {split[1].strip()}]'
+        return solution
+    return solution
 
 def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None = None):
     key = part["type"]
@@ -98,7 +112,7 @@ def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None =
         case "multiple-choice" | "dropdown" | "checkbox":
             options: list[str] = []
             # answer = questionary.text("Solution").ask()
-            num_options = ask_int("Number of options (excluding solution)", default=3)
+            num_options = ask_int("Number of options", default=4)
             for i in range(num_options):
                 options.append(
                     questionary.text(f"Option {i+1}. Press enter to generate with GPT.").ask()
@@ -115,12 +129,14 @@ def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None =
             info["choices"] = generate_true_false_choices(solution)
             info["fixed-order"] = "true"
         case "number-input" | "matrix":
-            digits = ask_int("Digits")
+            digits = ask_int("Digits", default=str(string_num_digits_after_decimal(solution)))
             info["digits"] = digits
             prefix = questionary.text("Prefix", default="$p=$").ask()
+
             if prefix:
                 info["label"] = prefix
-            suffix = questionary.text("Suffix").ask()
+            suffix = questionary.text("Suffix", default=get_number_suffix(solution)).ask()
+
             if suffix:
                 info["suffix"] = suffix
             if use_gpt:
@@ -205,9 +221,9 @@ def guess_question_type_from_solution(solution: str) -> str | None:
     if string_is_number_range(solution) or (solution.startswith('[') and solution.endswith(']')):
         return "matrix"
     if string_is_int(solution):
-        return "number-input"
-    if string_is_numeric(solution):
         return "integer-input"
+    if string_is_approx_numeric(solution):
+        return "number-input"
     if solution.isalpha():
         return "multiple-choice"
     return None
@@ -275,6 +291,7 @@ def run_tui(
             parser=lambda x: [int(s) for s in split_comma(x)],
             saved=saved,
         )
+
         if textbook_file is not None:
             print(f"Loading known question and solution data for {textbook!r}")
             file_question_index = next(
@@ -504,14 +521,13 @@ def run_tui(
                 cur_solution = questionary.autocomplete(
                     f"pt.{p+1} solution? (press tab to see helpers)",
                     default=default_solution,
-                    choices=question_solutions,
+                    choices=[c for c in question_solutions],
                 ).ask()
                 solutions.append(cur_solution)
         print("solutions", solutions)
         # create_part
         for p in range(num_parts):
             part = variant["parts"][p] if p < len(variant["parts"]) else {}
-            part["solution"] = extract_variables(solutions[p], variables=variables)
 
             if "question" not in part:
                 if use_questions_as_parts:
@@ -525,7 +541,7 @@ def run_tui(
                     question_text_choices = [part for question in file_questions for part in ([question["questionText"]] + question["parts"])]
                 part["question"] = extract_variables(
                     questionary.autocomplete(
-                        f"Question text for v1 - pt.{p+1}\n(press tab for helpers, Ctrl U to delete line)",
+                        f"Question text for v1 - pt.{p+1}, solution: {solutions[p][:8]}{'...' if len(solutions[p]) > 8 else ''}\n(press tab for helpers, Ctrl U to delete line)",
                         default=default_question_text,
                         choices=question_text_choices
                     ).ask(),
@@ -536,7 +552,6 @@ def run_tui(
                 #     default=default_solution,
                 #     choices=question_solutions,
                 # ).ask()
-
             if "type" not in part:
                 part["type"] = questionary.select(
                     f"pt.{p+1} question type?",
@@ -544,7 +559,10 @@ def run_tui(
                     default=guess_question_type_from_solution(solutions[p]), # use solution from before variables are extracted
                 ).ask()  # returns value of selection
             if "info" not in part:
-                other_asks(part, part["solution"], use_gpt, exercise=exercise)
+                other_asks(part, solutions[p], use_gpt, exercise=exercise)
+
+            part["solution"] = extract_variables(solutions[p], variables=variables)
+            part["solution"] = convert_solution_to_type(part["solution"], part["type"])
 
             if p < len(variant["parts"]):
                 variant["parts"][p] = part
