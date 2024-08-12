@@ -27,7 +27,7 @@ def string_is_numeric(s: str) -> bool:
     return s.lstrip("-").replace(".", "", 1).isdigit()
 
 def string_is_approx_numeric(s: str) -> bool:
-    s = remove_edge_non_numeric(s).strip()
+    s = remove_edge_non_numeric(s)
     return s.replace(".", "", 1).isdigit()
 
 def string_is_number_range(s: str) -> bool:
