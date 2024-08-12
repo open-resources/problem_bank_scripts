@@ -76,7 +76,7 @@ QUESTION_TYPES = {
     "multiple-choice": {},
     "number-input": {},
     "longtext": {},
-    "dropdown": {},
+    "dropdown": {"type": "multiple-choice", "display": "dropdown"},
     "checkbox": {},
     "matrix": {"type": "matrix-component-input"},
     "matching": {},
@@ -118,10 +118,6 @@ def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None =
                     questionary.text(f"Option {i+1}. Press enter to generate with GPT.").ask()
                 )
             info["choices"] = generate_given_choices(options, solution, question, use_gpt)
-            if key == "dropdown":
-                key = "multiple-choice"
-                part["type"] = "multiple-choice"
-                info["display"] = "dropdown"
         case "yes-no":
             info["choices"] = generate_yes_no_choices(solution)
             info["fixed-order"] = "true"
