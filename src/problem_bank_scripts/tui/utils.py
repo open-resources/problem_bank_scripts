@@ -47,10 +47,10 @@ def string_num_digits_after_decimal(s: str | float) -> int:
     return len(s.split(".")[1])
 
 def get_number_suffix(s: str) -> str:
-    s = s.strip()
-    if s[-1].isdigit():
+    s = s.strip()[-1:]
+    if s.isdigit():
         return ""
-    return s[-1]
+    return s
 
 possible_prefixes = ["(", "[", "{", r"\$", "|"]
 possible_suffixes = [".", ",", "?", "!", ":", ";", ")", "]", "}", "\\%", "%", "|", "\\"]
