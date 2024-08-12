@@ -35,7 +35,7 @@ def string_is_number_range(s: str) -> bool:
     return len(split) == 2 and string_is_numeric(split[0].strip()) and string_is_numeric(split[1].strip())
 
 def string_is_int(s: str) -> bool:
-    if s[0] in ('-', '+'):
+    if s and s[0] in {'-', '+'}:
         return s[1:].isdigit()
     return s.isdigit()
 
