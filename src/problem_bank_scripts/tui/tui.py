@@ -91,7 +91,7 @@ def convert_solution_to_type(solution: str, key: str):
     if key in {"number-input", "integer-input"}:
         # remove ',' from solution
         return remove_edge_non_numeric(solution.replace(",", ""))
-    if key == "matrix" or key == "matrix-component-input":
+    if key in {"matrix", "matrix-component-input"}:
         if solution.startswith('[') and solution.endswith(']'):
             return solution
         if '-' in solution and len(solution.split('-')) == 2:
