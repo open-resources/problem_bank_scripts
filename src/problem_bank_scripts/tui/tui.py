@@ -88,10 +88,8 @@ QUESTION_TYPES = {
 }
 
 def convert_solution_to_type(solution: str, key: str):
-    if key == "number-input":
+    if key in {"number-input", "integer-input"}:
         # remove ',' from solution
-        return remove_edge_non_numeric(solution.replace(",", ""))
-    elif key == "integer-input":
         return remove_edge_non_numeric(solution.replace(",", ""))
     if key == "matrix" or key == "matrix-component-input":
         if solution.startswith('[') and solution.endswith(']'):
