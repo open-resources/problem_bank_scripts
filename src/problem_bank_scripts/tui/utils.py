@@ -11,12 +11,12 @@ def apply_indent(lines: list[str], indent: str = " " * 8) -> list[str]:
     return [indent + x for x in lines]
 
 def remove_leading_non_numeric(s: str) -> str:
-    while len(s) > 0 and s[0] not in "0123456789":
+    while s and s[0] not in "0123456789":
         s = s[1:]
     return s
 
 def remove_trailing_non_numeric(s: str) -> str:
-    while len(s) > 0 and s[-1] not in "0123456789":
+    while s and s[-1] not in "0123456789":
         s = s[:-1]
     return s
 
