@@ -129,6 +129,7 @@ def other_asks(part: dict, solution: str, use_gpt: bool, exercise: dict | None =
             if key == "matrix" and exercise is not None:
                 if "imports" not in exercise:
                     exercise["imports"] = []
+                exercise["imports"].append("import numpy as np")
                 exercise["imports"].append("import prairielearn as pl")
         case "matching":
             statements_str = questionary.text("List the statements, comma separated").ask()

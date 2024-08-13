@@ -358,7 +358,7 @@ def write_code(exercise: dict):
             ]
         if part["info"]["type"] == "matrix-component-input":
             lines += [
-                f"data2['params']['part{part_num+1}']['ans1']['value'] = correct_part{part_num+1}_ans",
+                f"correct_part{part_num+1}_ans = np.array([{exercise['solutions'][part_num]}])",
                 f"data2['correct_answers']['part{part_num+1}_ans'] = pl.to_json(matrix_ans{part_num+1})",
             ]
         if part["info"]["type"] == "symbolic-input" and "custom_functions" in part["info"]:
