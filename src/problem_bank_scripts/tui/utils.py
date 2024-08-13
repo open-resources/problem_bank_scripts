@@ -2,14 +2,55 @@ import json
 import pathlib
 import typing
 
+def remove_excess_newlines(s: str) -> str:
+    while "\n\n\n" in s:
+        s = s.replace("\n\n\n", "\n\n")
+    return s
 
 def apply_indent(lines: list[str], indent: str = " " * 8) -> list[str]:
     return [indent + x for x in lines]
 
+def remove_leading_non_numeric(s: str) -> str:
+    while s and s[0] not in "0123456789":
+        s = s[1:]
+    return s
+
+def remove_trailing_non_numeric(s: str) -> str:
+    while s and s[-1] not in "0123456789":
+        s = s[:-1]
+    return s
+
+def remove_edge_non_numeric(s: str) -> str:
+    return remove_leading_non_numeric(remove_trailing_non_numeric(s))
 
 def string_is_numeric(s: str) -> bool:
     return s.lstrip("-").replace(".", "", 1).isdigit()
 
+def string_is_approx_numeric(s: str) -> bool:
+    s = remove_edge_non_numeric(s)
+    return s.replace(".", "", 1).isdigit()
+
+def string_is_number_range(s: str) -> bool:
+    split: list[str] = s.split('-')
+    return len(split) == 2 and string_is_numeric(split[0].strip()) and string_is_numeric(split[1].strip())
+
+def string_is_int(s: str) -> bool:
+    if s and s[0] in {'-', '+'}:
+        return s[1:].isdigit()
+    return s.isdigit()
+
+def string_num_digits_after_decimal(s: str | float) -> int:
+    s = str(s)
+    s = remove_trailing_non_numeric(s)
+    if "." not in s:
+        return 0
+    return len(s.split(".")[1])
+
+def get_number_suffix(s: str) -> str:
+    s = s.strip()[-1:]
+    if s.isdigit():
+        return ""
+    return s
 
 possible_prefixes = ["(", "[", "{", r"\$", "|"]
 possible_suffixes = [".", ",", "?", "!", ":", ";", ")", "]", "}", "\\%", "%", "|", "\\"]
