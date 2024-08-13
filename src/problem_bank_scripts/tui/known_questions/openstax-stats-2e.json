@@ -4185,7 +4185,7 @@
                             ]
                         ],
                         "parts": [
-                            "Find the sample mean\n$\\bar{x}$\n.",
+                            "Find the sample mean \\bar{x} \\bar{x}\n.",
                             "Find the approximate sample standard deviation,$s$\n."
                         ]
                     },
@@ -4229,7 +4229,7 @@
                             ]
                         ],
                         "parts": [
-                            "Find the sample mean\nx\n-\n\nx\n-",
+                            "Find the sample mean \\overset{-}{x} \\overset{-}{x}",
                             "Find the sample standard deviation,$s$",
                             "Construct a histogram of the data.",
                             "Complete the columns of the chart.",
@@ -5673,20 +5673,20 @@
                         "questionNumber": 110,
                         "questionText": "Find P(hit was made by Babe Ruth).",
                         "parts": [
-                            "1518\n\n2873\n\n1518\n\n2873",
-                            "2873\n\n12351\n\n2873\n\n12351",
-                            "583\n\n12351\n\n583\n\n12351",
-                            "4189\n\n12351\n\n4189\n\n12351"
+                            "\\frac{1518}{2873} \\frac{1518}{2873}",
+                            "\\frac{2873}{12351} \\frac{2873}{12351}",
+                            "\\frac{583}{12351} \\frac{583}{12351}",
+                            "\\frac{4189}{12351} \\frac{4189}{12351}"
                         ]
                     },
                     {
                         "questionNumber": 111,
                         "questionText": "Find P(hit was made by Ty Cobb|The hit was a Home Run).",
                         "parts": [
-                            "418912351418912351",
-                            "11717231171723",
-                            "17234189\t17234189",
-                            "11712351\t11712351"
+                            "\\frac{4189}{12351} \\frac{4189}{12351}",
+                            "\\frac{117}{1723} \\frac{117}{1723}",
+                            "\\frac{ 1723}{4189} \\frac{ 1723}{4189}",
+                            "\\frac{ 117}{12351} \\frac{ 117}{12351}"
                         ]
                     },
                     {
@@ -5843,20 +5843,20 @@
                         "questionNumber": 114,
                         "questionText": "Find P(tossing a Head on the coin AND a Red bead)",
                         "parts": [
-                            "2\n3\n\n2\n3",
-                            "5\n15\n\n5\n15",
-                            "6\n36\n\n6\n36",
-                            "5\n36\n\n5\n36"
+                            "\\frac{2}{3} \\frac{2}{3}",
+                            "\\frac{5}{15} \\frac{5}{15}",
+                            "\\frac{6}{36} \\frac{6}{36}",
+                            "\\frac{5}{36} \\frac{5}{36}"
                         ]
                     },
                     {
                         "questionNumber": 115,
                         "questionText": "Find P(Blue bead).",
                         "parts": [
-                            "15\n\n36\n\n15\n\n36",
-                            "10\n\n36\n\n10\n\n36",
-                            "10\n\n12\n\n10\n\n12",
-                            "6\n\n36\n\n6\n\n36"
+                            "\\frac{15}{36} \\frac{15}{36}",
+                            "\\frac{10}{36} \\frac{10}{36}",
+                            "\\frac{10}{12} \\frac{10}{12}",
+                            "\\frac{6}{36} \\frac{6}{36}"
                         ]
                     },
                     {
@@ -7445,7 +7445,7 @@
                         "parts": [
                             "1.67",
                             "12",
-                            "382\n\n1043\n\n382\n\n1043",
+                            "\\frac{382}{1043} \\frac{382}{1043}",
                             "4.43"
                         ]
                     }
@@ -8267,8 +8267,8 @@
                         "questionText": "Graph the probability distribution.\n<img data-media-type=\"image/png\" alt=\"This is a blank graph template. The vertical and horizontal axes are unlabeled.\" width=\"1252\" height=\"627\" data-lazy-src=\"/apps/archive/20240725.163813/resources/a81148b79429741f4c254769dfeca2ac69b1a25b\">",
                         "parts": [
                             "Sketch the graph of the probability distribution.\n<img data-media-type=\"image/png\" alt=\"This is a blank graph template. The vertical and horizontal axes are unlabeled.\" width=\"1252\" height=\"627\" data-lazy-src=\"/apps/archive/20240725.163813/resources/a81148b79429741f4c254769dfeca2ac69b1a25b\">",
-                            "For the following 5 questions: Identify the following values:\nLowest value for\n$\\bar{x}$\n: _______",
-                            "Highest value for\n$\\bar{x}$\n: _______",
+                            "For the following 5 questions: Identify the following values:\nLowest value for \\bar{x} \\bar{x}\n: _______",
+                            "Highest value for \\bar{x} \\bar{x}\n: _______",
                             "Height of the rectangle: _______",
                             "Label for$x$\n-axis (words): _______",
                             "Label for$y$\n-axis (words): _______"
@@ -9822,7 +9822,7 @@
                         "questionText": "Complete the distributions.",
                         "parts": [
                             "$X$\n~ _____(_____,_____)",
-                            "$\\bar{X}$\n~ _____(_____,_____)"
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)"
                         ]
                     },
                     {
@@ -10304,8 +10304,8 @@
                         "parts": [
                             "In words,$X$\n= ____________",
                             "$X$\n~ _____(_____,_____)",
-                            "In words,\n$\\bar{X}$\n= ____________",
-                            "$\\bar{x}$\n~ ______ (______, ______)",
+                            "In words, \\bar{X} \\bar{X}\n= ____________",
+                            "\\bar{x} \\bar{x}\n~ ______ (______, ______)",
                             "Find the probability that an individual had between $0.80 and $1.00. Graph the situation, and shade in the area to be determined.",
                             "Find the probability that the average of the 25 students was between $0.80 and $1.00. Graph the situation, and shade in the area to be determined.",
                             "Explain why there is a difference in part e and part f."
@@ -10315,8 +10315,8 @@
                         "questionNumber": 62,
                         "questionText": "Suppose that the distance of fly balls hit to the outfield (in baseball) is normally distributed with a mean of 250 feet and a standard deviation of 50 feet. We randomly sample 49 fly balls.",
                         "parts": [
-                            "If\n$\\bar{x}$\n= average distance in feet for 49 fly balls, then\n$\\bar{x}$\n~ _______(_______,_______)",
-                            "What is the probability that the 49 balls traveled an average of less than 240 feet? Sketch the graph. Scale the horizontal axis for\n$\\bar{x}$\n. Shade the region corresponding to the probability. Find the probability.",
+                            "If \\bar{x} \\bar{x}\n= average distance in feet for 49 fly balls, then \\bar{x} \\bar{x}\n~ _______(_______,_______)",
+                            "What is the probability that the 49 balls traveled an average of less than 240 feet? Sketch the graph. Scale the horizontal axis for \\bar{x} \\bar{x}\n. Shade the region corresponding to the probability. Find the probability.",
                             "Find the 80$^{th}$\npercentile of the distribution of the average of 49 fly balls."
                         ]
                     },
@@ -10325,8 +10325,8 @@
                         "questionText": "According to the Internal Revenue Service, the average length of time for an individual to complete (keep records for, learn, prepare, copy, assemble, and send) IRS Form 1040 is 10.53 hours (without any attached schedules). The distribution is unknown. Let us assume that the standard deviation is two hours. Suppose we randomly sample 36 taxpayers.",
                         "parts": [
                             "In words,$X$\n= _____________",
-                            "In words,\n$\\bar{X}$\n= _____________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
+                            "In words, \\bar{X} \\bar{X}\n= _____________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
                             "Would you be surprised if the 36 taxpayers finished their Form 1040s in an average of more than 12 hours? Explain why or why not in complete sentences.",
                             "Would you be surprised if one taxpayer finished their Form 1040 in more than 12 hours? In a complete sentence, explain why."
                         ]
@@ -10335,7 +10335,7 @@
                         "questionNumber": 64,
                         "questionText": "Suppose that a category of world-class runners are known to run a marathon (26 miles) in an average of 145 minutes with a standard deviation of 14 minutes. Consider 49 of the races. Let $\\bar{x}$the average of the 49 races.",
                         "parts": [
-                            "$\\bar{X}$\n~ _____(_____,_____)",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
                             "Find the probability that the runner will average between 142 and 146 minutes in these 49 marathons.",
                             "Find the 80$^{th}$\npercentile for the average of these 49 marathons.",
                             "Find the median of the average running times."
@@ -10347,10 +10347,10 @@
                         "parts": [
                             "In words,$X$\n= _________",
                             "$X$\n~ _____________",
-                            "In words,\n$\\bar{X}$\n= _____________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
-                            "Find the first quartile for the average song length,\n$\\bar{X}$\n.",
-                            "The IQR (interquartile range) for the average song length,\n$\\bar{X}$\n, is from ___ - ___."
+                            "In words, \\bar{X} \\bar{X}\n= _____________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
+                            "Find the first quartile for the average song length, \\bar{X} \\bar{X}\n.",
+                            "The IQR (interquartile range) for the average song length, \\bar{X} \\bar{X}\n, is from ___ - ___."
                         ]
                     },
                     {
@@ -10358,25 +10358,25 @@
                         "questionText": "In 1940 the average size of a U.S. farm was 174 acres. Let's say that the standard deviation was 55 acres. Suppose we randomly survey 38 farmers from 1940.",
                         "parts": [
                             "In words,$X$\n= _____________",
-                            "In words,\n$\\bar{X}$\n= _____________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
-                            "The IQR for\n$\\bar{x}$\nis from _______ acres to _______ acres."
+                            "In words, \\bar{X} \\bar{X}\n= _____________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
+                            "The IQR for \\bar{x} \\bar{x}\nis from _______ acres to _______ acres."
                         ]
                     },
                     {
                         "questionNumber": 67,
                         "questionText": "Determine which of the following are true and which are false. Then, in complete sentences, justify your answers.",
                         "parts": [
-                            "When the sample size is large, the mean of\n$\\bar{X}$\nis approximately equal to the mean of$X$\n.",
-                            "When the sample size is large,\n$\\bar{x}$\nis approximately normally distributed.",
-                            "When the sample size is large, the standard deviation of\n$\\bar{x}$\nis approximately the same as the standard deviation of$X$\n."
+                            "When the sample size is large, the mean of \\bar{X} \\bar{X}\nis approximately equal to the mean of$X$\n.",
+                            "When the sample size is large, \\bar{x} \\bar{x}\nis approximately normally distributed.",
+                            "When the sample size is large, the standard deviation of \\bar{x} \\bar{x}\nis approximately the same as the standard deviation of$X$\n."
                         ]
                     },
                     {
                         "questionNumber": 68,
                         "questionText": "The percent of fat calories that a person in America consumes each day is normally distributed with a mean of about 36 and a standard deviation of about ten. Suppose that 16 individuals are randomly chosen. Let $\\bar{x}$= average percent of fat calories.",
                         "parts": [
-                            "$\\bar{x}$\n~ ______(______, ______)",
+                            "\\bar{x} \\bar{x}\n~ ______(______, ______)",
                             "For the group of 16, find the probability that the average percent of fat calories consumed is more than five. Graph the situation and shade in the area to be determined.",
                             "Find the first quartile for the average percent of fat calories."
                         ]
@@ -10386,8 +10386,8 @@
                         "questionText": "The distribution of income in some developing countries is considered wedge shaped (many low income people, very few middle income people, and even fewer high income people). Suppose we pick a country with a wedge shaped distribution. Let the average salary be $2,000 per year with a standard deviation of $8,000. We randomly survey 1,000 residents of that country.",
                         "parts": [
                             "In words,$X$\n= _____________",
-                            "In words,\n$\\bar{X}$\n= _____________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
+                            "In words, \\bar{X} \\bar{X}\n= _____________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
                             "How is it possible for the standard deviation to be greater than the average?",
                             "Why is it more likely that the average of the 1,000 residents will be from $2,000 to $2,100 than from $2,100 to $2,200?"
                         ]
@@ -10406,10 +10406,10 @@
                         "questionNumber": 71,
                         "questionText": "The cost of unleaded gasoline in the Bay Area once followed an unknown distribution with a mean of $4.59 and a standard deviation of $0.10. Sixteen gas stations from the Bay Area are randomly chosen. We are interested in the average cost of gasoline for the 16 gas stations. The distribution to use for the average cost of gasoline for the 16 gas stations is:",
                         "parts": [
-                            "$\\bar{X}$\n~$N$\n(4.59, 0.10)",
-                            "$\\bar{X}$\n~$N$\n(\n\n4.59,\n\n0.10\n\n16\n\n)\n\n(\n\n4.59,\n\n0.10\n\n16\n\n)",
-                            "$\\bar{X}$\n~$N$\n(\n\n4.59,\n\n16\n\n0.10\n\n)\n\n(\n\n4.59,\n\n16\n\n0.10\n\n)",
-                            "$\\bar{X}$\n~$N$\n(\n\n4.59,\n\n16\n\n0.10\n\n)\n\n(\n\n4.59,\n\n16\n\n0.10\n\n)"
+                            "\\bar{X} \\bar{X}\n~$N$\n(4.59, 0.10)",
+                            "\\bar{X} \\bar{X}\n~$N$ \\left(\\right. \\text{4} .\\text{59},\\&\\text{nbsp}; \\frac{0.10}{\\sqrt{16}} \\left.\\right) \\left(\\right. \\text{4} .\\text{59},\\&\\text{nbsp}; \\frac{0.10}{\\sqrt{16}} \\left.\\right)",
+                            "\\bar{X} \\bar{X}\n~$N$ \\left(\\right. \\text{4} .\\text{59},\\&\\text{nbsp}; \\frac{16}{0.10} \\left.\\right) \\left(\\right. \\text{4} .\\text{59},\\&\\text{nbsp}; \\frac{16}{0.10} \\left.\\right)",
+                            "\\bar{X} \\bar{X}\n~$N$ \\left(\\right. \\text{4} .\\text{59},\\&\\text{nbsp}; \\frac{\\sqrt{16}}{0.10} \\left.\\right) \\left(\\right. \\text{4} .\\text{59},\\&\\text{nbsp}; \\frac{\\sqrt{16}}{0.10} \\left.\\right)"
                         ]
                     }
                 ],
@@ -10477,12 +10477,12 @@
                         "parts": [
                             "In words,$X$\n= _______",
                             "$X$\n~  _____(_____,_____)",
-                            "In words,\n$\\bar{X}$\n= ____________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
+                            "In words, \\bar{X} \\bar{X}\n= ____________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
                             "For the following 2 questions: Before doing any calculations, which do you think will be higher? Explain why.\nThe probability that an individual attention span is less than ten minutes.",
                             "The probability that the average attention span for the 60 children is less than ten minutes?",
                             "Calculate the probabilities in part e.",
-                            "Explain why the distribution for\n$\\bar{X}$\nis not exponential."
+                            "Explain why the distribution for \\bar{X} \\bar{X}\nis not exponential."
                         ]
                     },
                     {
@@ -10490,18 +10490,18 @@
                         "questionText": "The closing stock prices of 35 U.S. semiconductor manufacturers are given as follows.8.625;\n30.25;\n27.625;\n46.75;\n32.875;\n18.25;\n5;\n0.125;\n2.9375;\n6.875;\n28.25;\n24.25;\n21;\n1.5;\n30.25;\n71;\n43.5;\n49.25;\n2.5625;\n31;\n16.5;\n9.5;\n18.5;\n18;\n9;\n10.5;\n16.625;\n1.25;\n18;\n12.87;\n7;\n12.875;\n2.875;\n60.25;\n29.25",
                         "parts": [
                             "In words,$X$\n= ______________",
-                            "$\\bar{x}$\n= _____",
+                            "\\bar{x} \\bar{x}\n= _____",
                             "$sx$\n= _____",
                             "$n$\n= _____",
                             "Construct a histogram of the distribution of the averages. Start at$x$\n= -0.0005. Use bar widths of ten.",
                             "In words, describe the distribution of stock prices.",
                             "Randomly average five stock prices together. (Use a random number generator.) Continue averaging five pieces together until you have ten averages. List those ten averages.",
-                            "For the following 2 questions: Use the ten averages from part e to calculate the following.\n$\\bar{x}$\n= _____",
+                            "For the following 2 questions: Use the ten averages from part e to calculate the following.\n\\bar{x} \\bar{x}\n= _____",
                             "$sx$\n= _____",
                             "Construct a histogram of the distribution of the averages. Start at$x$\n= -0.0005. Use bar widths of ten.",
                             "Does this histogram look like the graph in part c?",
                             "In one or two complete sentences, explain why the graphs either look the same or look different?",
-                            "Based upon the theory of the**central limit theorem**\n,\n$\\bar{X}$\n~ _____(_____,____)"
+                            "Based upon the theory of the**central limit theorem**\n, \\bar{X} \\bar{X}\n~ _____(_____,____)"
                         ]
                     }
                 ],
@@ -10534,10 +10534,10 @@
                         "questionNumber": 80,
                         "questionText": "Suppose that it is now past noon on a delivery day. The probability that a person must wait at least one and a half more hours is:",
                         "parts": [
-                            "1\n4\n\n1\n4",
-                            "1\n2\n\n1\n2",
-                            "3\n4\n\n3\n4",
-                            "3\n8\n\n3\n8"
+                            "\\frac{1}{4} \\frac{1}{4}",
+                            "\\frac{1}{2} \\frac{1}{2}",
+                            "\\frac{3}{4} \\frac{3}{4}",
+                            "\\frac{3}{8} \\frac{3}{8}"
                         ]
                     }
                 ],
@@ -10616,12 +10616,12 @@
                         "questionNumber": 87,
                         "questionText": "X ~ N(60, 9). Suppose that you form random samples of 25 from this distribution. Let $\\bar{X}$be the random variable of averages. Let $\\Sigma X$ be the random variable of sums. For parts c through f, sketch the graph, shade the region, label and scale the horizontal axis for $\\bar{X}$, and find the probability.",
                         "parts": [
-                            "Sketch the distributions of$X$\nand\n$\\bar{X}$\non the same graph.",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
-                            "$P$\n(\n$\\bar{x}$\n< 60) = _____",
+                            "Sketch the distributions of$X$\nand \\bar{X} \\bar{X}\non the same graph.",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
+                            "$P$\n( \\bar{x} \\bar{x}\n< 60) = _____",
                             "Find the 30$^{th}$\npercentile for the mean.",
-                            "$P$\n(56 <\n$\\bar{x}$\n< 62) = _____",
-                            "$P$\n(18 <\n$\\bar{x}$\n< 58) = _____",
+                            "$P$\n(56 < \\bar{x} \\bar{x}\n< 62) = _____",
+                            "$P$\n(18 < \\bar{x} \\bar{x}\n< 58) = _____",
                             "$$\\Sigma x$$\n~ _____(_____,_____)",
                             "Find the minimum value for the upper quartile for the sum.",
                             "$P$\n(1,400 <$$\\Sigma x$$\n< 1,550) = _____"
@@ -10635,8 +10635,8 @@
                             "$X$\n~ _____(_____,_____)",
                             "$$\\mu$x$\n= _____",
                             "$$\\sigma$x$\n= _____",
-                            "In words,\n$\\bar{X}$\n= ______________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
+                            "In words, \\bar{X} \\bar{X}\n= ______________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
                             "In words,$$\\Sigma X$$\n= _____________",
                             "$$\\Sigma X$$\n~ _____(_____,_____)",
                             "Without doing any calculations, do you think that it's likely that the professor will need to read a total of more than 1,050 pages? Why?",
@@ -10657,8 +10657,8 @@
                         "questionText": "The average length of a maternity stay in a U.S. hospital is said to be 2.4 days with a standard deviation of 0.9 days. We randomly survey 80 women who recently bore children in a U.S. hospital.",
                         "parts": [
                             "In words,$X$\n= _____________",
-                            "In words,\n$\\bar{X}$\n= ___________________",
-                            "$\\bar{X}$\n~ _____(_____,_____)",
+                            "In words, \\bar{X} \\bar{X}\n= ___________________",
+                            "\\bar{X} \\bar{X}\n~ _____(_____,_____)",
                             "In words,$$\\Sigma X$$\n= _______________",
                             "$$\\Sigma X$$\n~ _____(_____,_____)",
                             "Is it likely that an individual stayed more than five days in the hospital? Why or why not?",
@@ -11025,7 +11025,7 @@
                         "questionNumber": 1,
                         "questionText": "Identify the following:",
                         "parts": [
-                            "$\\bar{x}$\n= _____",
+                            "\\bar{x} \\bar{x}\n= _____",
                             "$$\\sigma$$\n= _____",
                             "$n$\n= _____"
                         ]
@@ -11068,7 +11068,7 @@
                         "questionNumber": 6,
                         "questionText": "Identify the following:",
                         "parts": [
-                            "$\\bar{x}$\n= _____",
+                            "\\bar{x} \\bar{x}\n= _____",
                             "$$\\sigma$$\n= _____",
                             "$n$\n= _____"
                         ]
@@ -11125,7 +11125,7 @@
                         "questionNumber": 13,
                         "questionText": "Identify the following:",
                         "parts": [
-                            "$\\bar{x}$\n= ______",
+                            "\\bar{x} \\bar{x}\n= ______",
                             "$$\\sigma$$\n= ______",
                             "$n$\n= ______"
                         ]
@@ -11322,8 +11322,8 @@
                         "questionNumber": 38,
                         "questionText": "Identify the following:",
                         "parts": [
-                            "$\\bar{x}$\n=_______",
-                            "s\nx\n\ns\nx\n=_______",
+                            "\\bar{x} \\bar{x}\n=_______",
+                            "s_{x} s_{x}\n=_______",
                             "$n$\n=_______",
                             "$n$\n- 1 =_______"
                         ]
@@ -11366,8 +11366,8 @@
                         "questionNumber": 43,
                         "questionText": "Identify the following:",
                         "parts": [
-                            "$\\bar{x}$\n=_______",
-                            "s\nx\n\ns\nx\n=_______",
+                            "\\bar{x} \\bar{x}\n=_______",
+                            "s_{x} s_{x}\n=_______",
                             "$n$\n=_______",
                             "$n$\n- 1 =_______"
                         ]
@@ -11417,8 +11417,8 @@
                         "questionNumber": 49,
                         "questionText": "Calculate the following:",
                         "parts": [
-                            "$\\bar{x}$\n=______",
-                            "s\nx\n\ns\nx\n=______",
+                            "\\bar{x} \\bar{x}\n=______",
+                            "s_{x} s_{x}\n=______",
                             "$n$\n=______"
                         ]
                     },
@@ -11574,7 +11574,7 @@
                         "parts": [
                             "$x$\n= ______",
                             "$n$\n= ______",
-                            "p'p'\n= ______"
+                            "p^{'} p^{'}\n= ______"
                         ]
                     },
                     {
@@ -11819,10 +11819,10 @@
                         "questionNumber": 95,
                         "questionText": "Among various ethnic groups, the standard deviation of heights is known to be approximately three inches. We wish to construct a 95% confidence interval for the mean height of male Swedes. Forty-eight male Swedes are surveyed. The sample mean is 71 inches. The sample standard deviation is 2.8 inches.",
                         "parts": [
-                            "$\\bar{x}$\n=________",
+                            "\\bar{x} \\bar{x}\n=________",
                             "$$\\sigma$$\n=________",
                             "$n$\n=________",
-                            "In words, define the random variables$X$\nand\n$\\bar{X}$\n.",
+                            "In words, define the random variables$X$\nand \\bar{X} \\bar{X}\n.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean height of male Swedes.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -11834,7 +11834,7 @@
                         "questionNumber": 96,
                         "questionText": "Announcements for 84 upcoming engineering conferences were randomly picked from a stack of IEEE Spectrum magazines. The mean length of the conferences was 3.94 days, with a standard deviation of 1.28 days. Assume the underlying population is normal.",
                         "parts": [
-                            "In words, define the random variables$X$\nand\n$\\bar{X}$\n.",
+                            "In words, define the random variables$X$\nand \\bar{X} \\bar{X}\n.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean length of engineering conferences.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -11845,10 +11845,10 @@
                         "questionNumber": 97,
                         "questionText": "Suppose that an accounting firm does a study to determine the time needed to complete one person's tax forms. It randomly surveys 100 people. The sample mean is 23.6 hours. There is a known standard deviation of 7.0 hours. The population distribution is assumed to be normal.",
                         "parts": [
-                            "$\\bar{x}$\n=________",
+                            "\\bar{x} \\bar{x}\n=________",
                             "$$\\sigma$$\n=________",
                             "$n$\n=________",
-                            "In words, define the random variables$X$\nand\n$\\bar{X}$\n.",
+                            "In words, define the random variables$X$\nand \\bar{X} \\bar{X}\n.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 90% confidence interval for the population mean time to complete the tax forms.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -11862,11 +11862,11 @@
                         "questionNumber": 98,
                         "questionText": "A sample of 16 small bags of the same brand of candies was selected. Assume that the population distribution of bag weights is normal. The weight of each bag was then recorded. The mean weight was two ounces with a standard deviation of 0.12 ounces. The population standard deviation is known to be 0.1 ounce.",
                         "parts": [
-                            "$\\bar{x}$\n=________",
+                            "\\bar{x} \\bar{x}\n=________",
                             "$$\\sigma$$\n=________",
                             "s$_x$\n=________",
                             "In words, define the random variable$X$\n.",
-                            "In words, define the random variable\n$\\bar{X}$\n.",
+                            "In words, define the random variable \\bar{X} \\bar{X}\n.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 90% confidence interval for the population mean weight of the candies.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -11882,10 +11882,10 @@
                         "questionNumber": 99,
                         "questionText": "A camp director is interested in the mean number of letters each child sends during their camp session. The population standard deviation is known to be 2.5. A survey of 20 campers is taken. The mean from the sample is 7.9 with a sample standard deviation of 2.8.",
                         "parts": [
-                            "$\\bar{x}$\n=________",
+                            "\\bar{x} \\bar{x}\n=________",
                             "$$\\sigma$$\n=________",
                             "$n$\n=________",
-                            "Define the random variables$X$\nand\n$\\bar{X}$\nin words.",
+                            "Define the random variables$X$\nand \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 90% confidence interval for the population mean number of letters campers send home.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12011,11 +12011,11 @@
                         "questionNumber": 105,
                         "questionText": "A random survey of enrollment at 35 community colleges across the United States yielded the following figures: 6,414; 1,550; 2,109; 9,350; 21,828; 4,300; 5,944; 5,722; 2,825; 2,044; 5,481; 5,200; 5,853; 2,750; 10,012; 6,357; 27,000; 9,414; 7,681; 3,200; 17,500; 9,200; 7,380; 18,314; 6,557; 13,713; 17,768; 7,493; 2,771; 2,861; 1,263; 7,285; 28,165; 5,080; 11,622. Assume the underlying population is normal.",
                         "parts": [
-                            "$\\bar{x}$\n= __________",
-                            "s\nx\n\ns\nx\n= __________",
+                            "\\bar{x} \\bar{x}\n= __________",
+                            "s_{x} s_{x}\n= __________",
                             "$n$\n= __________",
                             "$n$\n- 1 = __________",
-                            "Define the random variables\nX\nX\nand\n$\\bar{X}$\nin words.",
+                            "Define the random variables X X\nand \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean enrollment at community colleges in the United States.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12027,11 +12027,11 @@
                         "questionNumber": 106,
                         "questionText": "Suppose that a committee is studying whether or not there is waste of time in our judicial system. It is interested in the mean amount of time individuals waste at the courthouse waiting to be called for jury duty. The committee randomly surveyed 81 people who recently served as jurors. The sample mean wait time was eight hours with a sample standard deviation of four hours.",
                         "parts": [
-                            "$\\bar{x}$\n= __________",
-                            "s\nx\n\ns\nx\n= __________",
+                            "\\bar{x} \\bar{x}\n= __________",
+                            "s_{x} s_{x}\n= __________",
                             "$n$\n= __________",
                             "$n$\n- 1 = __________",
-                            "Define the random variables\nX\nX\nand\n$\\bar{X}$\nin words.",
+                            "Define the random variables X X\nand \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean time wasted.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12043,12 +12043,12 @@
                         "questionNumber": 107,
                         "questionText": "A pharmaceutical company makes tranquilizers. It is assumed that the distribution for the length of time they last is approximately normal. Researchers in a hospital used the drug on a random sample of nine patients. The effective period of the tranquilizer for each patient (in hours) was as follows: 2.7; 2.8; 3.0; 2.3; 2.3; 2.2; 2.8; 2.1; and 2.4.",
                         "parts": [
-                            "$\\bar{x}$\n= __________",
-                            "s\nx\n\ns\nx\n= __________",
+                            "\\bar{x} \\bar{x}\n= __________",
+                            "s_{x} s_{x}\n= __________",
                             "$n$\n= __________",
                             "$n$\n- 1 = __________",
-                            "Define the random variable\nX\nX\nin words.",
-                            "Define the random variable\n$\\bar{X}$\nin words.",
+                            "Define the random variable X X\nin words.",
+                            "Define the random variable \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean length of time.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12060,12 +12060,12 @@
                         "questionNumber": 108,
                         "questionText": "Suppose that 14 children, who were learning to ride two-wheel bikes, were surveyed to determine how long they had to use training wheels. It was revealed that they used them an average of six months with a sample standard deviation of three months. Assume that the underlying population distribution is normal.",
                         "parts": [
-                            "$\\bar{x}$\n= __________",
-                            "s\nx\n\ns\nx\n= __________",
+                            "\\bar{x} \\bar{x}\n= __________",
+                            "s_{x} s_{x}\n= __________",
                             "$n$\n= __________",
                             "$n$\n- 1 = __________",
-                            "Define the random variable\nX\nX\nin words.",
-                            "Define the random variable\n$\\bar{X}$\nin words.",
+                            "Define the random variable X X\nin words.",
+                            "Define the random variable \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 99% confidence interval for the population mean length of time using training wheels.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12185,11 +12185,11 @@
                         "questionNumber": 111,
                         "questionText": "Unoccupied seats on flights cause airlines to lose revenue. Suppose a large airline wants to estimate its mean number of unoccupied seats per flight over the past year. To accomplish this, the records of 225 flights are randomly selected and the number of unoccupied seats is noted for each of the sampled flights. The sample mean is 11.6 seats and the sample standard deviation is 4.1 seats.",
                         "parts": [
-                            "$\\bar{x}$\n= __________",
-                            "s\nx\n\ns\nx\n= __________",
+                            "\\bar{x} \\bar{x}\n= __________",
+                            "s_{x} s_{x}\n= __________",
                             "$n$\n= __________",
                             "$n$\n-1 = __________",
-                            "Define the random variables\nX\nX\nand\n$\\bar{X}$\nin words.",
+                            "Define the random variables X X\nand \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 92% confidence interval for the population mean number of unoccupied seats per\nflight.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12201,7 +12201,7 @@
                         "questionText": "In a recent sample of 84 used car sales costs, the sample mean was $6,425 with a standard deviation of $3,156. Assume the underlying distribution is approximately normal.",
                         "parts": [
                             "Which distribution should you use for this problem? Explain your choice.",
-                            "Define the random variable\n$\\bar{X}$\nin words.",
+                            "Define the random variable \\bar{X} \\bar{X}\nin words.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean cost of a used car.\nState the confidence interval.",
                             "Sketch the graph.",
                             "Calculate the error bound.",
@@ -12225,11 +12225,11 @@
                         "questionNumber": 114,
                         "questionText": "A survey of the mean number of cents off that coupons give was conducted by randomly surveying one coupon per page from the coupon sections of a recent San Jose Mercury News. The following data were collected: 20¢; 75¢; 50¢; 65¢; 30¢; 55¢; 40¢; 40¢; 30¢; 55¢; $1.50; 40¢; 65¢; 40¢. Assume the underlying distribution is approximately normal.",
                         "parts": [
-                            "$\\bar{x}$\n= __________",
-                            "s\nx\n\ns\nx\n= __________",
+                            "\\bar{x} \\bar{x}\n= __________",
+                            "s_{x} s_{x}\n= __________",
                             "$n$\n= __________",
                             "$n$\n-1 = __________",
-                            "Define the random variables\nX\nX\nand\n$\\bar{X}$\nin words.",
+                            "Define the random variables X X\nand \\bar{X} \\bar{X}\nin words.",
                             "Which distribution should you use for this problem? Explain your choice.",
                             "For the following 3 questions: Construct a 95% confidence interval for the population mean worth of coupons.\nState the confidence interval.",
                             "Sketch the graph.",
@@ -12818,7 +12818,7 @@
                         "questionNumber": 45,
                         "questionText": "Calculate the following:",
                         "parts": [
-                            "$\\bar{x}$\n_______",
+                            "\\bar{x} \\bar{x}\n_______",
                             "$$\\sigma$$\n_______",
                             "$sx$\n_______",
                             "$n$\n_______"
@@ -12848,7 +12848,7 @@
                             "What symbol represents the random variable for this test?",
                             "In words, define the random variable for this test.",
                             "Is the population standard deviation known and, if so, what is it?",
-                            "For the following 3 questions: Calculate the following:\n$\\bar{x}$\n= _____________",
+                            "For the following 3 questions: Calculate the following:\n\\bar{x} \\bar{x}\n= _____________",
                             "$s$\n= ____________",
                             "$n$\n= ____________",
                             "Which test should be used?",
@@ -13002,7 +13002,7 @@
                         "questionNumber": 65,
                         "questionText": "Previously, an organization reported that teenagers spent 4.5 hours per week, on average, on the phone. The organization thinks that, currently, the mean is higher. Fifteen randomly chosen teenagers were asked how many hours per week they spend on the phone. The sample mean was 4.75 hours with a sample standard deviation of 2.0. Conduct a hypothesis test. The null and alternative hypotheses are:",
                         "parts": [
-                            "$Ho$\n:\n$\\bar{x}$\n= 4.5,$Ha$\n:\n$\\bar{x}$\n> 4.5",
+                            "$Ho$\n: \\bar{x} \\bar{x}\n= 4.5,$Ha$\n: \\bar{x} \\bar{x}\n> 4.5",
                             "$Ho$\n:$$\\mu$$\n$\\geq$ 4.5,$Ha$\n:$$\\mu$$\n< 4.5",
                             "$Ho$\n:$$\\mu$$\n= 4.75,$Ha$\n:$$\\mu$$\n> 4.75",
                             "$Ho$\n:$$\\mu$$\n= 4.5,$Ha$\n:$$\\mu$$\n> 4.5"
@@ -13088,8 +13088,8 @@
                         "questionNumber": 72,
                         "questionText": "It is believed that Lake Tahoe Community College (LTCC) Intermediate Algebra students get less than seven hours of sleep per night, on average. A survey of 22 LTCC Intermediate Algebra students generated a mean of 7.24 hours with a standard deviation of 1.93 hours. At a level of significance of 5%, do LTCC Intermediate Algebra students get less than seven hours of sleep per night, on average? The distribution to be used for this test is $\\bar{X}$~ ________________",
                         "parts": [
-                            "N(7.24,\n\n1.93\n\n22\n\n)\n\nN(7.24,\n\n1.93\n\n22\n\n)",
-                            "N(7.24,1.93)\n\nN(7.24,1.93)",
+                            "N \\left(\\right. 7.24 , \\frac{1.93}{\\sqrt{22}} \\left.\\right) N \\left(\\right. 7.24 , \\frac{1.93}{\\sqrt{22}} \\left.\\right)",
+                            "N \\left(\\right. 7.24 , 1.93 \\left.\\right) N \\left(\\right. 7.24 , 1.93 \\left.\\right)",
                             "$t_22$",
                             "$t_21$"
                         ]
@@ -13111,7 +13111,7 @@
                             "In words, define the random variable for this test.",
                             "For the following 3 questions: Calculate the following:\n$x$\n= ________________",
                             "$n$\n= ________________",
-                            "p\n'\n\np\n'\n= _____________",
+                            "p^{'} p^{'}\n= _____________",
                             "Calculate$$\\sigma$x$\n=  __________. Show the formula set-up.",
                             "State the distribution to use for the hypothesis test.",
                             "Find the$p$\n-value.",
@@ -14557,10 +14557,10 @@
                         "questionNumber": 104,
                         "questionText": "An appropriate null hypothesis is:",
                         "parts": [
-                            "p2022 $\\leq$ p2021p2022 $\\leq$ p2021",
-                            "p2022 $\\geq$ p2021p2022 $\\geq$ p2021",
-                            "$\\mu$2022 $\\leq$ $\\mu$2021$\\mu$2022 $\\leq$ $\\mu$2021",
-                            "p2022 > p2021p2022 > p2021"
+                            "p 2022 &nbsp; \\leq &nbsp; p 2021 p 2022 &nbsp; \\leq &nbsp; p 2021",
+                            "p 2022 &nbsp; \\geq &nbsp; p 2021 p 2022 &nbsp; \\geq &nbsp; p 2021",
+                            "\\mu 2022 &nbsp; \\leq &nbsp; \\mu 2021 \\mu 2022 &nbsp; \\leq &nbsp; \\mu 2021",
+                            "p 2022 &nbsp; > &nbsp; p 2021 p 2022 &nbsp; > &nbsp; p 2021"
                         ]
                     },
                     {
@@ -14822,7 +14822,7 @@
                             "$t5$",
                             "$t6$",
                             "$N$\n(-10.2, 8.4)",
-                            "N(-10.2,\n8.4\n\n6\n\n8.4\n\n6\n)"
+                            "N(-10.2, \\frac{8.4}{\\sqrt{6}} \\frac{8.4}{\\sqrt{6}}\n)"
                         ]
                     },
                     {
@@ -21948,7 +21948,7 @@
                     "0.5242",
                     "0.03%",
                     "6.86%",
-                    "823,088\n\n823,856\n\n823,088\n\n823,856",
+                    "\\frac{823,088}{823,856} \\frac{823,088}{823,856}",
                     "quantitative discrete",
                     "quantitative continuous",
                     "In both years, underwater earthquakes produced massive tsunamis."
@@ -22370,9 +22370,9 @@
             },
             "73": {
                 "parts": [
-                    "sx\n=$\\sum$\nfm2\nn-$\\bar{x}$      2=\n193157.4530\n-79.52\n=10.88\nsx\n=$\\sum$\nfm2\nn-$\\bar{x}$      2=\n193157.4530\n-79.52\n=10.88",
-                    "sx\n=$\\sum$ fm2\nn-$\\bar{x}$2\n=380945.3\n101-      60.942=7.62sx\n=$\\sum$ fm2\nn-$\\bar{x}$2\n=380945.3\n101-      60.942=7.62",
-                    "sx\n=\n$\\sum$ fm\n2n\n-$\\bar{x}$2\n=440051.5\n86\n-\n70.662\n=11.14sx\n=\n$\\sum$ fm\n2n\n-$\\bar{x}$2\n=440051.5\n86\n-\n70.662\n=11.14"
+                    "s_{x} = \\sqrt{\\frac{\\sum f m^{2}}{n} - \\left(\\bar{x}\\right)^{2}} = \\sqrt{\\frac{193157.45}{30} - \\left(79.5\\right)^{2}} = 10.88 s_{x} = \\sqrt{\\frac{\\sum f m^{2}}{n} - \\left(\\bar{x}\\right)^{2}} = \\sqrt{\\frac{193157.45}{30} - \\left(79.5\\right)^{2}} = 10.88",
+                    "s_{x} = \\sqrt{\\frac{\\sum f m^{2}}{n} - \\left(\\bar{x}\\right)^{2}} = \\sqrt{\\frac{380945.3}{101} - \\left(60.94\\right)^{2}} = 7.62 s_{x} = \\sqrt{\\frac{\\sum f m^{2}}{n} - \\left(\\bar{x}\\right)^{2}} = \\sqrt{\\frac{380945.3}{101} - \\left(60.94\\right)^{2}} = 7.62",
+                    "s_{x} = \\sqrt{\\frac{\\sum f m^{2}}{n} - \\left(\\bar{x}\\right)^{2}} = \\sqrt{\\frac{440051.5}{86} - \\left(70.66\\right)^{2}} = 11.14 s_{x} = \\sqrt{\\frac{\\sum f m^{2}}{n} - \\left(\\bar{x}\\right)^{2}} = \\sqrt{\\frac{440051.5}{86} - \\left(70.66\\right)^{2}} = 11.14"
                 ]
             },
             "75": {
@@ -22803,37 +22803,37 @@
             },
             "83": {
                 "parts": [
-                    "$P$\n(Betting on two line that touch each other on the table) =\n6\n\n38\n\n6\n\n38",
-                    "$P$\n(Betting on three numbers in a line) =\n3\n\n38\n\n3\n\n38",
-                    "$P$\n(Bettting on one number) =\n1\n\n38\n\n1\n\n38",
-                    "$P$\n(Betting on four number that touch each other to form a square) =\n4\n\n38\n\n4\n\n38",
-                    "$P$\n(Betting on two number that touch each other on the table ) =\n2\n\n38\n\n2\n\n38",
-                    "$P$\n(Betting on 0-00-1-2-3) =\n5\n\n38\n\n5\n\n38",
-                    "$P$\n(Betting on 0-1-2; or 0-00-2; or 00-2-3) =\n3\n\n38\n\n3\n\n38"
+                    "$P$\n(Betting on two line that touch each other on the table) = \\frac{6}{38} \\frac{6}{38}",
+                    "$P$\n(Betting on three numbers in a line) = \\frac{3}{38} \\frac{3}{38}",
+                    "$P$\n(Bettting on one number) = \\frac{1}{38} \\frac{1}{38}",
+                    "$P$\n(Betting on four number that touch each other to form a square) = \\frac{4}{38} \\frac{4}{38}",
+                    "$P$\n(Betting on two number that touch each other on the table ) = \\frac{2}{38} \\frac{2}{38}",
+                    "$P$\n(Betting on 0-00-1-2-3) = \\frac{5}{38} \\frac{5}{38}",
+                    "$P$\n(Betting on 0-1-2; or 0-00-2; or 00-2-3) = \\frac{3}{38} \\frac{3}{38}"
                 ]
             },
             "85": {
                 "parts": [
                     "{$G$\n1,$G$\n2,$G$\n3,$G$\n4,$G$\n5,$Y$\n1,$Y$\n2,$Y$\n3}",
-                    "5\n8\n\n5\n8",
-                    "2\n3\n\n2\n3",
-                    "2\n8\n\n2\n8",
-                    "6\n8\n\n6\n8",
+                    "\\frac{5}{8} \\frac{5}{8}",
+                    "\\frac{2}{3} \\frac{2}{3}",
+                    "\\frac{2}{8} \\frac{2}{8}",
+                    "\\frac{6}{8} \\frac{6}{8}",
                     "No, because$P$\n($G$\nAND$E$\n) does not equal 0."
                 ]
             },
             "87": {
                 "parts": [
                     "{($G$\n,$H$\n) ($G$\n,$T$\n) ($B$\n,$H$\n) ($B$\n,$T$\n) ($R$\n,$H$\n) ($R$\n,$T$\n)}",
-                    "$P$\n($A$\n) =$P$\n(blue)$P$\n(head) =\n(\n\n3\n\n10\n\n)\n\n(\n\n3\n\n10\n\n)\n(\n\n1\n\n2\n\n)\n\n(\n\n1\n\n2\n\n)\n=\n3\n\n20\n\n3\n\n20",
+                    "$P$\n($A$\n) =$P$\n(blue)$P$\n(head) = \\left(\\right. \\frac{3}{10} \\left.\\right) \\left(\\right. \\frac{3}{10} \\left.\\right) \\left(\\right. \\frac{1}{2} \\left.\\right) \\left(\\right. \\frac{1}{2} \\left.\\right)\n= \\frac{3}{20} \\frac{3}{20}",
                     "Yes,$A$\nand$B$\nare mutually exclusive because they cannot happen at the same time; you cannot pick a card that is both blue and also (red or green).$P$\n($A$\nAND$B$\n) = 0",
-                    "No,$A$\nand$C$\nare not mutually exclusive because they can occur at the same time. In fact,$C$\nincludes all of the outcomes of$A$\n; if the card chosen is blue it is also (red or blue).$P$\n($A$\nAND$C$\n) =$P$\n($A$\n) =\n3\n\n20\n\n3\n\n20"
+                    "No,$A$\nand$C$\nare not mutually exclusive because they can occur at the same time. In fact,$C$\nincludes all of the outcomes of$A$\n; if the card chosen is blue it is also (red or blue).$P$\n($A$\nAND$C$\n) =$P$\n($A$\n) = \\frac{3}{20} \\frac{3}{20}"
                 ]
             },
             "89": {
                 "parts": [
                     "$S$\n= {($HHH$\n), ($HHT$\n), ($HTH$\n), ($HTT$\n), ($THH$\n), ($THT$\n), ($TTH$\n), ($TTT$\n)}",
-                    "4\n8\n\n4\n8",
+                    "\\frac{4}{8} \\frac{4}{8}",
                     "Yes, because if$A$\nhas occurred, it is impossible to obtain two tails. In other words,$P$\n($A$\nAND$B$\n) = 0."
                 ]
             },
@@ -22890,11 +22890,11 @@
                 "parts": [
                     "{{{ params.TABLE_GOES_HERE }}}",
                     "{{{ params.TABLE_GOES_HERE }}}",
-                    "8,395\n\n21,081\n\n$\\approx$\n0.3982\n\n8,395\n\n21,081\n\n$\\approx$\n0.3982",
-                    "1,061\n\n21,081\n\n$\\approx$\n0.0503\n\n1,061\n\n21,081\n\n$\\approx$\n0.0503",
-                    "1,885\n\n21,081\n\n$\\approx$\n0.0894\n\n1,885\n\n21,081\n\n$\\approx$\n0.0894",
-                    "9,219\n\n21,081\n\n$\\approx$\n0.4373\n\n9,219\n\n21,081\n\n$\\approx$\n0.4373",
-                    "1,595\n\n3,656\n\n$\\approx$\n0.4363\n\n1,595\n\n3,656\n\n$\\approx$\n0.4363"
+                    "\\frac{\\text{8},\\text{395}}{\\text{21},\\text{081}} \\approx 0.3982 \\frac{\\text{8},\\text{395}}{\\text{21},\\text{081}} \\approx 0.3982",
+                    "\\frac{\\text{1},\\text{061}}{\\text{21},\\text{081}} \\approx 0.0503 \\frac{\\text{1},\\text{061}}{\\text{21},\\text{081}} \\approx 0.0503",
+                    "\\frac{\\text{1},\\text{885}}{\\text{21},\\text{081}} \\approx 0.0894 \\frac{\\text{1},\\text{885}}{\\text{21},\\text{081}} \\approx 0.0894",
+                    "\\frac{\\text{9},\\text{219}}{\\text{21},\\text{081}} \\approx 0.4373 \\frac{\\text{9},\\text{219}}{\\text{21},\\text{081}} \\approx 0.4373",
+                    "\\frac{\\text{1},\\text{595}}{\\text{3},\\text{656}} \\approx 0.4363 \\frac{\\text{1},\\text{595}}{\\text{3},\\text{656}} \\approx 0.4363"
                 ],
                 "tables": [
                     [
@@ -23020,11 +23020,11 @@
             },
             "113": {
                 "parts": [
-                    "26\n\n106\n\n26\n\n106",
-                    "33\n\n106\n\n33\n\n106",
-                    "21\n\n106\n\n21\n\n106",
-                    "(\n\n26\n\n106\n\n)\n\n(\n\n26\n\n106\n\n)\n+\n(\n\n33\n\n106\n\n)\n\n(\n\n33\n\n106\n\n)\n-\n(\n\n21\n\n106\n\n)\n\n(\n\n21\n\n106\n\n)\n=\n(\n\n38\n\n106\n\n)\n\n(\n\n38\n\n106\n\n)",
-                    "21\n\n33\n\n21\n\n33"
+                    "\\frac{26}{106} \\frac{26}{106}",
+                    "\\frac{33}{106} \\frac{33}{106}",
+                    "\\frac{21}{106} \\frac{21}{106}",
+                    "\\left(\\right. \\frac{26}{106} \\left.\\right) \\left(\\right. \\frac{26}{106} \\left.\\right)\n+ \\left(\\right. \\frac{33}{106} \\left.\\right) \\left(\\right. \\frac{33}{106} \\left.\\right)\n- \\left(\\right. \\frac{21}{106} \\left.\\right) \\left(\\right. \\frac{21}{106} \\left.\\right)\n= \\left(\\right. \\frac{38}{106} \\left.\\right) \\left(\\right. \\frac{38}{106} \\left.\\right)",
+                    "\\frac{21}{33} \\frac{21}{33}"
                 ]
             },
             "115": {
@@ -23048,9 +23048,9 @@
             "121": {
                 "parts": [
                     "<img data-media-type=\"image/png\" alt=\"This is a tree diagram with branches showing probabilities of each draw. The first branch shows two lines: 5/8 Green and 3/8 Yellow. The second branch has a set of two lines (5/8 Green and 3/8 Yellow) for each line of the first branch.\" width=\"961\" height=\"701\" data-lazy-src=\"/apps/archive/20240725.163813/resources/531fee6b1e6d794729413b4c2fb0107782d8890c\">",
-                    "$P$\n($GG$\n) =\n(\n\n5\n8\n\n)(\n\n5\n8\n\n)\n\n(\n\n5\n8\n\n)(\n\n5\n8\n\n)\n=\n25\n\n64\n\n25\n\n64",
-                    "$P$\n(at least one green) =$P$\n($GG$\n) +$P$\n($GY$\n) +$P$\n($YG$\n) =\n25\n\n64\n\n25\n\n64\n+\n15\n\n64\n\n15\n\n64\n+\n15\n\n64\n\n15\n\n64\n=\n55\n\n64\n\n55\n\n64",
-                    "$P$\n($G$\n|$G$\n) =\n5\n8\n\n5\n8",
+                    "$P$\n($GG$\n) = \\left(\\right. \\frac{5}{8} \\left.\\right) \\left(\\right. \\frac{5}{8} \\left.\\right) \\left(\\right. \\frac{5}{8} \\left.\\right) \\left(\\right. \\frac{5}{8} \\left.\\right)\n= \\frac{25}{64} \\frac{25}{64}",
+                    "$P$\n(at least one green) =$P$\n($GG$\n) +$P$\n($GY$\n) +$P$\n($YG$\n) = \\frac{25}{64} \\frac{25}{64}\n+ \\frac{15}{64} \\frac{15}{64}\n+ \\frac{15}{64} \\frac{15}{64}\n= \\frac{55}{64} \\frac{55}{64}",
+                    "$P$\n($G$\n|$G$\n) = \\frac{5}{8} \\frac{5}{8}",
                     "Yes, they are independent because the first card is placed back in the bag before the second card is drawn; the composition of cards in the bag remains the same from draw one to draw two."
                 ]
             },
@@ -23581,9 +23581,9 @@
                 "parts": [
                     "$X$\n= the number of matches",
                     "0, 1, 2, 3",
-                    "$X$\n~$B$\n(\n\n3,\n1\n6\n\n)\n\n(\n\n3,\n1\n6\n\n)",
+                    "$X$\n~$B$ \\left(\\right. 3 , \\frac{1}{6} \\left.\\right) \\left(\\right. 3 , \\frac{1}{6} \\left.\\right)",
                     "In dollars: -1, 1, 2, 3",
-                    "1\n2\n\n1\n2",
+                    "\\frac{1}{2} \\frac{1}{2}",
                     "Multiply each$Y$\nvalue by the corresponding$X$\nprobability from the PDF table.  The answer is -0.0787. You lose about eight cents, on average, per game.",
                     "The house has the advantage."
                 ]
@@ -23592,7 +23592,7 @@
                 "parts": [
                     "$X$\n~$B$\n(15, 0.281)\n<img data-media-type=\"image/png\" alt=\"This histogram shows a binomial probability distribution. It is made up of bars that are fairly normally distributed. The x-axis shows values from 0 to 15, with bars from 0 to 9. The y-axis shows values from 0 to 0.25 in increments of 0.05.\" width=\"1558\" height=\"765\" data-lazy-src=\"/apps/archive/20240725.163813/resources/c9d989e79ebf4f309d5b3e80667b66ac3fa94e63\">",
                     "Mean =$$\\mu$$\n=$np$\n= 15(0.281) = 4.215",
-                    "Standard Deviation =$$\\sigma$$\n=\nnpq\n\nnpq\n=\n15(0.281)(0.719)\n\n15(0.281)(0.719)\n= 1.7409",
+                    "Standard Deviation =$$\\sigma$$\n= \\sqrt{n p q} \\sqrt{n p q}\n= \\sqrt{15 \\left(\\right. 0.281 \\left.\\right) \\left(\\right. 0.719 \\left.\\right)} \\sqrt{15 \\left(\\right. 0.281 \\left.\\right) \\left(\\right. 0.719 \\left.\\right)}\n= 1.7409",
                     "$P$\n($x$\n> 5) = 1 -$P$\n($x$\n$\\leq$ 5) = 1 - binomcdf(15, 0.281, 5) = 1 - 0.7754 = 0.2246\n$P$\n($x$\n= 3) = binompdf(15, 0.281, 3) = 0.1927\n$P$\n($x$\n= 4) = binompdf(15, 0.281, 4) = 0.2259\n\nIt is more likely that four people are literate that three people are."
                 ]
             },
@@ -23609,11 +23609,11 @@
                 "parts": [
                     "$X$\n= the number of pages that advertise footwear",
                     "$X$\ntakes on the values 0, 1, 2, ..., 20",
-                    "$X$\n~$B$\n(20,\n2919229192\n)",
+                    "$X$\n~$B$\n(20, \\frac{29}{192} \\frac{29}{192}\n)",
                     "3.02",
                     "No",
                     "0.9997",
-                    "$X$\n= the number of pages we must survey until we find one that advertises footwear.$X$\n~$G$\n(\n2919229192\n)",
+                    "$X$\n= the number of pages we must survey until we find one that advertises footwear.$X$\n~$G$\n( \\frac{29}{192} \\frac{29}{192}\n)",
                     "0.3881",
                     "6.6207 pages"
                 ]
@@ -23624,8 +23624,8 @@
             "111": {
                 "parts": [
                     "$X$\n~$G$\n(0.25)",
-                    "Mean =$$\\mu$$\n=\n1\np\n\n1\np\n=\n1\n\n0.25\n\n1\n\n0.25\n= 4",
-                    "Standard Deviation = $\\sigma$ =\n1-p\n\np\n2\n\n1-p\n\np\n2\n=\n1-0.25\n\n0.25\n\n2\n\n1-0.25\n\n0.25\n\n2\n$\\approx$ 3.4641",
+                    "Mean =$$\\mu$$\n= \\frac{1}{p} \\frac{1}{p}\n= \\frac{1}{0.25} \\frac{1}{0.25}\n= 4",
+                    "Standard Deviation = $\\sigma$ = \\sqrt{\\frac{1 - p}{p^{2}}} \\sqrt{\\frac{1 - p}{p^{2}}}\n= \\sqrt{\\frac{1 - \\text{0} .\\text{25}}{\\left(0.25\\right)^{2}}} \\sqrt{\\frac{1 - \\text{0} .\\text{25}}{\\left(0.25\\right)^{2}}}\n$\\approx$ 3.4641",
                     "$P$\n($x$\n= 10) = geometpdf(0.25, 10) = 0.0188",
                     "$P$\n($x$\n= 20) = geometpdf(0.25, 20) = 0.0011",
                     "$P$\n($x$\n$\\leq$ 5) = geometcdf(0.25, 5) = 0.7627"
@@ -23650,7 +23650,7 @@
             },
             "117": {
                 "parts": [
-                    "$X$\n~$P$\n(5.5);$$\\mu$$\n= 5.5;\n$\\sigma$ =\n\n5.5\n\n$\\sigma$ =\n\n5.5\n$\\approx$ 2.3452",
+                    "$X$\n~$P$\n(5.5);$$\\mu$$\n= 5.5; \\sigma \\&\\text{nbsp};=\\&\\text{nbsp}; \\sqrt{5.5} \\sigma \\&\\text{nbsp};=\\&\\text{nbsp}; \\sqrt{5.5}\n$\\approx$ 2.3452",
                     "$P$\n($x$\n$\\leq$ 6) = poissoncdf(5.5, 6) $\\approx$ 0.6860",
                     "There is a 15.7% probability that the law staff will receive more calls than they can handle.",
                     "$P$\n($x$\n> 8) = 1 -$P$\n($x$\n$\\leq$ 8) = 1 - poissoncdf(5.5, 8) $\\approx$ 1 - 0.8944 = 0.1056"
@@ -23775,7 +23775,7 @@
             "43": {
                 "parts": [
                     "Answers may vary.",
-                    "3.5\n\n7\n\n3.5\n\n7"
+                    "\\frac{3.5}{7} \\frac{3.5}{7}"
                 ]
             },
             "45": {
@@ -23840,12 +23840,12 @@
                 "parts": [
                     "$X$\n~$U$\n(1, 9)",
                     "Answers may vary.",
-                    "f(x)=\n1\n8\n\nf(x)=\n1\n8\nwhere\n1$\\leq$x$\\leq$9\n\n1$\\leq$x$\\leq$9",
+                    "f \\left(\\right. x \\left.\\right) = \\frac{1}{8} f \\left(\\right. x \\left.\\right) = \\frac{1}{8}\nwhere 1 \\leq x \\leq 9 1 \\leq x \\leq 9",
                     "five",
                     "2.3",
-                    "15\n\n32\n\n15\n\n32",
-                    "333\n\n800\n\n333\n\n800",
-                    "2\n3\n\n2\n3",
+                    "\\frac{15}{32} \\frac{15}{32}",
+                    "\\frac{333}{800} \\frac{333}{800}",
+                    "\\frac{2}{3} \\frac{2}{3}",
                     "8.2"
                 ]
             },
@@ -23854,11 +23854,11 @@
                     "$X$\nrepresents the length of time a commuter must wait for a train to arrive on the Red Line.",
                     "$X$\n~$U$\n(0, 8)",
                     "Graph the probability distribution.",
-                    "f\n(\nx\n)\n=\n\n1\n8\n\nf\n(\nx\n)\n=\n\n1\n8\nwhere\n0\n$\\leq$\nx\n$\\leq$\n8\n\n0 $\\leq$  x  $\\leq$ 8",
+                    "f \\left(\\right. x \\left.\\right) = \\frac{1}{8} f \\left(\\right. x \\left.\\right) = \\frac{1}{8}\nwhere 0 \\leq x \\leq 8 0 \\leq x \\leq 8",
                     "four",
                     "2.31",
-                    "1\n8\n\n1\n8",
-                    "1\n8\n\n1\n8",
+                    "\\frac{1}{8} \\frac{1}{8}",
+                    "\\frac{1}{8} \\frac{1}{8}",
                     "3.2"
                 ]
             },
@@ -23870,18 +23870,18 @@
             },
             "83": {
                 "parts": [
-                    "The probability density function of$X$\nis\n1\n\n25-16\n\n=\n1\n9\n\n1\n\n25-16\n\n=\n1\n9\n.\n$P$\n($X$\n> 19) = (25 - 19)\n(\n\n1\n9\n\n)\n\n(\n\n1\n9\n\n)\n=\n6\n9\n\n6\n9\n=\n2\n3\n\n2\n3\n.\n<img data-media-type=\"image/png\" alt=\"This shows the graph of the function f(x) = 1/9, the pdf for a uniform distribution. A horizontal line ranges from the point (16, 1/9) to the point (25, 1.9). Vertical lines extend from the x-axis to the graph at x = 16 and x = 25 creating a rectangle. A region is shaded inside the rectangle from x = 19 to x = 25. Text notes that the shaded area represents P(x > 19) = 2/3.\" width=\"968\" height=\"456\" data-lazy-src=\"/apps/archive/20240725.163813/resources/8e6879719f6f0b2c01f4a67c4c3e282fbdcfbc27\">",
-                    "$P$\n(19 <$X$\n< 22) = (22 - 19)\n(\n\n1\n9\n\n)\n\n(\n\n1\n9\n\n)\n=\n3\n9\n\n3\n9\n=\n1\n3\n\n1\n3\n.\n<img data-media-type=\"image/png\" alt=\"This shows the graph of the function f(x) = 1/9, the pdf for a uniform distribution. A horizontal line ranges from the point (16, 1/9) to the point (25, 1.9). Vertical lines extend from the x-axis to the graph at x = 16 and x = 25 creating a rectangle. A region is shaded inside the rectangle from x = 19 to x = 22. Text notes that the shaded area represents P(19< x < 22) = 1/3.\" width=\"968\" height=\"456\" data-lazy-src=\"/apps/archive/20240725.163813/resources/4065bb1cbc47eb58f77d39aa05ce8313fdf79ebf\">",
-                    "The area must be 0.25, and 0.25 = (width)\n(\n\n1\n9\n\n)\n\n(\n\n1\n9\n\n)\n, so width = (0.25)(9) = 2.25. Thus, the value is 25 - 2.25 = 22.75.",
-                    "For the following 2 questions: This is a conditional probability question.  P(x > 21| x > 18).  You can do this two ways:\nDraw the graph where a is now 18 and b is still 25.  The height is\n1\n\n(25-18)\n\n1\n\n(25-18)\n=\n1\n7\n\n1\n7\n\nSo,$P$\n($x$\n> 21|$x$\n> 18) = (25 - 21)\n(\n\n1\n7\n\n)\n\n(\n\n1\n7\n\n)\n= 4/7.",
-                    "Use the formula:$P$\n($x$\n> 21|$x$\n> 18) =\nP(x>21 AND x>18)\n\nP(x>18)\n\nP(x>21 AND x>18)\n\nP(x>18)\n\n=\nP(x>21)\n\nP(x>18)\n\nP(x>21)\n\nP(x>18)\n=\n(25-21)\n\n(25-18)\n\n(25-21)\n\n(25-18)\n=\n4\n7\n\n4\n7\n."
+                    "The probability density function of$X$\nis \\frac{1}{25 - 16} = \\frac{1}{9} \\frac{1}{25 - 16} = \\frac{1}{9}\n.\n$P$\n($X$\n> 19) = (25 - 19) \\left(\\right. \\frac{1}{9} \\left.\\right) \\left(\\right. \\frac{1}{9} \\left.\\right)\n= \\frac{6}{9} \\frac{6}{9}\n= \\frac{2}{3} \\frac{2}{3}\n.\n<img data-media-type=\"image/png\" alt=\"This shows the graph of the function f(x) = 1/9, the pdf for a uniform distribution. A horizontal line ranges from the point (16, 1/9) to the point (25, 1.9). Vertical lines extend from the x-axis to the graph at x = 16 and x = 25 creating a rectangle. A region is shaded inside the rectangle from x = 19 to x = 25. Text notes that the shaded area represents P(x > 19) = 2/3.\" width=\"968\" height=\"456\" data-lazy-src=\"/apps/archive/20240725.163813/resources/8e6879719f6f0b2c01f4a67c4c3e282fbdcfbc27\">",
+                    "$P$\n(19 <$X$\n< 22) = (22 - 19) \\left(\\right. \\frac{1}{9} \\left.\\right) \\left(\\right. \\frac{1}{9} \\left.\\right)\n= \\frac{3}{9} \\frac{3}{9}\n= \\frac{1}{3} \\frac{1}{3}\n.\n<img data-media-type=\"image/png\" alt=\"This shows the graph of the function f(x) = 1/9, the pdf for a uniform distribution. A horizontal line ranges from the point (16, 1/9) to the point (25, 1.9). Vertical lines extend from the x-axis to the graph at x = 16 and x = 25 creating a rectangle. A region is shaded inside the rectangle from x = 19 to x = 22. Text notes that the shaded area represents P(19< x < 22) = 1/3.\" width=\"968\" height=\"456\" data-lazy-src=\"/apps/archive/20240725.163813/resources/4065bb1cbc47eb58f77d39aa05ce8313fdf79ebf\">",
+                    "The area must be 0.25, and 0.25 = (width) \\left(\\right. \\frac{1}{9} \\left.\\right) \\left(\\right. \\frac{1}{9} \\left.\\right)\n, so width = (0.25)(9) = 2.25. Thus, the value is 25 - 2.25 = 22.75.",
+                    "For the following 2 questions: This is a conditional probability question.  P(x > 21| x > 18).  You can do this two ways:\nDraw the graph where a is now 18 and b is still 25.  The height is \\frac{1}{\\left(\\right. 25 - 18 \\left.\\right)} \\frac{1}{\\left(\\right. 25 - 18 \\left.\\right)}\n= \\frac{1}{7} \\frac{1}{7}\n\nSo,$P$\n($x$\n> 21|$x$\n> 18) = (25 - 21) \\left(\\right. \\frac{1}{7} \\left.\\right) \\left(\\right. \\frac{1}{7} \\left.\\right)\n= 4/7.",
+                    "Use the formula:$P$\n($x$\n> 21|$x$\n> 18) = \\frac{P \\left(\\right. x > 21 \\&\\text{nbsp};\\text{AND}\\&\\text{nbsp}; x > 18 \\left.\\right)}{P \\left(\\right. x > 18 \\left.\\right)} \\frac{P \\left(\\right. x > 21 \\&\\text{nbsp};\\text{AND}\\&\\text{nbsp}; x > 18 \\left.\\right)}{P \\left(\\right. x > 18 \\left.\\right)}\n\n= \\frac{P \\left(\\right. x > 21 \\left.\\right)}{P \\left(\\right. x > 18 \\left.\\right)} \\frac{P \\left(\\right. x > 21 \\left.\\right)}{P \\left(\\right. x > 18 \\left.\\right)}\n= \\frac{\\left(\\right. 25 - 21 \\left.\\right)}{\\left(\\right. 25 - 18 \\left.\\right)} \\frac{\\left(\\right. 25 - 21 \\left.\\right)}{\\left(\\right. 25 - 18 \\left.\\right)}\n= \\frac{4}{7} \\frac{4}{7}\n."
                 ]
             },
             "85": {
                 "parts": [
-                    "$P$\n($X$\n> 650) =\n700-650\n\n700-300\n\n=\n\n50\n\n400\n\n=\n1\n8\n\n700-650\n\n700-300\n\n=\n\n50\n\n400\n\n=\n1\n8\n= 0.125",
-                    "$P$\n(400 <$X$\n< 650) =\n650-400\n\n700-300\n\n=\n\n250\n\n400\n\n650-400\n\n700-300\n\n=\n\n250\n\n400\n= 0.625",
-                    "0.10 =\nwidth\n\n700-300\n\nwidth\n\n700-300\n, so width = 400(0.10) = 40. Since 700 - 40 = 660, the drivers travel at least 660 miles on the furthest 10% of days."
+                    "$P$\n($X$\n> 650) = \\frac{700 - 650}{700 - 300} = \\frac{50}{400} = \\frac{1}{8} \\frac{700 - 650}{700 - 300} = \\frac{50}{400} = \\frac{1}{8}\n= 0.125",
+                    "$P$\n(400 <$X$\n< 650) = \\frac{650 - 400}{700 - 300} = \\frac{250}{400} \\frac{650 - 400}{700 - 300} = \\frac{250}{400}\n= 0.625",
+                    "0.10 = \\frac{\\text{width}}{\\text{700} - \\text{300}} \\frac{\\text{width}}{\\text{700} - \\text{300}}\n, so width = 400(0.10) = 40. Since 700 - 40 = 660, the drivers travel at least 660 miles on the furthest 10% of days."
                 ]
             },
             "87": {
@@ -23899,7 +23899,7 @@
                 "parts": [
                     "$X$\n= the time (in years) after reaching age 60 that it takes an individual to retire",
                     "$X$\nis continuous.",
-                    "$X$\n~$Exp$\n(\n\n1\n5\n\n)\n\n(\n\n1\n5\n\n)",
+                    "$X$\n~$Exp$ \\left(\\right. \\frac{1}{5} \\left.\\right) \\left(\\right. \\frac{1}{5} \\left.\\right)",
                     "five",
                     "five",
                     "Answers may vary.",
@@ -23917,10 +23917,10 @@
             "95": {
                 "parts": [
                     "Therefore,$P$\n($T$\n< 1) = 1 - e$^\n\n-\n1\n8\n\n-\n1\n8\n\n$\n$\\approx$ 0.1175.",
-                    "We want to find$P$\n(6 <$t$\n< 10).\n\nTo do this,$P$\n(6 <$t$\n< 10) -$P$\n($t$\n< 6)\n\n=(\n\n1-\ne\n\n-\n1\n8\n\n*10\n\n)-(\n\n1-\ne\n\n-\n1\n8\n\n*6\n\n)\n\n=(\n\n1-\ne\n\n-\n1\n8\n\n*10\n\n)-(\n\n1-\ne\n\n-\n1\n8\n\n*6\n\n)\n$\\approx$ 0.7135 - 0.5276 = 0.1859\n<img data-media-type=\"image/png\" alt=\"This graph shows an exponential distribution. The graph slopes downward. It begins at the point (0, 1.2) and approaches the horizontal t-axis at the right edge of the graph. The region under the graph from x = 6 to x = 10 is shaded. Text notes that the shaded area represents P(6 < t < 10) = 0.1859.\" width=\"917\" height=\"565\" data-lazy-src=\"/apps/archive/20240725.163813/resources/8c3741488020e3f51c849e219fc297d7cc18dd7c\">",
-                    "We want to find 0.70\n=P(T>t)=1-(\n\n1-\ne\n\n-\nt\n8\n\n)=\ne\n\n-\nt\n8\n\n.\n\n=P(T>t)=1-(\n\n1-\ne\n\n-\nt\n8\n\n)=\ne\n\n-\nt\n8\n\n.\n\nSolving for$t$\n, e$^\n\n-\nt\n8\n\n-\nt\n8\n\n$\n= 0.70, so\n-\nt\n8\n\n-\nt\n8\n=$ln$\n(0.70), and$t$\n= -8$ln$\n(0.70) $\\approx$ 2.85 years.\n\nOr use$t$\n=\nln(area_to_the_right)\n\n(-m)\n\n=\n\nln(0.70)\n\n-\n1\n8\n\n$\\approx$2.85 years\n\nln(area_to_the_right)\n\n(-m)\n\n=\n\nln(0.70)\n\n-\n1\n8\n\n$\\approx$2.85 years\n.\n<img data-media-type=\"image/png\" alt=\"This graph shows an exponential distribution. The graph slopes downward. It begins at the point (0, 1.2) and approaches the horizontal t-axis at the right edge of the graph. The region under the graph from x = 2.85 to the edge of the graph is shaded. Text notes that the shaded area represents P(t > 2.85) = 0.70.\" width=\"981\" height=\"564\" data-lazy-src=\"/apps/archive/20240725.163813/resources/443d2d74b21ce16f1b3033b0eaee2d8aa8fe7a3d\">",
-                    "We want to find 0.02 =$P$\n($T$\n<$t$\n) = 1 -$e^\n\n-\nt\n8\n\n-\nt\n8\n\n$\n.\n\nSolving for$t$\n,$e^\n\n-\nt\n8\n\n-\nt\n8\n\n$\n= 0.98, so\n-\nt\n8\n\n-\nt\n8\n=$ln$\n(0.98), and t = -8$ln$\n(0.98) $\\approx$ 0.1616 years, or roughly two months.\n\nThe warranty should cover light bulbs that last less than 2 months.\n\nOr use\nln(area_to_the_right)\n\n(-m)\n\n=\n\nln(1-0.2)\n\n-\n1\n8\n\nln(area_to_the_right)\n\n(-m)\n\n=\n\nln(1-0.2)\n\n-\n1\n8\n= 0.1616.",
-                    "We must find$P$\n($T$\n< 8|$T$\n> 7).\n\nNotice that by the rule of complement events,$P$\n($T$\n< 8|$T$\n> 7) = 1 -$P$\n($T$\n> 8|$T$\n> 7).\n\nBy the memoryless property ($P$\n($X$\n>$r$\n+$t$\n|$X$\n>$r$\n) =$P$\n($X$\n>$t$\n)).\n\nSo$P$\n($T$\n> 8|$T$\n> 7) =$P$\n($T$\n> 1) =\n1-(\n\n1-\ne\n\n-\n1\n8\n\n)=\ne\n\n-\n1\n8\n\n$\\approx$0.8825\n\n1-(\n\n1-\ne\n\n-\n1\n8\n\n)=\ne\n\n-\n1\n8\n\n$\\approx$0.8825\n\nTherefore,$P$\n($T$\n< 8|$T$\n> 7) = 1 - 0.8825 = 0.1175."
+                    "We want to find$P$\n(6 <$t$\n< 10).\n\nTo do this,$P$\n(6 <$t$\n< 10) -$P$\n($t$\n< 6)\n= \\left(\\right. 1 - e^{- \\frac{1}{8} \\star 10} \\left.\\right) - \\left(\\right. 1 - e^{- \\frac{1}{8} \\star 6} \\left.\\right) = \\left(\\right. 1 - e^{- \\frac{1}{8} \\star 10} \\left.\\right) - \\left(\\right. 1 - e^{- \\frac{1}{8} \\star 6} \\left.\\right)\n$\\approx$ 0.7135 - 0.5276 = 0.1859\n<img data-media-type=\"image/png\" alt=\"This graph shows an exponential distribution. The graph slopes downward. It begins at the point (0, 1.2) and approaches the horizontal t-axis at the right edge of the graph. The region under the graph from x = 6 to x = 10 is shaded. Text notes that the shaded area represents P(6 < t < 10) = 0.1859.\" width=\"917\" height=\"565\" data-lazy-src=\"/apps/archive/20240725.163813/resources/8c3741488020e3f51c849e219fc297d7cc18dd7c\">",
+                    "We want to find 0.70 = P \\left(\\right. T > t \\left.\\right) = 1 - \\left(\\right. 1 - e^{- \\frac{t}{8}} \\left.\\right) = e^{- \\frac{t}{8}} . = P \\left(\\right. T > t \\left.\\right) = 1 - \\left(\\right. 1 - e^{- \\frac{t}{8}} \\left.\\right) = e^{- \\frac{t}{8}} .\n\nSolving for$t$\n, e$^\n\n-\nt\n8\n\n-\nt\n8\n\n$\n= 0.70, so - \\frac{t}{8} - \\frac{t}{8}\n=$ln$\n(0.70), and$t$\n= -8$ln$\n(0.70) $\\approx$ 2.85 years.\n\nOr use$t$\n= \\frac{l n (\\text{area}_\\text{to}_\\text{the}_\\text{right})}{\\left(\\right. - m \\left.\\right)} = \\frac{l n (\\text{0} .\\text{70})}{- \\frac{1}{8}} \\approx 2. \\text{85}\\&\\text{nbsp};\\text{years} \\frac{l n (\\text{area}_\\text{to}_\\text{the}_\\text{right})}{\\left(\\right. - m \\left.\\right)} = \\frac{l n (\\text{0} .\\text{70})}{- \\frac{1}{8}} \\approx 2. \\text{85}\\&\\text{nbsp};\\text{years}\n.\n<img data-media-type=\"image/png\" alt=\"This graph shows an exponential distribution. The graph slopes downward. It begins at the point (0, 1.2) and approaches the horizontal t-axis at the right edge of the graph. The region under the graph from x = 2.85 to the edge of the graph is shaded. Text notes that the shaded area represents P(t > 2.85) = 0.70.\" width=\"981\" height=\"564\" data-lazy-src=\"/apps/archive/20240725.163813/resources/443d2d74b21ce16f1b3033b0eaee2d8aa8fe7a3d\">",
+                    "We want to find 0.02 =$P$\n($T$\n<$t$\n) = 1 -$e^\n\n-\nt\n8\n\n-\nt\n8\n\n$\n.\n\nSolving for$t$\n,$e^\n\n-\nt\n8\n\n-\nt\n8\n\n$\n= 0.98, so - \\frac{t}{8} - \\frac{t}{8}\n=$ln$\n(0.98), and t = -8$ln$\n(0.98) $\\approx$ 0.1616 years, or roughly two months.\n\nThe warranty should cover light bulbs that last less than 2 months.\n\nOr use \\frac{ln (\\text{area}_\\text{to}_\\text{the}_\\text{right})}{( - \\text{m})} = \\frac{ln (\\text{1} - 0.2 \\left.\\right)}{- \\frac{1}{8}} \\frac{ln (\\text{area}_\\text{to}_\\text{the}_\\text{right})}{( - \\text{m})} = \\frac{ln (\\text{1} - 0.2 \\left.\\right)}{- \\frac{1}{8}}\n= 0.1616.",
+                    "We must find$P$\n($T$\n< 8|$T$\n> 7).\n\nNotice that by the rule of complement events,$P$\n($T$\n< 8|$T$\n> 7) = 1 -$P$\n($T$\n> 8|$T$\n> 7).\n\nBy the memoryless property ($P$\n($X$\n>$r$\n+$t$\n|$X$\n>$r$\n) =$P$\n($X$\n>$t$\n)).\n\nSo$P$\n($T$\n> 8|$T$\n> 7) =$P$\n($T$\n> 1) = 1 - \\left(\\right. 1 - e^{- \\frac{1}{8}} \\left.\\right) = e^{- \\frac{1}{8}} \\approx 0.8825 1 - \\left(\\right. 1 - e^{- \\frac{1}{8}} \\left.\\right) = e^{- \\frac{1}{8}} \\approx 0.8825\n\nTherefore,$P$\n($T$\n< 8|$T$\n> 7) = 1 - 0.8825 = 0.1175."
                 ]
             },
             "97": {
@@ -23932,17 +23932,17 @@
             },
             "99": {
                 "parts": [
-                    "100\n\n9\n\n100\n\n9\n= 11.11",
+                    "\\frac{100}{9} \\frac{100}{9}\n= 11.11",
                     "$P$\n($X$\n> 10) = 1 -$P$\n($X$\n$\\leq$ 10) = 1 - Poissoncdf(11.11, 10) $\\approx$ 0.5532.",
-                    "The number of people with Type B positive blood encountered roughly follows the Poisson distribution, so the number of people$X$\nwho arrive between successive Type B positive arrivals is roughly exponential with mean$$\\mu$$\n= 9 and$m$\n=\n1\n9\n\n1\n9\n. The cumulative distribution function of$X$\nis\nP(\n\nX<x\n\n)=1-\ne\n\n-\nx\n9\n\nP(\n\nX<x\n\n)=1-\ne\n\n-\nx\n9\n. Thus,$P$\n($X$\n> 20) = 1 -$P$\n($X$\n$\\leq$ 20) =\n1-(\n\n1-\ne\n\n-\n\n20\n\n9\n\n)$\\approx$0.1084.\n\n1-(\n\n1-\ne\n\n-\n\n20\n\n9\n\n)$\\approx$0.1084."
+                    "The number of people with Type B positive blood encountered roughly follows the Poisson distribution, so the number of people$X$\nwho arrive between successive Type B positive arrivals is roughly exponential with mean$$\\mu$$\n= 9 and$m$\n= \\frac{1}{9} \\frac{1}{9}\n. The cumulative distribution function of$X$\nis P \\left(\\right. X < x \\left.\\right) = 1 - e^{- \\frac{x}{9}} P \\left(\\right. X < x \\left.\\right) = 1 - e^{- \\frac{x}{9}}\n. Thus,$P$\n($X$\n> 20) = 1 -$P$\n($X$\n$\\leq$ 20) = 1 - \\left(\\right. 1 - e^{- \\frac{20}{9}} \\left.\\right) \\approx 0.1084. 1 - \\left(\\right. 1 - e^{- \\frac{20}{9}} \\left.\\right) \\approx 0.1084."
                 ]
             },
             "101": {
                 "parts": [
-                    "$P$\n($T$\n< 2) = 1 -\n1-\ne\n\n-\n2\n7\n\n1-\ne\n\n-\n2\n7\n$\\approx$ 0.2485.",
-                    "$P$\n($T$\n> 15) =\n1-P(\n\nT<15\n\n)=1-(\n\n1-\ne\n\n-\n\n15\n\n7\n\n)$\\approx$\ne\n\n-\n\n15\n\n7\n\n$\\approx$0.1173\n\n1-P(\n\nT<15\n\n)=1-(\n\n1-\ne\n\n-\n\n15\n\n7\n\n)$\\approx$\ne\n\n-\n\n15\n\n7\n\n$\\approx$0.1173\n.",
-                    "$P$\n($T$\n> 15|$T$\n> 10) =$P$\n($T$\n> 5) =\n1-(\n\n1-\ne\n\n-\n5\n7\n\n)=\ne\n\n-\n5\n7\n\n$\\approx$0.4895\n\n1-(\n\n1-\ne\n\n-\n5\n7\n\n)=\ne\n\n-\n5\n7\n\n$\\approx$0.4895\n.",
-                    "Let$X$\n= # of patients arriving during a half-hour period. Then$X$\nhas the Poisson distribution with a mean of\n30\n\n7\n\n30\n\n7\n,$X$\n$\\sim$ Poisson\n(\n\n30\n\n7\n\n)\n\n(\n\n30\n\n7\n\n)\n. Find$P$\n($X$\n> 8) = 1 -$P$\n($X$\n$\\leq$ 8) $\\approx$ 0.0311."
+                    "$P$\n($T$\n< 2) = 1 - 1 - e^{- \\frac{2}{7}} 1 - e^{- \\frac{2}{7}}\n$\\approx$ 0.2485.",
+                    "$P$\n($T$\n> 15) = 1 - P \\left(\\right. T < 15 \\left.\\right) = 1 - \\left(\\right. 1 - e^{- \\frac{15}{7}} \\left.\\right) \\approx e^{- \\frac{15}{7}} \\approx 0.1173 1 - P \\left(\\right. T < 15 \\left.\\right) = 1 - \\left(\\right. 1 - e^{- \\frac{15}{7}} \\left.\\right) \\approx e^{- \\frac{15}{7}} \\approx 0.1173\n.",
+                    "$P$\n($T$\n> 15|$T$\n> 10) =$P$\n($T$\n> 5) = 1 - \\left(\\right. 1 - e^{- \\frac{5}{7}} \\left.\\right) = e^{- \\frac{5}{7}} \\approx 0.4895 1 - \\left(\\right. 1 - e^{- \\frac{5}{7}} \\left.\\right) = e^{- \\frac{5}{7}} \\approx 0.4895\n.",
+                    "Let$X$\n= # of patients arriving during a half-hour period. Then$X$\nhas the Poisson distribution with a mean of \\frac{30}{7} \\frac{30}{7}\n,$X$\n$\\sim$ Poisson \\left(\\right. \\frac{30}{7} \\left.\\right) \\left(\\right. \\frac{30}{7} \\left.\\right)\n. Find$P$\n($X$\n> 8) = 1 -$P$\n($X$\n$\\leq$ 8) $\\approx$ 0.0311."
                 ]
             }
         },
@@ -24061,9 +24061,9 @@
             },
             "67": {
                 "parts": [
-                    "$X$\n= 720 :\nz=720-520115=1.74z=720-520115=1.74\n. The exam score of 720 is 1.74 standard deviations above the mean of 520.",
+                    "$X$\n= 720 : z = \\frac{720 - 520}{115} = 1 . 74 z = \\frac{720 - 520}{115} = 1 . 74\n. The exam score of 720 is 1.74 standard deviations above the mean of 520.",
                     "$z$\n= 1.5\n\nThe math SAT score is 520 + 1.5(115) $\\approx$ 692.5. The exam score of 692.5 is 1.5 standard deviations above the mean of 520.",
-                    "X - $\\mu$\n\n$\\sigma$\n\nX - $\\mu$\n\n$\\sigma$\n=\n700 - 514\n\n117\n\n700 - 514\n\n117\n$\\approx$ 1.59, the$z$\n-score for the SAT.\nY - $\\mu$\n\n$\\sigma$\n\nY - $\\mu$\n\n$\\sigma$\n=\n30 - 21\n\n5.3\n\n30 - 21\n\n5.3\n$\\approx$ 1.70, the$z$\n-scores for the ACT. With respect to the test they took, the person who took the ACT did better (has the higher$z$\n-score)."
+                    "\\frac{X \\&\\text{nbsp};-\\&\\text{nbsp}; \\mu}{\\sigma} \\frac{X \\&\\text{nbsp};-\\&\\text{nbsp}; \\mu}{\\sigma}\n= \\frac{\\text{700}\\&\\text{nbsp};-\\&\\text{nbsp};\\text{514}}{\\text{117}} \\frac{\\text{700}\\&\\text{nbsp};-\\&\\text{nbsp};\\text{514}}{\\text{117}}\n$\\approx$ 1.59, the$z$\n-score for the SAT. \\frac{Y \\&\\text{nbsp};-\\&\\text{nbsp}; \\mu}{\\sigma} \\frac{Y \\&\\text{nbsp};-\\&\\text{nbsp}; \\mu}{\\sigma}\n= \\frac{30 \\&\\text{nbsp};-\\&\\text{nbsp}; 21}{5.3} \\frac{30 \\&\\text{nbsp};-\\&\\text{nbsp}; 21}{5.3}\n$\\approx$ 1.70, the$z$\n-scores for the ACT. With respect to the test they took, the person who took the ACT did better (has the higher$z$\n-score)."
                 ]
             },
             "69": {
@@ -24224,7 +24224,7 @@
             "47": {
                 "parts": [
                     "10",
-                    "1\n\n10\n\n1\n\n10"
+                    "\\frac{1}{10} \\frac{1}{10}"
                 ]
             },
             "49": {
@@ -24249,8 +24249,8 @@
                 "parts": [
                     "$X$\n= amount of change students carry",
                     "$X$\n~$E$\n(0.88, 0.88)",
-                    "$\\bar{x}$\n= average amount of change carried by a sample of 25 sstudents.",
-                    "$\\bar{x}$\n~$N$\n(0.88, 0.176)",
+                    "\\bar{x} \\bar{x}\n= average amount of change carried by a sample of 25 sstudents.",
+                    "\\bar{x} \\bar{x}\n~$N$\n(0.88, 0.176)",
                     "0.0819",
                     "0.4276",
                     "The distributions are different. Part a is exponential and part b is normal."
@@ -24260,7 +24260,7 @@
                 "parts": [
                     "length of time for an individual to complete IRS form 1040, in hours.",
                     "mean length of time for a sample of 36 taxpayers to complete IRS form 1040, in hours.",
-                    "$N$\n(\n\n10.53,\n1\n3\n\n)\n\n(\n\n10.53,\n1\n3\n\n)",
+                    "$N$ \\left(\\right. \\text{10} .\\text{53},\\&\\text{nbsp}; \\frac{1}{3} \\left.\\right) \\left(\\right. \\text{10} .\\text{53},\\&\\text{nbsp}; \\frac{1}{3} \\left.\\right)",
                     "Yes. I would be surprised, because the probability is almost 0.",
                     "No. I would not be totally surprised because the probability is 0.2312"
                 ]
@@ -24286,9 +24286,9 @@
                 "parts": [
                     "$X$\n= the yearly income of someone in a developing country",
                     "the average salary from samples of 1,000 residents of a developing country",
-                    "$\\bar{X}$\n$\\sim$$N$\n(\n\n2000,\n\n8000\n\n1000\n\n)\n\n(\n\n2000,\n\n8000\n\n1000\n\n)",
+                    "\\bar{X} \\bar{X}\n$\\sim$$N$ \\left(\\right. \\text{2000},\\&\\text{nbsp}; \\frac{\\text{8000}}{\\sqrt{\\text{1000}}} \\left.\\right) \\left(\\right. \\text{2000},\\&\\text{nbsp}; \\frac{\\text{8000}}{\\sqrt{\\text{1000}}} \\left.\\right)",
                     "Very wide differences in data values can have averages smaller than standard deviations.",
-                    "The distribution of the sample mean will have higher probabilities closer to the population mean.\n$P$\n(2000 <\n$\\bar{x}$\n< 2100) = 0.1537\n$P$\n(2100 <\n$\\bar{x}$\n< 2200) = 0.1317"
+                    "The distribution of the sample mean will have higher probabilities closer to the population mean.\n$P$\n(2000 < \\bar{x} \\bar{x}\n< 2100) = 0.1537\n$P$\n(2100 < \\bar{x} \\bar{x}\n< 2200) = 0.1317"
                 ]
             },
             "71": {
@@ -24320,13 +24320,13 @@
                     "$X$\n= the closing stock prices for U.S. semiconductor manufacturers",
                     "i. $20.71; ii. $17.31; iii. 35",
                     "",
-                    "Exponential distribution,$X ~ Exp$\n(\n\n1\n\n20.71\n\n)\n\n(\n\n1\n\n20.71\n\n)",
+                    "Exponential distribution,$X ~ Exp$ \\left(\\right. \\frac{1}{20.71} \\left.\\right) \\left(\\right. \\frac{1}{20.71} \\left.\\right)",
                     "Answers will vary.",
                     "i. $20.71; ii. $11.14",
                     "Answers will vary.",
                     "Answers will vary.",
                     "Answers will vary.",
-                    "$N$\n(\n\n20.71,\n\n17.31\n\n5\n\n)\n\n(\n\n20.71,\n\n17.31\n\n5\n\n)"
+                    "$N$ \\left(\\right. \\text{20} .\\text{71},\\&\\text{nbsp}; \\frac{17.31}{\\sqrt{5}} \\left.\\right) \\left(\\right. \\text{20} .\\text{71},\\&\\text{nbsp}; \\frac{17.31}{\\sqrt{5}} \\left.\\right)"
                 ]
             },
             "79": {
@@ -24350,7 +24350,7 @@
             "87": {
                 "parts": [
                     "Answers may vary.",
-                    "$\\bar{X}$\n~$N$\n(\n\n60,\n9\n\n25\n\n)\n\n(\n\n60,\n9\n\n25\n\n)",
+                    "\\bar{X} \\bar{X}\n~$N$ \\left(\\right. \\text{60},\\&\\text{nbsp}; \\frac{9}{\\sqrt{25}} \\left.\\right) \\left(\\right. \\text{60},\\&\\text{nbsp}; \\frac{9}{\\sqrt{25}} \\left.\\right)",
                     "0.5000",
                     "59.06",
                     "0.8536",
@@ -24371,9 +24371,9 @@
             },
             "93": {
                 "parts": [
-                    "For the sample, we have$n$\n= 100,\n$\\bar{x}$\n= 0.862,$s$\n= 0.05",
-                    "Σ$\\bar{x}$Σ$\\bar{x}$\n= 85.65,$Σs$\n= 5.18",
-                    "<code>normalcdf</code>\n(396.9,$E$\n99,(465)(0.8565),(0.05)(\n465\n\n465\n)) $\\approx$ 1",
+                    "For the sample, we have$n$\n= 100, \\bar{x} \\bar{x}\n= 0.862,$s$\n= 0.05",
+                    "\\Sigma \\bar{x} \\Sigma \\bar{x}\n= 85.65,$Σs$\n= 5.18",
+                    "<code>normalcdf</code>\n(396.9,$E$\n99,(465)(0.8565),(0.05)( \\sqrt{465} \\sqrt{465}\n)) $\\approx$ 1",
                     "Since the probability of a sample of size 465 having at least a mean sum of 396.9 is appproximately 1, we can conclude that Mars is correctly labeling their M&M packages."
                 ]
             },
@@ -24412,7 +24412,7 @@
             },
             "13": {
                 "parts": [
-                    "$\\bar{x}$\n= 2.2",
+                    "\\bar{x} \\bar{x}\n= 2.2",
                     "$$\\sigma$$\n= 0.2",
                     "$n$\n= 20"
                 ]
@@ -24467,8 +24467,8 @@
             },
             "43": {
                 "parts": [
-                    "$\\bar{x}$\n= 151",
-                    "s\nx\n\ns\nx\n= 32",
+                    "\\bar{x} \\bar{x}\n= 151",
+                    "s_{x} s_{x}\n= 32",
                     "$n$\n= 108",
                     "$n$\n- 1 = 107"
                 ]
@@ -24580,11 +24580,11 @@
             },
             "97": {
                 "parts": [
-                    "$\\bar{x}$\n= 23.6",
-                    "$\\sigma$$\\sigma$\n=  7",
+                    "\\bar{x} \\bar{x}\n= 23.6",
+                    "\\sigma \\sigma\n=  7",
                     "n =  100",
-                    "$X$\nis the time needed to complete an individual tax form.\n$\\bar{X}$\nis the mean time to complete tax forms from a sample of 100 customers.",
-                    "N(\n\n23.6,\n7\n\n100\n\n)N(\n\n23.6,\n7\n\n100\n\n)\nbecause we know sigma.",
+                    "$X$\nis the time needed to complete an individual tax form. \\bar{X} \\bar{X}\nis the mean time to complete tax forms from a sample of 100 customers.",
+                    "N \\left(\\right. 23.6 , \\frac{7}{\\sqrt{100}} \\left.\\right) N \\left(\\right. 23.6 , \\frac{7}{\\sqrt{100}} \\left.\\right)\nbecause we know sigma.",
                     "(22.228, 24.972)",
                     "<img data-media-type=\"image/png\" alt=\"\" width=\"678\" height=\"360\" data-lazy-src=\"/apps/archive/20240725.163813/resources/83aef7a6e69a5da3f2e45d215e94d9bfb7373664\">",
                     "$EBM$\n= 1.372",
@@ -24598,7 +24598,7 @@
                     "7.9",
                     "2.5",
                     "20",
-                    "X is the number of letters a single camper will send home.\n$\\bar{X}$\nis the mean number of letters sent home from a sample of 20 campers.",
+                    "X is the number of letters a single camper will send home. \\bar{X} \\bar{X}\nis the mean number of letters sent home from a sample of 20 campers.",
                     "N\n7.9(2.5\n20\n)7.9(2.5\n20\n)",
                     "CI: (6.98, 8.82)",
                     "<img data-media-type=\"image/png\" alt=\"\" width=\"679\" height=\"359\" data-lazy-src=\"/apps/archive/20240725.163813/resources/7c8029dd6738c17d22c12b8a9be7c9e4fa9417fd\">",
@@ -24608,9 +24608,9 @@
             },
             "101": {
                 "parts": [
-                    "$\\bar{x}$\n= $568,873",
-                    "$CL$\n= 0.95$$\\alpha$$\n= 1 - 0.95 = 0.05\nz\n\n$\\alpha$\n2\n\nz\n\n$\\alpha$\n2\n= 1.96\n$EBM$\n=\nz\n\n0.025\n\n$\\sigma$\n\nn\n\nz\n\n0.025\n\n$\\sigma$\n\nn\n= 1.96\n909200\n\n40\n\n909200\n\n40\n= $281,764",
-                    "$\\bar{x}$\n-$EBM$\n= 568,873 - 281,764 = 287,109\n\n$\\bar{x}$\n+$EBM$\n= 568,873 + 281,764 = 850,637\nAlternate solution:\nUsing the TI-83, 83+, 84, 84+ Calculator\n\nPress STAT and arrow over to TESTS.\nArrow down to 7:ZInterval.\nPress ENTER.\nArrow to Stats and press ENTER.\nArrow down and enter the following values:\n\n$\\sigma$ : 909,200$\\bar{x}$: 568,873\nn: 40\nCL: 0.95\n\nArrow down to Calculate and press ENTER.\nThe confidence interval is ($287,114, $850,632).\nNotice the small difference between the two solutions-these differences are simply due to rounding error in the hand calculations.",
+                    "\\bar{x} \\bar{x}\n= $568,873",
+                    "$CL$\n= 0.95$$\\alpha$$\n= 1 - 0.95 = 0.05 z_{\\frac{\\alpha}{2}} z_{\\frac{\\alpha}{2}}\n= 1.96\n$EBM$\n= z_{0.025} \\frac{\\sigma}{\\sqrt{n}} z_{0.025} \\frac{\\sigma}{\\sqrt{n}}\n= 1.96 \\frac{909200}{\\sqrt{40}} \\frac{909200}{\\sqrt{40}}\n= $281,764",
+                    "\\bar{x} \\bar{x}\n-$EBM$\n= 568,873 - 281,764 = 287,109\n\\bar{x} \\bar{x}\n+$EBM$\n= 568,873 + 281,764 = 850,637\nAlternate solution:\nUsing the TI-83, 83+, 84, 84+ Calculator\n\nPress STAT and arrow over to TESTS.\nArrow down to 7:ZInterval.\nPress ENTER.\nArrow to Stats and press ENTER.\nArrow down and enter the following values:\n\n$\\sigma$ : 909,200$\\bar{x}$: 568,873\nn: 40\nCL: 0.95\n\nArrow down to Calculate and press ENTER.\nThe confidence interval is ($287,114, $850,632).\nNotice the small difference between the two solutions-these differences are simply due to rounding error in the hand calculations.",
                     "We estimate with 95% confidence that the mean amount of contributions received from all individuals by House candidates is between $287,109 and $850,637."
                 ]
             },
@@ -24623,7 +24623,7 @@
                     "6944",
                     "35",
                     "34",
-                    "t\n\n34\n\nt\n\n34",
+                    "t_{34} t_{34}",
                     "CI: (6244, 11,014)",
                     "<img data-media-type=\"image/png\" alt=\"\" width=\"644\" height=\"361\" data-lazy-src=\"/apps/archive/20240725.163813/resources/8e569554532c13ce0cf4bf43c7a103b40c6b0ec5\">",
                     "EB = 2385",
@@ -24632,8 +24632,8 @@
             },
             "107": {
                 "parts": [
-                    "$\\bar{x}$\n= 2.51",
-                    "s\nx\n\ns\nx\n= 0.318",
+                    "\\bar{x} \\bar{x}\n= 2.51",
+                    "s_{x} s_{x}\n= 0.318",
                     "$n$\n= 9",
                     "$n$\n- 1 = 8",
                     "the effective length of time for a tranquilizer",
@@ -24650,11 +24650,11 @@
             },
             "111": {
                 "parts": [
-                    "$\\bar{x}$\n= 11.6",
-                    "s\nx\n\ns\nx\n= 4.1",
+                    "\\bar{x} \\bar{x}\n= 11.6",
+                    "s_{x} s_{x}\n= 4.1",
                     "$n$\n= 225",
                     "$n$\n- 1 = 224",
-                    "$X$\nis the number of unoccupied seats on a single flight.\n$\\bar{X}$\nis the mean number of unoccupied seats from a sample of 225 flights.",
+                    "$X$\nis the number of unoccupied seats on a single flight. \\bar{X} \\bar{X}\nis the mean number of unoccupied seats from a sample of 225 flights.",
                     "We will use a Student's-t distribution, because we do not know the population standard deviation.",
                     "CI: (11.12 , 12.08)",
                     "Answers may vary.",
@@ -24684,7 +24684,7 @@
             "119": {
                 "parts": [
                     "X = the number of people who feel that the president is doing an acceptable job;\nP' = the proportion of people in a sample who feel that the president is doing an acceptable job.",
-                    "N(\n\n0.61,\n\n(0.61)(0.39)\n\n1200\n\n)\n\nN(\n\n0.61,\n\n(0.61)(0.39)\n\n1200\n\n)",
+                    "N \\left(\\right. 0.61 , \\sqrt{\\frac{\\left(\\right. 0.61 \\left.\\right) \\left(\\right. 0.39 \\left.\\right)}{1200}} \\left.\\right) N \\left(\\right. 0.61 , \\sqrt{\\frac{\\left(\\right. 0.61 \\left.\\right) \\left(\\right. 0.39 \\left.\\right)}{1200}} \\left.\\right)",
                     "CI: (0.59, 0.63)",
                     "Answers may vary.",
                     "$EBM$\n: 0.02"
@@ -24702,8 +24702,8 @@
             },
             "123": {
                 "parts": [
-                    "$X$\n= the number of adult Americans who feel that crime is the main problem;\np'p'\n= the proportion of adult Americans who feel that crime is the main problem",
-                    "Since we are estimating a proportion, given\np'p'\n= 0.2 and$n$\n= 1000, the distribution we should use is\nN(\n\n0.2,\n\n(0.2)(0.8)\n\n1000\n\n)\n\nN(\n\n0.2,\n\n(0.2)(0.8)\n\n1000\n\n)\n.",
+                    "$X$\n= the number of adult Americans who feel that crime is the main problem; p^{'} p^{'}\n= the proportion of adult Americans who feel that crime is the main problem",
+                    "Since we are estimating a proportion, given p^{'} p^{'}\n= 0.2 and$n$\n= 1000, the distribution we should use is N \\left(\\right. 0.2 , \\sqrt{\\frac{\\left(\\right. 0.2 \\left.\\right) \\left(\\right. 0.8 \\left.\\right)}{1000}} \\left.\\right) N \\left(\\right. 0.2 , \\sqrt{\\frac{\\left(\\right. 0.2 \\left.\\right) \\left(\\right. 0.8 \\left.\\right)}{1000}} \\left.\\right)\n.",
                     "CI: (0.18, 0.22)",
                     "Answers may vary.",
                     "$EBM$\n: 0.02",
@@ -24722,9 +24722,9 @@
             },
             "131": {
                 "parts": [
-                    "p'p'\n=\n(0.55 + 0.49)\n\n2\n\n(0.55 + 0.49)\n\n2\n= 0.52;$EBP$\n= 0.55 - 0.52 = 0.03",
+                    "p^{'} p^{'}\n= \\frac{(\\text{0} .\\text{55}\\&\\text{nbsp};+\\&\\text{nbsp};\\text{0} .\\text{49})}{\\text{2}} \\frac{(\\text{0} .\\text{55}\\&\\text{nbsp};+\\&\\text{nbsp};\\text{0} .\\text{49})}{\\text{2}}\n= 0.52;$EBP$\n= 0.55 - 0.52 = 0.03",
                     "No, the confidence interval includes values less than or equal to 0.50. It is possible that less than half of the population believe this.",
-                    "$CL$\n= 0.75, so$$\\alpha$$\n= 1 - 0.75 = 0.25 and\n$\\alpha$\n2\n\n=0.125\nz\n\n$\\alpha$\n2\n\n=1.150\n\n$\\alpha$\n2\n\n=0.125\nz\n\n$\\alpha$\n2\n\n=1.150\n. (The area to the right of this$z$\nis 0.125, so the area to the left is 1 - 0.125 = 0.875.)\n\nEBP=(1.150)\n\n0.52(0.48)\n\n1,000\n\n$\\approx$0.018\n\nEBP=(1.150)\n\n0.52(0.48)\n\n1,000\n\n$\\approx$0.018\n\n($p$\n' -$EBP$\n,$p$\n' +$EBP$\n) = (0.52 - 0.018, 0.52 + 0.018) = (0.502, 0.538)\nAlternate Solution\nUsing the TI-83, 83+, 84, 84+ Calculator\n\nSTAT TESTS A: 1-PropZinterval with x = (0.52)(1,000), n = 1,000, CL = 0.75.\nAnswer is (0.502, 0.538)",
+                    "$CL$\n= 0.75, so$$\\alpha$$\n= 1 - 0.75 = 0.25 and \\frac{\\alpha}{2} = 0.125 &nbsp; z_{\\frac{\\alpha}{2}} = 1.150 \\frac{\\alpha}{2} = 0.125 &nbsp; z_{\\frac{\\alpha}{2}} = 1.150\n. (The area to the right of this$z$\nis 0.125, so the area to the left is 1 - 0.125 = 0.875.)\nE B P = \\left(\\right. 1.150 \\left.\\right) \\sqrt{\\frac{0.52 \\left(\\right. 0.48 \\left.\\right)}{1 , 000}} \\approx 0.018 E B P = \\left(\\right. 1.150 \\left.\\right) \\sqrt{\\frac{0.52 \\left(\\right. 0.48 \\left.\\right)}{1 , 000}} \\approx 0.018\n\n($p$\n' -$EBP$\n,$p$\n' +$EBP$\n) = (0.52 - 0.018, 0.52 + 0.018) = (0.502, 0.538)\nAlternate Solution\nUsing the TI-83, 83+, 84, 84+ Calculator\n\nSTAT TESTS A: 1-PropZinterval with x = (0.52)(1,000), n = 1,000, CL = 0.75.\nAnswer is (0.502, 0.538)",
                     "Yes - this interval does not fall less than 0.50 so we can conclude that at least half of all American adults believe that major sports programs corrupt education - but we do so with only 75% confidence."
                 ]
             },
@@ -24884,7 +24884,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n$\\geq$ 50,000",
                     "$Ha$\n:$$\\mu$$\n< 50,000",
-                    "Let\n$\\bar{X}$\n= the average lifespan of a brand of tires.",
+                    "Let \\bar{X} \\bar{X}\n= the average lifespan of a brand of tires.",
                     "normal distribution",
                     "$z$\n= -2.315",
                     "$p$\n-value = 0.0103",
@@ -24900,7 +24900,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n= $1.00",
                     "$Ha$\n:$$\\mu$$\n$\\neq$ $1.00",
-                    "Let\n$\\bar{X}$\n= the average cost of a daily newspaper.",
+                    "Let \\bar{X} \\bar{X}\n= the average cost of a daily newspaper.",
                     "normal distribution",
                     "$z$\n= -0.866",
                     "$p$\n-value = 0.3865",
@@ -24916,7 +24916,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n= 10",
                     "$Ha$\n:$$\\mu$$\n$\\neq$ 10",
-                    "Let\n$\\bar{X}$\nthe mean number of sick days an employee takes per year.",
+                    "Let \\bar{X} \\bar{X}\nthe mean number of sick days an employee takes per year.",
                     "Student's$t$\n-distribution",
                     "$t$\n= -1.12",
                     "$p$\n-value = 0.300",
@@ -24948,7 +24948,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n= 4",
                     "$Ha$\n:$$\\mu$$\n$\\neq$ 4",
-                    "Let\n$\\bar{X}$\nthe average I.Q. of a set of brown trout.",
+                    "Let \\bar{X} \\bar{X}\nthe average I.Q. of a set of brown trout.",
                     "two-tailed Student's t-test",
                     "$t$\n= 1.95",
                     "$p$\n-value = 0.076",
@@ -24980,7 +24980,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n$\\geq$ 129",
                     "$Ha$\n:$$\\mu$$\n< 129",
-                    "Let\n$\\bar{X}$\n= the average time in seconds that Terri finishes Lap 4.",
+                    "Let \\bar{X} \\bar{X}\n= the average time in seconds that Terri finishes Lap 4.",
                     "Student's$t$\n-distribution",
                     "$t$\n= 1.209",
                     "0.8792",
@@ -25012,7 +25012,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n$\\geq$ 22",
                     "$Ha$\n:$$\\mu$$\n< 22",
-                    "Let\n$\\bar{X}$\n= the mean number of bubbles per blow.",
+                    "Let \\bar{X} \\bar{X}\n= the mean number of bubbles per blow.",
                     "Student's$t$\n-distribution",
                     "-2.667",
                     "$p$\n-value = 0.00486",
@@ -25028,7 +25028,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$$\n$\\leq$ 1",
                     "$Ha$\n:$$\\mu$$\n> 1",
-                    "Let\n$\\bar{X}$\n= the mean cost in dollars of macaroni and cheese in a certain town.",
+                    "Let \\bar{X} \\bar{X}\n= the mean cost in dollars of macaroni and cheese in a certain town.",
                     "Student's$t$\n-distribution",
                     "$t$\n= 0.340",
                     "$p$\n-value = 0.36756",
@@ -25092,7 +25092,7 @@
                 "parts": [
                     "$H0$\n:$p$\n= 0.12",
                     "$Ha$\n:$p$\n< 0.12",
-                    "Let\nP'=P'=\nthe proportion of NYC residents that smoke.",
+                    "Let P^{'} & = & P^{'} & = &\nthe proportion of NYC residents that smoke.",
                     "Normal for a single proportion",
                     "0.2207",
                     "$p$\n-value = 0.5873",
@@ -25108,7 +25108,7 @@
                 "parts": [
                     "$H0$\n:$p$\n= 0.12",
                     "$Ha$\n:$p$\n< 0.12",
-                    "Let\nP'=P'=\nthe proportion of NYC residents that smoke.",
+                    "Let P^{'} & = & P^{'} & = &\nthe proportion of NYC residents that smoke.",
                     "Normal for a single proportion",
                     "0.2207",
                     "$p$\n-value = 0.5873",
@@ -25312,7 +25312,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$1$\n$\\geq$$$\\mu$2$",
                     "$Ha$\n:$$\\mu$1$\n<$$\\mu$2$",
-                    "$\\bar{X}$1\n\n-$\\bar{X}$2$\\bar{X}$1\n\n-$\\bar{X}$2\nis the difference between the mean enrollments of the two-year colleges and the four-year colleges.",
+                    "\\left(\\bar{X}\\right)_{1} - \\left(\\bar{X}\\right)_{2} \\left(\\bar{X}\\right)_{1} - \\left(\\bar{X}\\right)_{2}\nis the difference between the mean enrollments of the two-year colleges and the four-year colleges.",
                     "Student's-$t$",
                     "test statistic: -0.2480",
                     "$p$\n-value: 0.4019",
@@ -25327,7 +25327,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$1$\n$\\geq$$$\\mu$2$",
                     "$Ha$\n:$$\\mu$1$\n<$$\\mu$2$",
-                    "$\\bar{X}$1\n\n-$\\bar{X}$2$\\bar{X}$1\n\n-$\\bar{X}$2\nis the difference between the mean entry level salaries of mechanical engineers and electrical engineers.",
+                    "\\left(\\bar{X}\\right)_{1} - \\left(\\bar{X}\\right)_{2} \\left(\\bar{X}\\right)_{1} - \\left(\\bar{X}\\right)_{2}\nis the difference between the mean entry level salaries of mechanical engineers and electrical engineers.",
                     "$t_108$",
                     "test statistic:$t$\n= -0.82",
                     "$p$\n-value: 0.2061",
@@ -25342,7 +25342,7 @@
                 "parts": [
                     "$H0$\n:$$\\mu$1$\n=$$\\mu$2$",
                     "$Ha$\n:$$\\mu$1$\n$\\neq$$$\\mu$2$",
-                    "$\\bar{X}$1\n\n-$\\bar{X}$2$\\bar{X}$1\n\n-$\\bar{X}$2\nis the difference between the mean times for completing a lap in races and in practices.",
+                    "\\left(\\bar{X}\\right)_{1} - \\left(\\bar{X}\\right)_{2} \\left(\\bar{X}\\right)_{1} - \\left(\\bar{X}\\right)_{2}\nis the difference between the mean times for completing a lap in races and in practices.",
                     "$t_20.32$",
                     "test statistic: -4.70",
                     "$p$\n-value: 0.0001",
@@ -25471,7 +25471,7 @@
                 "parts": [
                     "$H0$\n:$p1$\n$\\leq$$p2$",
                     "$Ha$\n:$p1$\n>$p2$",
-                    "P\n'\n\n1\n\n-\n\nP\n'\n\n2\n\nP\n'\n\n1\n\n-\n\nP\n'\n\n2\nis the difference between the proportions of men and women who enjoy shopping for electronic equipment.",
+                    "\\left(P^{'}\\right)_{1} - \\left(P^{'}\\right)_{2} \\left(P^{'}\\right)_{1} - \\left(P^{'}\\right)_{2}\nis the difference between the proportions of men and women who enjoy shopping for electronic equipment.",
                     "normal for two proportions",
                     "test statistic: 0.22",
                     "$p$\n-value: 0.4133",
@@ -25486,7 +25486,7 @@
                 "parts": [
                     "$H0$\n:$p1$\n=$p2$",
                     "$Ha$\n:$p1$\n$\\neq$$p2$",
-                    "P\n'\n\n1\n\n-\n\nP\n'\n\n2\n\nP\n'\n\n1\n\n-\n\nP\n'\n\n2\nis the difference between the proportions of men and women that have at least one pierced ear.",
+                    "\\left(P^{'}\\right)_{1} - \\left(P^{'}\\right)_{2} \\left(P^{'}\\right)_{1} - \\left(P^{'}\\right)_{2}\nis the difference between the proportions of men and women that have at least one pierced ear.",
                     "normal for two proportions",
                     "test statistic: -4.82",
                     "$p$\n-value: zero",
@@ -26602,8 +26602,8 @@
             },
             "75": {
                 "parts": [
-                    "H\n0\n\n:\n$\\sigma$\n1\n2\n\n=\n$\\sigma$\n2\n2\n\nH\n0\n\n:\n$\\sigma$\n1\n2\n\n=\n$\\sigma$\n2\n2",
-                    "H\na\n\n:\n$\\sigma$\n1\n2\n\n$\\neq$\n$\\sigma$\n1\n2\n\nH\na\n\n:\n$\\sigma$\n1\n2\n\n$\\neq$\n$\\sigma$\n1\n2",
+                    "H_{0} :\\&\\text{nbsp}; \\sigma_{1}^{2} = \\sigma_{2}^{2} H_{0} :\\&\\text{nbsp}; \\sigma_{1}^{2} = \\sigma_{2}^{2}",
+                    "H_{a} : &nbsp; \\sigma_{1}^{2} \\neq \\sigma_{1}^{2} H_{a} : &nbsp; \\sigma_{1}^{2} \\neq \\sigma_{1}^{2}",
                     "$df$\n($num$\n) = 4;$df$\n($denom$\n) = 4",
                     "$F_4, 4$",
                     "3.00",
@@ -26617,8 +26617,8 @@
             },
             "80": {
                 "parts": [
-                    "$H0$\n: =\n$\\sigma$\n1\n2\n\n$\\sigma$\n1\n2\n=\n$\\sigma$\n2\n2\n\n$\\sigma$\n2\n2",
-                    "$Ha$\n:\n$\\sigma$\n1\n2\n\n$\\sigma$\n1\n2\n$\\neq$\n$\\sigma$\n1\n2\n\n$\\sigma$\n1\n2",
+                    "$H0$\n: = \\sigma_{1}^{2} \\sigma_{1}^{2}\n= \\sigma_{2}^{2} \\sigma_{2}^{2}",
+                    "$Ha$\n: \\sigma_{1}^{2} \\sigma_{1}^{2}\n$\\neq$ \\sigma_{1}^{2} \\sigma_{1}^{2}",
                     "$df$\n($n$\n) = 7,$df$\n($d$\n) = 6",
                     "$F_7,6$",
                     "0.8117",
