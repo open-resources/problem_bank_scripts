@@ -34,7 +34,7 @@ server:
 
     numbers = sorted(random.randint(1, 100) for _ in range(9))
     # store the variables in the dictionary "params"
-    data2["params"]["numbers"] = numbers
+    data2["params"]["vars"]["numbers"] = numbers
 
     # define correct answers
     data2["correct_answers"]["part1_ans"] = median(numbers)
@@ -59,16 +59,17 @@ part1:
 myst:
   substitutions:
     params:
-      numbers:
-      - 22
-      - 25
-      - 28
-      - 41
-      - 51
-      - 54
-      - 64
-      - 79
-      - 81
+      vars:
+        numbers:
+        - 22
+        - 25
+        - 28
+        - 41
+        - 51
+        - 54
+        - 64
+        - 79
+        - 81
     correct_answers:
       part1_ans: 51
 
@@ -91,10 +92,6 @@ Please remove this section if it is not application for this question.
 
 Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 
 ## Rubric
 

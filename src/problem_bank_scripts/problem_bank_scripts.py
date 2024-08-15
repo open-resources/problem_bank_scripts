@@ -301,31 +301,74 @@ def read_md_problem(filepath):
     return defdict_to_dict(return_dict, {})
 
 
-def dict_to_md(md_dict, remove_keys=[None]):
+def _remove_l3_headers(text: str, remove: set[str]) -> str:
+    """Removes specific level 3+ headers from a markdown string; useful for removing sections like pl-answer-panel and pl-submission panel for the public version of the site.
+    
+    Args:
+        text (str): Markdown text to process
+        remove (set[str]): Set of strings to remove from the markdown text
+
+    Returns:
+        str: Processed markdown text
+    """
+    tokens_to_rerender = []
+    next_is_new_header_text = False
+    current_header_text = None
+
+    mdit = markdown_it.MarkdownIt()
+    env = {}
+    tokens = mdit.parse(text, env)
+
+    for token in tokens:
+        if token.type == "heading_open":
+            next_is_new_header_text = True
+            tokens_to_rerender.append(token)
+            current_header_text = None
+            continue
+
+        if next_is_new_header_text:
+            next_is_new_header_text = False
+            current_header_text = token.content
+        
+            if current_header_text in remove:
+                tokens_to_rerender.pop()
+        
+        if current_header_text not in remove:
+            tokens_to_rerender.append(token)
+    
+    return (
+        mdformat.renderer.MDRenderer()
+        .render(tokens_to_rerender, mdit.options, env)
+        .replace(r"\\", "\\")
+    )
+
+
+def dict_to_md(md_dict: dict[str, str], remove_keys=None):
     """Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).
     Args:
         md_dict (dict): A nested dictionary, for e.g. the output of `read_md_problem()`
-        remove_keys (list, optional): Any keys to remove from the dictionary, for instance solutions. Defaults to [None,].
+        remove_keys (list[str], optional): Any keys to remove from the dictionary, for instance solutions. Defaults to removing no keys.
 
     Returns:
         str: A multi-line string that can be written to a file.
     """
 
-    md_string = ""
-
-    md_dict = defdict_to_dict(md_dict, {})
+    # md_dict: dict[str, str] = defdict_to_dict(md_dict, {})
 
     # Question Title and Preamble
-    md_string += md_dict.pop("title", None)
-    md_string += md_dict.pop("preamble", None)
+    md_string = md_dict.pop("title", "")
+    md_string += md_dict.pop("preamble", "")
 
-    # TODO: Refactor this to use the elegant solution provided here: https://stackoverflow.com/a/49723101/2217577
+    _remove = set() if remove_keys is None else set(remove_keys)
 
-    for k, v in md_dict.items():
-        if k in remove_keys:
+    for heading, content in md_dict.items():
+        if heading in _remove:
             continue
+        
+        if _remove and "###" in content:
+            md_string += "\n" + _remove_l3_headers(content, _remove)
         else:
-            md_string += "\n" + md_dict[k]
+            md_string += "\n" + content
 
     return md_string
 
@@ -644,33 +687,8 @@ def process_question_md(
         data2_sanitized = defdict_to_dict(data2, {})
         data2_sanitized = defdict_to_dict(remove_correct_answers(data2_sanitized), {})
 
-        ####################################################
-        #### Start Temporary Fix for issue of myst no longer permitting nested dicts
-        #### GitHub issue: https://github.com/executablebooks/MyST-Parser/issues/761
-
-        df = pd.json_normalize(data2_sanitized, sep="_")
-        data2_sanitized_flattened = df.to_dict(orient="records")[0]
-
-        repl_keys = {
-            k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())  # pyright: ignore[reportAttributeAccessIssue]
-        }
-
-        text = dict_to_md(
-            body_parts,
-            remove_keys=[
-                "Rubric",
-                "Solution",
-                "Comments",
-                "pl-submission-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
-                "pl-answer-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
-            ],
-        )
-
-        for k, v in repl_keys.items():
-            text = text.replace(k, v)
-
         # Update the YAML header to add substitutions
-        header.update({"myst": {"substitutions": data2_sanitized_flattened}})
+        header.update({"myst": {"substitutions": data2_sanitized} })
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
@@ -681,42 +699,20 @@ def process_question_md(
             "---\n"
             + header_yml
             + "---\n"
-            + text
+            + dict_to_md(
+                body_parts,
+                remove_keys=[
+                    "Rubric",
+                    "Solution",
+                    "Comments",
+                    "pl-submission-panel",
+                    "pl-answer-panel",
+                ],
+            )
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),
             encoding="utf8",
         )
-
-        ####################################################
-        #### End Temporary Fix for issue of myst no longer permitting nested dicts
-        #### Uncomment below when the fix is implemented to recover past behaviour
-
-        # # Update the YAML header to add substitutions
-        # header.update({"myst": {"substitutions": data2_sanitized} })
-
-        # # Update the YAML header to add substitutions, unsort it, and process for file
-        # header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
-
-        # # Write the YAML to a file
-        # output_path.parent.mkdir(parents=True, exist_ok=True)
-        # output_path.write_text(
-        #     "---\n"
-        #     + header_yml
-        #     + "---\n"
-        #     + dict_to_md(
-        #         body_parts,
-        #         remove_keys=[
-        #             "Rubric",
-        #             "Solution",
-        #             "Comments",
-        #             "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
-        #             "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
-        #         ],
-        #     )
-        #     + "\n## Attribution\n\n"
-        #     + process_attribution(header.get("attribution")),
-        #     encoding="utf8",
-        # )
 
     else:
         # Update the YAML header to add substitutions
@@ -942,11 +938,6 @@ def process_question_pl(
     # Also see https://github.com/open-resources/problem_bank_scripts/pull/92
     question_html = question_html.replace("\\_", "_").replace("\\[","[").replace("\\]","]")
     question_html = question_html.replace("\\*", "*").replace("\\<","<").replace("\\`","`")
-    # Fix empty <markdown> block
-    # See this issue: https://github.com/PrairieLearn/PrairieLearn/issues/8346
-    # TODO: this can be removed once issue 8346 is resolved
-    question_html = question_html.replace("<markdown></markdown>", 
-                                          "<markdown> </markdown>")
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
@@ -1025,46 +1016,16 @@ def process_question_pl(
 
 
 def pl_image_path(html):
-    """Adds `{{options.client_files_question_url}}` directory before the path automatically"""
+    """Adds ``{{options.client_files_question_url}}`` directory before the path automatically"""
 
-    # TODO: Figure out the regex to make this into a single expression, maybe with |
+    ext_group = r"((?!http).*\.(?:png|gif|jpg|jpeg))"
+    base_repl = r"{{options.client_files_question_url}}/\1"
+
     # If image files are included as markdown format, add {{options.client_files_question_url}}
-    res = re.subn(
-        r"\(((?!http).*\.png)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.gif)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.jpeg)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.jpg)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
+    res = re.sub(rf"\({ext_group}\)", rf"({base_repl})", html)
 
     # If image files are included as html format, add {{options.client_files_question_url}}
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.png)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.gif)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.jpeg)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.jpg)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-
-    return res[0]
+    return re.sub(rf"src[\s,=]*\"{ext_group}", f'src="{base_repl}', res)
 
 
 def validate_header(header_dict):

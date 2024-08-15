@@ -29,9 +29,11 @@ part1:
     file-names: file.png, file.jpg, file.pdf, filename space.png
 myst:
   substitutions:
-    params_vars_title: File Upload
+    params:
+      vars:
+        title: File Upload
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
@@ -42,16 +44,6 @@ Your file must be a png, jpg, or pdf.
 ### Answer Section
 
 File upload box will be shown here.
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 

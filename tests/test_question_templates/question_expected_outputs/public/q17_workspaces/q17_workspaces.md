@@ -47,9 +47,11 @@ part1:
   type: workspace
 myst:
   substitutions:
-    params_vars_title: Moving and copying files
+    params:
+      vars:
+        title: Moving and copying files
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
@@ -63,16 +65,6 @@ Open the Workspace below and perform the following tasks.
 Once you complete these tasks, click on "Save & Grade" below.
 
 ### Answer Section
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 

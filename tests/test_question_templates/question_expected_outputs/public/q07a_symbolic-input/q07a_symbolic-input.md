@@ -33,9 +33,11 @@ part1:
     allow-blank: false
 myst:
   substitutions:
-    params_vars_title: Centripetal Motion
+    params:
+      vars:
+        title: Centripetal Motion
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
@@ -50,16 +52,6 @@ Note that it may not be necessary to use every variable. Use the following table
 | $r$  | r  |
 
 ### Answer Section
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 
