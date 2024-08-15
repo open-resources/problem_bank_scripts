@@ -32,16 +32,18 @@ part1:
     label: $n= $
 myst:
   substitutions:
-    params_numbers:
-    - 22
-    - 25
-    - 28
-    - 41
-    - 51
-    - 54
-    - 64
-    - 79
-    - 81
+    params:
+      vars:
+        numbers:
+        - 22
+        - 25
+        - 28
+        - 41
+        - 51
+        - 54
+        - 64
+        - 79
+        - 81
 ---
 # {{ params.vars.title }}
 Given a list of numbers ${{ params.vars.numbers }}$, what is the `median` of the list?
@@ -51,20 +53,6 @@ Given a list of numbers ${{ params.vars.numbers }}$, what is the `median` of the
 ### Answer Section
 
 Please enter in a numeric value in.
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
 
 ## Attribution
 
