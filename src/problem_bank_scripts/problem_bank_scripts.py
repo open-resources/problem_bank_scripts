@@ -33,6 +33,10 @@ import importlib.resources
 
 from .inputs import INPUT_TYPE_PROCESSORS
 
+## Getting file modification time
+import datetime
+import git
+
 ## Topic Validation
 
 path = pathlib.Path().resolve().as_posix()
@@ -376,11 +380,12 @@ def dict_to_md(md_dict: dict[str, str], remove_keys=None):
 ## Functions from md-to-pl
 
 
-def write_info_json(output_path, parsed_question):
+def write_info_json(output_path, parsed_question, modified_time: str | None = None):
     """
     Args:
         output_path (Path): [description]
         parsed_question (dict]): [description]
+        modified_time (str | None, optional): Last commit timestamp or modified timestamp of the file
     """
 
     # Deal with optional tags in info.json
@@ -441,6 +446,9 @@ def write_info_json(output_path, parsed_question):
         if not isinstance(info_json["workspaceOptions"]["port"], int):
             msg = f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead"
             raise TypeError(msg)
+
+    if modified_time:
+        info_json["comment"] = {"lastModified": modified_time}
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
@@ -868,8 +876,16 @@ def process_question_pl(
         tags.append("DEV")
         parsed_q["header"]["tags"] = tags
 
+    try:
+        repo = git.Repo(_path.parent, search_parent_directories=True)
+        repo.working_dir
+        commit = next(repo.iter_commits(None, source_filepath, max_count=1))
+        modified_time = commit.committed_datetime
+    except:
+        modified_time = datetime.datetime.fromtimestamp(_path.stat().st_mtime, tz=datetime.timezone.utc)
+
     # Write info.json file
-    write_info_json(output_path, parsed_q)
+    write_info_json(output_path, parsed_q, modified_time.strftime("%Y-%m-%dT%H:%M:%S%z"))
 
     # Question Preamble
     preamble = parsed_q["body_parts"].get("preamble", None)

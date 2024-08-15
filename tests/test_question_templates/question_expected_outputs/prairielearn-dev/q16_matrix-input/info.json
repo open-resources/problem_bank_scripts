@@ -1,15 +1,18 @@
 {
-    "uuid": "7481a4ee-ce20-3741-8a8e-35baedd57dc5",
+    "uuid": "aefff7a4-ff92-38a9-bc93-4fa7d65cbbd6",
     "title": "Matrix Input",
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "matrix-input",
         "matrix-component-input",
+        "matrix-input",
         "DEV"
     ],
     "type": "v3",
     "partialCredit": true,
     "singleVariant": false,
-    "showCorrectAnswer": false
+    "showCorrectAnswer": false,
+    "comment": {
+        "lastModified": "2023-11-21T21:38:37-0800"
+    }
 }

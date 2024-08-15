@@ -1,5 +1,5 @@
 {
-    "uuid": "27a933a3-bdfa-365d-965f-779542664d44",
+    "uuid": "495364a5-66c9-30f7-a78e-f28ae5c55fec",
     "title": "Integer Math",
     "topic": "000.Template",
     "tags": [
@@ -7,7 +7,10 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }

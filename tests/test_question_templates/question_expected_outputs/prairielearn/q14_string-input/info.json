@@ -1,12 +1,15 @@
 {
-    "uuid": "78fbabf9-e344-3cf1-a657-4c3cb4e44100",
+    "uuid": "47056b10-2752-3abd-8b1e-26c23e69bd92",
     "title": "Code Output",
     "topic": "000.Template",
     "tags": [
         "string-input"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-07-10T17:16:32-0700"
+    }
 }

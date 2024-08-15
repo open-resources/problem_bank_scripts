@@ -8,7 +8,10 @@
         "DEV"
     ],
     "type": "v3",
-    "singleVariant": false,
     "partialCredit": true,
-    "showCorrectAnswer": false
+    "singleVariant": false,
+    "showCorrectAnswer": false,
+    "comment": {
+        "lastModified": "2024-08-10T12:49:01-0700"
+    }
 }

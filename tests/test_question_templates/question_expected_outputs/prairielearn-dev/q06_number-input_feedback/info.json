@@ -1,5 +1,5 @@
 {
-    "uuid": "548ef32d-08d8-3448-81ee-2775b111c643",
+    "uuid": "6f3f8820-507c-3b7e-968e-68958ca8ad80",
     "title": "OSUPv2p12_55",
     "topic": "000.Template",
     "tags": [
@@ -15,7 +15,10 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2024-06-20T16:22:06-0700"
+    }
 }

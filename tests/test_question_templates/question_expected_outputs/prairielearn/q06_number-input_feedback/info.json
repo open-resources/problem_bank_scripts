@@ -1,5 +1,5 @@
 {
-    "uuid": "642b15af-e226-3820-8c14-b82047f7369a",
+    "uuid": "4b03f30e-a150-32d4-aaf3-012c5a5056ad",
     "title": "OSUPv2p12_55",
     "topic": "000.Template",
     "tags": [
@@ -14,7 +14,10 @@
         "circular motion"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2024-06-20T16:22:06-0700"
+    }
 }

@@ -1,15 +1,18 @@
 {
-    "uuid": "3fd804a1-96de-3996-9547-9b5893265a9a",
+    "uuid": "30ed9c87-e383-3eaf-9180-df65cff35b29",
     "title": "Multi-part Question",
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "multiple-choice",
         "number-input",
+        "multiple-choice",
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }
