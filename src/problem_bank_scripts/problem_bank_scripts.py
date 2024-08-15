@@ -302,7 +302,7 @@ def read_md_problem(filepath):
 
 
 def _remove_l3_headers(text: str, remove: set[str]) -> str:
-    """Removes specific level 3+ headers from a markdown string
+    """Removes specific level 3+ headers from a markdown string; useful for removing sections like pl-answer-panel and pl-submission panel for the public version of the site.
     
     Args:
         text (str): Markdown text to process
