@@ -887,7 +887,7 @@ def process_question_pl(
 
     # Useful info panel
 
-    if (useful_info := parsed_q["body_parts"].get("Useful_info", None)) is not None:
+    if (useful_info := parsed_q["body_parts"].get("Useful_info", None)):
         useful_info = useful_info.replace("## Useful Info\n", "")
         question_html += f"""<pl-hidden-hints>
 <pl-hint hint-name="Helpful Information"><markdown>{useful_info}</markdown></pl-hint>
@@ -931,7 +931,6 @@ def process_question_pl(
         if q_panel:
             question_html += f"\n<pl-answer-panel>{q_panel}</pl-answer-panel>\n"
 
-        # TODO: Add support for other panels here as well !
 
         question_html += f"\n<!-- ######## End of Part {pnum} ######## -->\n"
 
