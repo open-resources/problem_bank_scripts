@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import filecmp
 import json
-import os
 import pathlib
 
 import fastjsonschema
@@ -141,8 +140,6 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, devmode: bool,
     del expected_json["uuid"]
     for key in expected_json:
         with subtests.test("Check Generated info.json", key=key):
-            if os.getenv("PBS_SKIP_COMMENT_COMPARISON") and key == "comment":
-                pytest.skip("lastModified timestamp will not be the same when testing built distributions")
             generated = generated_json[key]
             if isinstance(generated, list):
                 generated = sorted(generated)
