@@ -53,6 +53,8 @@ jobs:
           - "3.12"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install Poetry
         run: pipx install poetry
       - name: Set up Python ${{ matrix.python-version }}
@@ -127,7 +129,10 @@ jobs:
           python -m pip install --user "$path_to_file[tests]"
           python -m pip list
       - name: Run tests against installed wheel
+        env: 
+          PBS_EXPECT_TIMESTAMP_XFAIL: "1"
         run: rm -rf src/ && pytest tests/
+            
 
   test-banks:
     name: Test ${{ matrix.bank.name }} Problem Bank Builds (${{ matrix.python-version }})

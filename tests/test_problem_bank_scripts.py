@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import filecmp
 import json
+import os
 import pathlib
 
 import fastjsonschema
@@ -122,7 +123,7 @@ def test_prairie_learn(paths: dict[str, pathlib.Path], question: str, devmode: b
         for dev in [False, True]
     ],
 )
-def test_info_json(paths: dict[str, pathlib.Path], question: str, devmode: bool, validate_info_json):
+def test_info_json(paths: dict[str, pathlib.Path], question: str, devmode: bool, validate_info_json, subtests):
     """Tests the PrairieLearn `process_question_pl()` info.json file
 
     Args:
@@ -139,13 +140,16 @@ def test_info_json(paths: dict[str, pathlib.Path], question: str, devmode: bool,
     del generated_json["uuid"]  # uuid is semi-randomly generated, so we can't compare reliably it
     del expected_json["uuid"]
     for key in expected_json:
-        generated = generated_json[key]
-        if isinstance(generated, list):
-            generated = sorted(generated)
-        expected = expected_json[key]
-        if isinstance(expected, list):
-            expected = sorted(expected)
-        assert expected == generated, f"info.json key {key!r} for {question} did not match with expected output."
+        with subtests.test("Check Generated info.json", key=key):
+            if os.getenv("PBS_SKIP_COMMENT_COMPARISON") and key == "comment":
+                pytest.skip("lastModified timestamp will not be the same when testing built distributions")
+            generated = generated_json[key]
+            if isinstance(generated, list):
+                generated = sorted(generated)
+            expected = expected_json[key]
+            if isinstance(expected, list):
+                expected = sorted(expected)
+            assert expected == generated, f"info.json key {key!r} for {question} did not match with expected output."
 
 
 @pytest.mark.parametrize("question", files)
