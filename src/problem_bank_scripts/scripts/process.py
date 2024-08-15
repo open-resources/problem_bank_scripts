@@ -86,9 +86,10 @@ def _do_run(args: argparse.Namespace, parser: argparse.ArgumentParser):
                 process_question_pl(source_filepath)
 
         except Exception as e:
-            e.add_note(f"Error in processing question: {source_filepath}")
-            # print(f"There is an error in this problem: \n\t- File path: {source_filepath}\n\t- Error: {e}")
-            # raise e
+            if sys.version_info >= (3, 11):
+                e.add_note(f"Error in processing question: {source_filepath}")
+            else:
+                e.args = (f"Error in processing question: {source_filepath}", *e.args)
             excs.append(e)
 
     if excs:
