@@ -3521,4 +3521,4 @@ tui = ["nltk", "openai", "pdf2image", "python-dotenv", "questionary", "scikit-le
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10"
-content-hash = "bc8e375c2345cf467215a15c2c831e9d956249831d6715d67b36b1c977f07728"
+content-hash = "3c8f592608716d2882ee635e30085368506e44991e2be46a0c9b698b0c590e6b"
