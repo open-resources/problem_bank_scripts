@@ -604,7 +604,6 @@ def write_md(exercise: dict):
 
     all_imports = {
         "import random",
-        "import pandas as pd",
         "import problem_bank_helpers as pbh",
     }
     all_imports.update(set(exercise["imports"]))
