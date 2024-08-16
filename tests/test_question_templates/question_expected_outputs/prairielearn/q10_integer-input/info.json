@@ -1,12 +1,15 @@
 {
-    "uuid": "06bd1c5c-9b82-38b7-b2b8-cbe82bcc75b0",
+    "uuid": "e5c004cf-2127-387e-bc00-3c044683f8d6",
     "title": "Integer Math",
     "topic": "000.Template",
     "tags": [
         "number-input"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }

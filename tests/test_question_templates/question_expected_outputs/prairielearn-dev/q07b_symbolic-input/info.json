@@ -1,5 +1,5 @@
 {
-    "uuid": "0fae1dea-189d-3e68-8293-61f80942ad50",
+    "uuid": "ca717a26-cfb3-3e1f-8f56-6aee4b36cfc7",
     "title": "Symbolic Input 2 - Trig",
     "topic": "000.Template",
     "tags": [
@@ -7,7 +7,10 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }

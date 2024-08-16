@@ -1,5 +1,5 @@
 {
-    "uuid": "cfaaaed0-bf18-3305-b15f-770848d40798",
+    "uuid": "61050c3a-569e-341e-b905-d8d9b7fff2fb",
     "title": "File Upload",
     "topic": "000.Template",
     "tags": [
@@ -7,8 +7,11 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true,
-    "gradingMethod": "Manual"
+    "gradingMethod": "Manual",
+    "comment": {
+        "lastModified": "2023-06-14T19:23:57-0700"
+    }
 }

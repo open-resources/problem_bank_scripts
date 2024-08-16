@@ -1,5 +1,5 @@
 {
-    "uuid": "d0d2c517-6ed7-3801-a6e7-ea72a0b7ded9",
+    "uuid": "c314920c-1a39-3cc6-bbbd-b555de72f080",
     "title": "Code Output",
     "topic": "000.Template",
     "tags": [
@@ -7,7 +7,10 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-07-10T17:16:32-0700"
+    }
 }

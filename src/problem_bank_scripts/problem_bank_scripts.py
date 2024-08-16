@@ -33,6 +33,10 @@ import importlib.resources
 
 from .inputs import INPUT_TYPE_PROCESSORS
 
+## Getting file modification time
+import datetime
+import git
+
 ## Topic Validation
 
 path = pathlib.Path().resolve().as_posix()
@@ -376,11 +380,12 @@ def dict_to_md(md_dict: dict[str, str], remove_keys=None):
 ## Functions from md-to-pl
 
 
-def write_info_json(output_path, parsed_question):
+def write_info_json(output_path, parsed_question, modified_time: str | None = None):
     """
     Args:
         output_path (Path): [description]
         parsed_question (dict]): [description]
+        modified_time (str | None, optional): Last commit timestamp or modified timestamp of the file
     """
 
     # Deal with optional tags in info.json
@@ -441,6 +446,9 @@ def write_info_json(output_path, parsed_question):
         if not isinstance(info_json["workspaceOptions"]["port"], int):
             msg = f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead"
             raise TypeError(msg)
+
+    if modified_time:
+        info_json["comment"] = {"lastModified": modified_time}
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
@@ -868,8 +876,16 @@ def process_question_pl(
         tags.append("DEV")
         parsed_q["header"]["tags"] = tags
 
+    try:
+        repo = git.Repo(_path.parent, search_parent_directories=True)
+        repo.working_dir
+        commit = next(repo.iter_commits(None, source_filepath, max_count=1))
+        modified_time = commit.committed_datetime
+    except:
+        modified_time = datetime.datetime.fromtimestamp(_path.stat().st_mtime, tz=datetime.timezone.utc)
+
     # Write info.json file
-    write_info_json(output_path, parsed_q)
+    write_info_json(output_path, parsed_q, modified_time.strftime("%Y-%m-%dT%H:%M:%S%z"))
 
     # Question Preamble
     preamble = parsed_q["body_parts"].get("preamble", None)
@@ -882,22 +898,13 @@ def process_question_pl(
         question_html = ""
 
     # Useful info panel
-    useful_info = parsed_q["body_parts"].get("Useful_info", None)
 
-    # TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
-    if useful_info:
-        question_html += f"""<p>
-   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-   <i class="fa fa-info-circle" aria-hidden="true"></i> Helpful Information
-   </button>
-</p>
-<div class="collapse" id="collapseExample">
-   <div class="card card-body">
-      <markdown>
-{parsed_q['body_parts']['Useful_info']}
-      </markdown>
-   </div>
-</div>"""
+    if (useful_info := parsed_q["body_parts"].get("Useful_info", None)):
+        useful_info = useful_info.replace("## Useful Info\n", "")
+        question_html += f"""<pl-hidden-hints>
+<pl-hint hint-name="Helpful Information"><markdown>{useful_info}</markdown></pl-hint>
+</pl-hidden-hints>
+"""
 
     # Single and Multi-part question construction
 
@@ -908,9 +915,7 @@ def process_question_pl(
         question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
 
         if parsed_q["num_parts"] > 1:
-            question_html += f"""<div class="card my-2">
-<div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
-<div class="card-body">\n\n"""
+            question_html += f'<pl-card header="{parsed_q["body_parts_split"][part]["title"]}">\n'
 
         if "multiple-choice" in q_type and not validate_multiple_choice(part,parsed_q,data2):
                 msg = (
@@ -927,20 +932,17 @@ def process_question_pl(
             question_html += f"{converter(part,parsed_q,data2)}"
 
         if parsed_q["num_parts"] > 1:
-            question_html += "</div>\n</div>\n"
+            question_html += "</pl-card>\n"
 
         # Add pl-submission-panel and pl-answer-panel (if they exist)
         subm_panel = parsed_q["body_parts_split"][part].get("pl-submission-panel", None)
         q_panel = parsed_q["body_parts_split"][part].get("pl-answer-panel", None)
 
         if subm_panel:
-            question_html += (
-                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
-            )
+            question_html += f"\n<pl-submission-panel>{subm_panel}</pl-submission-panel>\n"
         if q_panel:
-            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
+            question_html += f"\n<pl-answer-panel>{q_panel}</pl-answer-panel>\n"
 
-        # TODO: Add support for other panels here as well !
 
         question_html += f"\n<!-- ######## End of Part {pnum} ######## -->\n"
 

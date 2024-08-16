@@ -1,15 +1,18 @@
 {
-    "uuid": "6951ad1d-4f24-355c-a911-0738a6db8bd1",
+    "uuid": "41f71885-4953-3293-81f5-641cb51ded1f",
     "title": "Electric Field and Direction",
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "dropdown",
         "number-input",
+        "dropdown",
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2024-06-20T16:22:06-0700"
+    }
 }

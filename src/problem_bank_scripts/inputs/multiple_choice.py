@@ -42,19 +42,16 @@ class MCInputConverter:
         """
         html = f"<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"
 
-        pl_customizations = " ".join(
-            [
-                f'{k} = "{v}"'
-                for k, v in parsed_question["header"][part_name][
-                    "pl-customizations"
-                ].items()
-            ]
-        )  # PL-customizations
+        customizations: dict = parsed_question["header"][part_name]["pl-customizations"].copy()
 
         tag = self._pl_tag
         if tag == "dropdown":
             tag = "multiple-choice"
-            pl_customizations += ' display = "dropdown"'
+            customizations["display"] = "dropdown"
+            if (blank := customizations.pop("blank", None)):
+                customizations.setdefault("allow-blank", blank)
+            if (order := customizations.pop("sort", None)):
+                customizations.setdefault("order", order)
             warnings.warn(
                 "The 'pl-dropdown' tag is deprecated. Please use 'pl-multiple-choice' with the 'dropdown'"
                 " customization instead, or if multiple parts have dropdowns, consider using the matching input type."
@@ -63,6 +60,8 @@ class MCInputConverter:
                 FutureWarning,
                 stacklevel=2,
             )
+
+        pl_customizations = " ".join(f'{k} = "{v}"' for k, v in customizations.items())  # PL-customizations
 
         html += f'<pl-{tag} answers-name="{part_name}_ans" {pl_customizations} >\n'
 

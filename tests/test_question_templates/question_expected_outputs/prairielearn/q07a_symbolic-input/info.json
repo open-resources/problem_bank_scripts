@@ -1,12 +1,15 @@
 {
-    "uuid": "480d9eaf-8cd7-3704-a9b9-86ed4ca4c8ce",
+    "uuid": "3e3bcde1-14de-3d46-a631-948e7a009010",
     "title": "Centripetal Motion",
     "topic": "000.Template",
     "tags": [
         "symbolic-input"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }

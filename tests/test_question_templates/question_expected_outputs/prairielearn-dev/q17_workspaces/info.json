@@ -1,5 +1,5 @@
 {
-    "uuid": "abe940ee-ff06-30dc-ac09-6800e74a9aa3",
+    "uuid": "afe513ad-db86-3792-b919-1d10ebec399a",
     "title": "Moving and copying files",
     "topic": "000.Template",
     "tags": [
@@ -7,8 +7,9 @@
         "DEV"
     ],
     "type": "v3",
-    "showCorrectAnswer": false,
     "partialCredit": true,
+    "singleVariant": false,
+    "showCorrectAnswer": false,
     "workspaceOptions": {
         "image": "prairielearn/workspace-xtermjs",
         "port": 8080,
@@ -21,5 +22,7 @@
             "newdir/file2_new.txt"
         ]
     },
-    "singleVariant": false
+    "comment": {
+        "lastModified": "2024-06-17T12:02:32-0700"
+    }
 }

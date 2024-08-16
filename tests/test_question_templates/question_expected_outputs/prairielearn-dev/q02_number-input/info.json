@@ -1,5 +1,5 @@
 {
-    "uuid": "4df78016-988d-3a83-a9d9-8d239054f6d3",
+    "uuid": "1f60d1d0-0051-3c2a-9b86-2b468f3869d5",
     "title": "Distance travelled",
     "topic": "000.Template",
     "tags": [
@@ -8,7 +8,10 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }

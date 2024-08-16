@@ -1,5 +1,5 @@
 {
-    "uuid": "3db6e8da-de2c-3315-83be-7a49df09cefc",
+    "uuid": "e63b6bfb-e60a-3adf-b7c6-836a6ac02712",
     "title": "Describe an Experiment",
     "topic": "000.Template",
     "tags": [
@@ -7,7 +7,10 @@
         "DEV"
     ],
     "type": "v3",
+    "partialCredit": true,
     "singleVariant": false,
     "showCorrectAnswer": false,
-    "partialCredit": true
+    "comment": {
+        "lastModified": "2023-06-14T21:02:26-0700"
+    }
 }

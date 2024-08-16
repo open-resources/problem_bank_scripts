@@ -92,6 +92,10 @@ part1:
 ---
 # {{ params.vars.title }}
 
+## Useful Info
+
+This element is depreciated and `pl-multiple-choice` (or `pl-matching`) should be used instead. See https://prairielearn.readthedocs.io/en/latest/elements/#pl-dropdown-element for more information.
+
 ## Question Text
 
 {{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
