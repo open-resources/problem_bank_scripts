@@ -14,7 +14,7 @@ Install the package via pip:
 
 .. code-block:: shell
 
-    pip install "problem_bank_scripts[tui]>=0.12.0rc0"
+    pip install "problem_bank_scripts[tui]"
 
 Or, install the latest development version from the repository:
 
