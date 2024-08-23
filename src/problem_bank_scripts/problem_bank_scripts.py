@@ -80,6 +80,11 @@ def defdict_to_dict(defdict, finaldict):
                     v[k2] = dict(sorted(v2.items(), key=lambda i: i[0]))
                 
             finaldict[k] = v
+        elif hasattr(v, "dtype"):
+            try:
+                finaldict[k] = v.item()
+            except:
+                finaldict[k] = v
         else:
             finaldict[k] = v
     return finaldict
