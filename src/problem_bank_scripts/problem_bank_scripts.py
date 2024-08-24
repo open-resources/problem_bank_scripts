@@ -80,6 +80,10 @@ def defdict_to_dict(defdict, finaldict):
                     v[k2] = dict(sorted(v2.items(), key=lambda i: i[0]))
                 
             finaldict[k] = v
+        # Somewhere around Aug 2024, something changed in how objects were serialized and anything stored as a `numpy` object wasn't correctly parsed by `pyyaml`
+        # See here for our history on this: (https://moosvilab.ok.ubc.ca/moosvilab/pl/zfp63dh6hjy5zdkzemzmtzqffr)
+        # And the jupyterbook PR where this was also addressed: https://github.com/jupyter-book/jupyter-book/pull/2167
+
         elif hasattr(v, "dtype"):
             try:
                 finaldict[k] = v.item()
