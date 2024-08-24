@@ -87,7 +87,7 @@ def defdict_to_dict(defdict, finaldict):
         elif hasattr(v, "dtype"):
             try:
                 finaldict[k] = v.item()
-            except:
+            except Exception:
                 finaldict[k] = v
         else:
             finaldict[k] = v
