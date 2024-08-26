@@ -2,11 +2,6 @@ import numpy as np; np.random.seed(111)
 import problem_bank_helpers as pbh
 import prairielearn as pl
 
-def imports(data):
-    import numpy as np; np.random.seed(111)
-    import problem_bank_helpers as pbh
-    import prairielearn as pl
-    
 def generate(data):
     data2 = pbh.create_data2()
     data2["params"]["title"] = "Matrix Input"

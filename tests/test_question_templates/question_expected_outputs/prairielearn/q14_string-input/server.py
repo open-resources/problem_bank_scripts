@@ -1,10 +1,6 @@
 import random; random.seed(111) 
 import problem_bank_helpers as pbh
 
-def imports(data):
-    import random; random.seed(111) 
-    import problem_bank_helpers as pbh
-    
 def generate(data):
     data2 = pbh.create_data2()
     
