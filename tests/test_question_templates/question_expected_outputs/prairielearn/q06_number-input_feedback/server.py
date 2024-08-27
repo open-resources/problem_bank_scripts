@@ -12,21 +12,6 @@ feedback_dict = {'vars': ['part1_ans'],
                  'units': [r'$~\mathrm{A}$']
                  }
 
-def imports(data):
-    import random as rd; rd.seed(111)
-    import numpy as np
-    import pandas as pd
-    import problem_bank_helpers as pbh
-    
-    # Feedback params
-    rtol = 0.03
-    errorCheck = 'True'
-    
-    feedback_dict = {'vars': ['part1_ans'],
-                     'stringData': ['I'],
-                     'units': [r'$~\mathrm{A}$']
-                     }
-    
 def generate(data):
     data2 = pbh.create_data2()
     

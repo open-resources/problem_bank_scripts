@@ -2,11 +2,6 @@ import random; random.seed(111)
 from statistics import median
 import problem_bank_helpers as pbh
 
-def imports(data):
-    import random; random.seed(111)
-    from statistics import median
-    import problem_bank_helpers as pbh
-    
 def generate(data):
     data2 = pbh.create_data2()
     

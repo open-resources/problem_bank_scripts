@@ -493,6 +493,8 @@ def assemble_server_py(parsed_question, location):
         # With the custom header, add functions to server.py as-is
         if function == "custom":
             server_py += f"{code}"
+        elif function == "imports":
+            continue
         else:
             if code:
                 server_py += f"def {function}(data):\n    {indented_code}\n"
