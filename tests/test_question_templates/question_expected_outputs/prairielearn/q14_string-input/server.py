@@ -1,4 +1,4 @@
-import random; random.seed(111) 
+import random 
 import problem_bank_helpers as pbh
 
 def generate(data):

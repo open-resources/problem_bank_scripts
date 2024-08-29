@@ -1,4 +1,4 @@
-import random as rd; rd.seed(111)
+import random as rd
 import math
 import problem_bank_helpers as pbh
 

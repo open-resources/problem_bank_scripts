@@ -25,7 +25,7 @@ tags:
 - unknown
 assets: null
 server:
-  imports: "import random; random.seed(111) \nimport problem_bank_helpers as pbh\n"
+  imports: "import random \nimport problem_bank_helpers as pbh\n"
   generate: |
     data2 = pbh.create_data2()
 
