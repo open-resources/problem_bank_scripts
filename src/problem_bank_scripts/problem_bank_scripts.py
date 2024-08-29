@@ -640,6 +640,8 @@ def process_question_md(
         instructor (bool, optional): Flag to determine if the output is for an instructor or not. Defaults to False.
             This determines if the solutions are included in the output or not.
     """
+    import random
+    import numpy
     try:
         source_filepath = pathlib.Path(source_filepath).resolve(strict=True)
     except:
@@ -687,6 +689,8 @@ def process_question_md(
     with tempfile.TemporaryDirectory(suffix=f"_{output_path.stem}", ignore_cleanup_errors=True) as dirpath:
         file = pathlib.Path(dirpath).joinpath("server.py")
         file.write_text(server_py, encoding="utf8")
+        random.seed(111)
+        numpy.random.seed(111)  # noqa: NPY002
         try:
             code = compile(server_py, file.as_posix(), "exec")
             exec(code, server)        

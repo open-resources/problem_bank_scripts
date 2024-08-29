@@ -37,7 +37,7 @@ externalGradingOptions:
   entrypoint: "/python_autograder/run.sh"
 server:
     imports: |
-        import random as rd; rd.seed(111)
+        import random as rd
         import math
         import problem_bank_helpers as pbh
     generate: |

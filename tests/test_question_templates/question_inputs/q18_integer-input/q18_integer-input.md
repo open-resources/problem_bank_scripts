@@ -26,7 +26,7 @@ tags:
 assets:
 server:
     imports: |
-        import random; random.seed(111)
+        import random
         from statistics import median
         import problem_bank_helpers as pbh
     generate: |
