@@ -35,7 +35,7 @@ server:
 
     feedback_dict = {'vars': ['part1_ans'],
                      'stringData': ['E'],
-                     'units': ['$~\mathrm{N}/\mathrm{C}$']
+                     'units': [r'$~\mathrm{N}/\mathrm{C}$']
                      }
   generate: |
     data2 = pbh.create_data2()
@@ -109,10 +109,11 @@ part1:
     suffix: $\rm\ N/C$
     weight: 1
 part2:
-  type: dropdown
+  type: multiple-choice
   pl-customizations:
-    blank: true
     weight: 1
+    display: dropdown
+    allow-blank: true
 ---
 # {{ params.vars.title }}
 

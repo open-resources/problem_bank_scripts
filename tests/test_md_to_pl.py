@@ -9,22 +9,8 @@ import pytest
 from problem_bank_scripts import process_question_md, process_question_pl
 
 
-# TODO: excluding symbolic questions, needs to be fixed because of how sympy objects are handled
-exclude_question = (
-    "q07a_symbolic-input",
-    "q07b_symbolic-input",
-)
-
 # Generate a list of all problems in the test problems directory
-files = sorted(
-    [
-        file.name
-        for file in pathlib.Path(
-            "tests/test_question_templates/question_inputs/"
-        ).iterdir()
-        if file.name != ".DS_Store"
-    ]
-)
+files = sorted(file.name for file in pathlib.Path("tests/test_question_templates/question_inputs/").iterdir() if file.name != ".DS_Store")
 
 _tested_questions = set()
 

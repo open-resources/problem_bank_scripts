@@ -93,12 +93,17 @@ server:
   grade: |
     pass
 part1:
-  type: dropdown
+  type: multiple-choice
   pl-customizations:
     weight: 1
-    blank: 'true'
+    display: dropdown
+    allow-blank: 'true'
 ---
 # {{ params.vars.title }}
+
+## Useful Info
+
+This element is depreciated and `pl-multiple-choice` (or `pl-matching`) should be used instead. See https://prairielearn.readthedocs.io/en/latest/elements/#pl-dropdown-element for more information.
 
 ## Part 1
 

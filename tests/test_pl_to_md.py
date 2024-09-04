@@ -6,7 +6,7 @@ import tempfile
 
 import pytest
 
-from problem_bank_scripts import pl_to_md
+from problem_bank_scripts.pl_to_md import pl_to_md
 
 
 # Generate a list of all problems in the test problems directory
