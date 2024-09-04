@@ -4,13 +4,13 @@
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "matrix-component-input",
-        "matrix-input"
+        "matrix-input",
+        "matrix-component-input"
     ],
     "type": "v3",
-    "singleVariant": false,
-    "showCorrectAnswer": false,
     "partialCredit": true,
+    "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
         "METADATA": {
             "author": "Gavin Kendal-Freedman",
@@ -38,6 +38,7 @@
             "Rubric": "This should be hidden from students until after the deadline.",
             "Solution": "This should never be revealed to students.",
             "Comments": "These are random comments associated with this question."
-        }
+        },
+        "lastModified": "2023-11-21T21:38:37-0800"
     }
 }

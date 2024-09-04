@@ -43,53 +43,44 @@ part1:
     source-file-name: tests/starter_code.py
 myst:
   substitutions:
-    params_question: 7th power
-    params_num: 7
-    params_fname: warthog
-    params_input0: 8
-    params_output0: 2097152.0
-    params_input1: 9
-    params_output1: 4782969.0
-    params_input2: 4
-    params_output2: 16384.0
-    params_names_for_user:
-    - name: x
-      description: A random input number
-      type: int
-    params_names_from_user:
-    - name: warthog
-      description: receives a single numerical input, returns its 7th power
-      type: function
+    params:
+      question: 7th power
+      num: 7
+      fname: warthog
+      input0: 8
+      output0: 2097152.0
+      input1: 9
+      output1: 4782969.0
+      input2: 4
+      output2: 16384.0
+      names_for_user:
+      - name: x
+        description: A random input number
+        type: int
+      names_from_user:
+      - name: warthog
+        description: receives a single numerical input, returns its 7th power
+        type: function
 ---
 # {{ params.vars.title }}
 
 ## Question Text
 
-This question requires you to define a function named `{{params_fname}}`.
-This function should receive a single numerical input and return the {{params_question}} of this input.
+This question requires you to define a function named `{{params.fname}}`.
+This function should receive a single numerical input and return the {{params.question}} of this input.
 assume all inputs to the function are valid.
 
-Below are some example uses of the `{{params_fname}}` function:
+Below are some example uses of the `{{params.fname}}` function:
 
 ```python
-{{params_fname}}({{params_input0}})  # returns {{params_output0}}
-{{params_fname}}({{params_input1}})  # returns {{params_output1}}
-{{params_fname}}({{params_input2}})  # returns {{params_output2}}
+{{params.fname}}({{params.input0}})  # returns {{params.output0}}
+{{params.fname}}({{params.input1}})  # returns {{params.output1}}
+{{params.fname}}({{params.input2}})  # returns {{params.output2}}
 ```
 
 ### Answer Section
 
 import math
-
-### pl-submission-panel
-
-<pl-external-grader-results></pl-external-grader-results>
-<pl-file-preview></pl-file-preview>
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 

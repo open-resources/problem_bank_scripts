@@ -6,9 +6,9 @@
         "string-input"
     ],
     "type": "v3",
-    "singleVariant": false,
     "partialCredit": true,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
         "METADATA": {
             "author": "Gavin Kendal-Freedman",
@@ -36,6 +36,7 @@
             "Rubric": "This should be hidden from students until after the deadline.",
             "Solution": "This should never be revealed to students.",
             "Comments": "These are random comments associated with this question:\n\nThis example problem is adapted from PrairieLearn's Examples: https://github.com/PrairieLearn/PrairieLearn/tree/master/exampleCourse/questions/element/stringInput"
-        }
+        },
+        "lastModified": "2023-07-10T17:16:32-0700"
     }
 }

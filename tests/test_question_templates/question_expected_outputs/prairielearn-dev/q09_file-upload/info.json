@@ -7,10 +7,10 @@
         "DEV"
     ],
     "type": "v3",
-    "singleVariant": false,
-    "gradingMethod": "Manual",
     "partialCredit": true,
     "showCorrectAnswer": false,
+    "gradingMethod": "Manual",
+    "singleVariant": false,
     "comment": {
         "METADATA": {
             "author": "Michael Kudla",
@@ -35,6 +35,7 @@
             "Rubric": "This should be hidden from students until after the deadline.",
             "Solution": "This should never be revealed to students.",
             "Comments": "These are random comments associated with this question."
-        }
+        },
+        "lastModified": "2023-06-14T19:23:57-0700"
     }
 }

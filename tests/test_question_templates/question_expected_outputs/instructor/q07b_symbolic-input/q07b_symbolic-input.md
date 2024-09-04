@@ -82,13 +82,13 @@ myst:
         _type: sympy
         _value: g*(mu_s*cos(theta) - sin(theta))
         _variables:
-        - mu_s
         - g
+        - mu_s
         - theta
         _assumptions:
-          mu_s:
-            commutative: true
           g:
+            commutative: true
+          mu_s:
             commutative: true
           theta:
             commutative: true

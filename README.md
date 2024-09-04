@@ -1,8 +1,9 @@
 # Problem Bank Scripts 
 
-[![Python](https://img.shields.io/badge/python-3.10-blue)]()
+[![PyPI supported Python versions](https://img.shields.io/pypi/pyversions/problem-bank-scripts.svg)](https://pypi.org/project/problem-bank-scripts/)
+[![PyPI version info](https://img.shields.io/pypi/v/problem-bank-scripts.svg)](https://pypi.org/project/problem-bank-scripts/)
 [![codecov](https://codecov.io/gh/open-resources/problem_bank_scripts/branch/main/graph/badge.svg)](https://codecov.io/gh/open-resources/problem_bank_scripts)
-[![Documentation Status](https://readthedocs.org/projects/problem_bank_scripts/badge/?version=latest)](https://problem_bank_scripts.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/problem_bank_scripts/badge/?version=latest)](https://problem-bank-scripts.readthedocs.io/en/latest/?badge=latest)
 
 
 ## Installation
@@ -52,7 +53,7 @@ To finalize the version update, create a new release on GitHub and the package w
 
 ## Documentation
 
-The official documentation is hosted on Read the Docs: https://problem_bank_scripts.readthedocs.io/en/latest/
+The official documentation is hosted on Read the Docs: https://problem-bank-scripts.readthedocs.io/en/latest/
 
 ## Contributors
 

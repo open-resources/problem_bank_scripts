@@ -2,16 +2,14 @@
 # Date: 2021-05-09
 # This file contains many helper functions that will be used across the question bank project.
 
-from docopt import docopt
 
 # Imports
 ## Loading and Saving files & others
+import errno
 import uuid
 import json
 import pathlib
-import os
 from collections import defaultdict
-from collections.abc import Callable
 from shutil import copy2, rmtree
 import re
 import codecs
@@ -19,16 +17,26 @@ import importlib.util
 import problem_bank_helpers as pbh
 import pandas as pd
 import warnings
+import tempfile
+import traceback
+import os
 
 ## Parse Markdown
 import markdown_it
-import mdformat
+import mdformat.renderer
 
 ## Dealing with YAML
+from problem_bank_scripts.inputs.utils import replace_tags
 import yaml
 
 ## Loading files : https://stackoverflow.com/a/60687710
 import importlib.resources
+
+from .inputs import INPUT_TYPE_PROCESSORS, OPB_INPUT_TYPES
+
+## Getting file modification time
+import datetime
+import git
 
 ## Roundtrip PL questions back to OPB MD
 import ast
@@ -54,7 +62,6 @@ for subject in subjects:
 
 # Start of reading/parsing functions
 
-
 def defdict_to_dict(defdict, finaldict):
     """Convert a defaultdict (nested) to a regular dictionary.
         - Answer copied from: https://stackoverflow.com/a/61133504/2217577
@@ -70,6 +77,26 @@ def defdict_to_dict(defdict, finaldict):
         if isinstance(v, defaultdict):
             # new level created and that is the new value
             finaldict[k] = defdict_to_dict(v, {})
+        elif isinstance(v, dict) and v.get("_type", None) == "sympy":
+            for k2, v2 in v.items():
+                if isinstance(v2, (set, list)):
+                    try:
+                        v[k2] = sorted(v2, key=str)
+                    except:
+                        pass
+                elif isinstance(v2, dict):
+                    v[k2] = dict(sorted(v2.items(), key=lambda i: i[0]))
+                
+            finaldict[k] = v
+        # Somewhere around Aug 2024, something changed in how objects were serialized and anything stored as a `numpy` object wasn't correctly parsed by `pyyaml`
+        # See here for our history on this: (https://moosvilab.ok.ubc.ca/moosvilab/pl/zfp63dh6hjy5zdkzemzmtzqffr)
+        # And the jupyterbook PR where this was also addressed: https://github.com/jupyter-book/jupyter-book/pull/2167
+
+        elif hasattr(v, "dtype"):
+            try:
+                finaldict[k] = v.item()
+            except Exception:
+                finaldict[k] = v
         else:
             finaldict[k] = v
     return finaldict
@@ -177,108 +204,6 @@ def get_next_headerloc(start, tokens, header_level):
     return close
 
 
-# def split_body_parts(num_parts, body_parts):
-#     """Parses individual question parts and splits out titles, and content
-
-#     Args:
-#         num_parts (int): An integer corresponding to the number of question parts (from `read_md_problem()`).
-#         body_parts (dict): A dictionary from `read_md_problem()`.
-
-#     Returns:
-#         body_parts_dict (dict): returns a nested dictionary with title,content,answer keys .
-#     """
-#     mdit = markdown_it.MarkdownIt()
-#     env = {}
-#     nested_dict = lambda: defaultdict(nested_dict)
-
-#     parts_dict = nested_dict()
-
-#     for pnum in range(1, num_parts + 1):
-
-#         part = "part" + f"{pnum}"
-#         # Set up tokens by parsing the md file
-#         tokens = mdit.parse(body_parts[part], env)
-
-#         ptt = [i for i, j in enumerate(tokens) if j.tag == "h2"]
-#         parts_dict[part]["title"] = (
-#             mdformat.renderer.MDRenderer()
-#             .render(tokens[ptt[0] + 1 : ptt[1]], mdit.options, env)
-#             .strip("\n")
-#         )
-
-#         # Get the "### Answer section from the parts_dict"
-#         pa = [i
-#                 for i, j in enumerate(tokens)
-#                 if j.tag == "h3"
-#                 if "pl-submission-panel" not in j.content
-#                 if "pl-answer-panel" not in j.content
-#             ]
-
-#         try:
-#             parts_dict[part]["answer"]["title"] = codecs.unicode_escape_decode(
-#                 mdformat.renderer.MDRenderer().render(
-#                     tokens[pa[0] + 1 : pa[1]], mdit.options, env
-#                 )
-#             )[0]
-#         except IndexError:
-#             print(
-#                 "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-#             )
-#             raise
-
-#         parts_dict[part]["content"] = codecs.unicode_escape_decode(
-#             mdformat.renderer.MDRenderer().render(
-#                 tokens[ptt[1] + 1 : pa[0]], mdit.options, env
-#             )
-#         )[0]
-#         parts_dict[part]["answer"]["content"] = codecs.unicode_escape_decode(
-#             mdformat.renderer.MDRenderer().render(
-#                 tokens[pa[1] + 1 :], mdit.options, env
-#             )
-#         )[0]
-
-#         # Get the ### pl-submission-panel and ### pl-answer-panel
-#         p_extra = [i
-#                 for i, j in enumerate(tokens)
-#                 if j.tag == "h3"
-#                 if "pl-submission-panel" in j.content
-#                 if "pl-answer-panel" in j.content
-#             ]
-
-#         if p_extra:
-#             try:
-#                 parts_dict[part]["pl-submission-panel"] = codecs.unicode_escape_decode(
-#                     mdformat.renderer.MDRenderer().render(
-#                         tokens[p_extra[0] + 1 : p_extra[1]], mdit.options, env
-#                     )
-#                 )[0]
-#             except IndexError:
-#                 print(
-#                     "Check the heading levels, is there one that doesn't belong? Or is the heading level incorrect? For e.g., it should be ### Answer Section (this is not necessarily where the issue is)."
-#                 )
-#                 raise
-
-
-#         # for key in body_parts.keys():
-#         #     print(f'outside: {key}')
-#         #     if key in ['pl-submission-panel','pl-answer-panel']:
-#         #         # Set up tokens by parsing the md file
-#         #         tokens = mdit.parse(body_parts[key], env)
-
-#         #         print(key)
-
-#         #         ptt = [i for i,j in enumerate(tokens) if j.tag=='h3']
-#         #         try:
-#         #             parts_dict[part][key] = codecs.unicode_escape_decode(MDRenderer().render(tokens[ptt[-1]+1:], mdit.options, env))[0]
-#         #         except IndexError:
-#         #             print("It's possible you have '### pl-submission-panel' or '### pl-answer-panel' with the wrong heading level - H2 instead of the required H3.")
-
-#         # Remove parts from body_parts
-#         body_parts.pop(part)
-
-#     return defdict_to_dict(parts_dict, {})
-
-
 def read_md_problem(filepath):
     """Reads a MystMarkdown problem file and returns a dictionary of the header and body
 
@@ -286,11 +211,11 @@ def read_md_problem(filepath):
         filepath (str): Path of file to read.
 
     Returns:
-        dict: In this dictionary there are three keys containing useful portions of the parsed md file:
-            - `header` - Header of the problem file (nested dictionary).
-            - `body_parts` - Body text of the problem file (nested dictionary).
-            - `num_parts` - Number of parts in the problem (integer).
-            - `body_parts_split` - Dictionary with each part split into individual components.
+        dict: In this dictionary there are four keys containing useful portions of the parsed md file:
+            - ``header`` - Header of the problem file (nested dictionary).
+            - ``body_parts`` - Body text of the problem file (nested dictionary).
+            - ``num_parts`` - Number of parts in the problem (integer).
+            - ``body_parts_split`` - Dictionary with each part split into individual components.
     """
 
     mdtext = pathlib.Path(filepath).read_text(encoding="utf8")
@@ -328,14 +253,10 @@ def read_md_problem(filepath):
             block_count += 1
 
             if block_count == 1:
-                blocks["block{0}".format(block_count)] = [
-                    x,
-                ]
+                blocks[f"block{block_count}"] = [x]
             else:
-                blocks["block{0}".format(block_count - 1)].append(x)
-                blocks["block{0}".format(block_count)] = [
-                    x,
-                ]
+                blocks[f"block{block_count - 1}"].append(x)
+                blocks[f"block{block_count}"] = [x]
     ###
     # Add -1 to the end of the last block
     blocks[f"block{block_count}"].append(len(tokens))
@@ -343,14 +264,10 @@ def read_md_problem(filepath):
     # Assert statements (turn into tests!)
     assert (
         num_titles == 1
-    ), "I see {0} Level 1 Headers (#) in this file, there should only be one!".format(
-        num_titles
-    )
+    ), f"I see {num_titles} Level 1 Headers (#) in this file, there should only be one!"
     assert (
         block_count >= 1
-    ), "I see {0} Level 2 Headers (##) in this file, there should be at least 1".format(
-        block_count - 1
-    )
+    ), f"I see {block_count - 1} Level 2 Headers (##) in this file, there should be at least 1"
 
     # Add the end of the title block; # small hack
     # blocks['title'].append(blocks['block1'][0])
@@ -405,36 +322,74 @@ def read_md_problem(filepath):
     return defdict_to_dict(return_dict, {})
 
 
-def dict_to_md(
-    md_dict,
-    remove_keys=[
-        None,
-    ],
-):
+def _remove_l3_headers(text: str, remove: set[str]) -> str:
+    """Removes specific level 3+ headers from a markdown string; useful for removing sections like pl-answer-panel and pl-submission panel for the public version of the site.
+    
+    Args:
+        text (str): Markdown text to process
+        remove (set[str]): Set of strings to remove from the markdown text
+
+    Returns:
+        str: Processed markdown text
+    """
+    tokens_to_rerender = []
+    next_is_new_header_text = False
+    current_header_text = None
+
+    mdit = markdown_it.MarkdownIt()
+    env = {}
+    tokens = mdit.parse(text, env)
+
+    for token in tokens:
+        if token.type == "heading_open":
+            next_is_new_header_text = True
+            tokens_to_rerender.append(token)
+            current_header_text = None
+            continue
+
+        if next_is_new_header_text:
+            next_is_new_header_text = False
+            current_header_text = token.content
+        
+            if current_header_text in remove:
+                tokens_to_rerender.pop()
+        
+        if current_header_text not in remove:
+            tokens_to_rerender.append(token)
+    
+    return (
+        mdformat.renderer.MDRenderer()
+        .render(tokens_to_rerender, mdit.options, env)
+        .replace(r"\\", "\\")
+    )
+
+
+def dict_to_md(md_dict: dict[str, str], remove_keys=None):
     """Takes a nested dictionary (e.g. output of read_md_problem()) and returns a multi-line string  that can be written to a file (after removing specified keys).
     Args:
         md_dict (dict): A nested dictionary, for e.g. the output of `read_md_problem()`
-        remove_keys (list, optional): Any keys to remove from the dictionary, for instance solutions. Defaults to [None,].
+        remove_keys (list[str], optional): Any keys to remove from the dictionary, for instance solutions. Defaults to removing no keys.
 
     Returns:
         str: A multi-line string that can be written to a file.
     """
 
-    md_string = ""
-
-    md_dict = defdict_to_dict(md_dict, {})
+    # md_dict: dict[str, str] = defdict_to_dict(md_dict, {})
 
     # Question Title and Preamble
-    md_string += md_dict.pop("title", None)
-    md_string += md_dict.pop("preamble", None)
+    md_string = md_dict.pop("title", "")
+    md_string += md_dict.pop("preamble", "")
 
-    # TODO: Refactor this to use the elegant solution provided here: https://stackoverflow.com/a/49723101/2217577
+    _remove = set() if remove_keys is None else set(remove_keys)
 
-    for k, v in md_dict.items():
-        if k in remove_keys:
+    for heading, content in md_dict.items():
+        if heading in _remove:
             continue
+        
+        if _remove and "###" in content:
+            md_string += "\n" + _remove_l3_headers(content, _remove)
         else:
-            md_string += "\n" + md_dict[k]
+            md_string += "\n" + content
 
     return md_string
 
@@ -442,11 +397,12 @@ def dict_to_md(
 ## Functions from md-to-pl
 
 
-def write_info_json(output_path, parsed_question):
+def write_info_json(output_path, parsed_question, modified_time: str | None = None):
     """
     Args:
         output_path (Path): [description]
         parsed_question (dict]): [description]
+        modified_time (str | None, optional): Last commit timestamp or modified timestamp of the file
     """
 
     ## *** IMPORTANT: If more auto-tags or optional keys are added, make sure to update the `pl_to_md` function to take them into account properly for the roundtrip ***
@@ -473,6 +429,11 @@ def write_info_json(output_path, parsed_question):
         auto_tags.append("multi_part")
     auto_tags.extend(list(set(q_types)))
 
+    if (difficulties := parsed_question["header"].get("difficulty", ["undefined"])) != ["undefined"]:
+        if not isinstance(difficulties, list):
+            difficulties = [difficulties]
+        auto_tags.extend(difficulty.lower() for difficulty in difficulties)
+
     # tags is technically an optional key for a question author to specify
     auto_tags.extend(parsed_question["header"].get("tags", []))
     auto_tags = [v for v in auto_tags if v != "unknown"]
@@ -496,9 +457,11 @@ def write_info_json(output_path, parsed_question):
         port = "port" in info_json["workspaceOptions"]
         home = "home" in info_json["workspaceOptions"]
         if not (image and port and home):
-            raise SyntaxError("workspaceOptions must contain image, port, and home keys")
+            msg = "workspaceOptions must contain image, port, and home keys"
+            raise SyntaxError(msg)
         if not isinstance(info_json["workspaceOptions"]["port"], int):
-            raise TypeError(f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead")
+            msg = f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead"
+            raise TypeError(msg)
 
     comment_keys = (
         "author",
@@ -526,6 +489,9 @@ def write_info_json(output_path, parsed_question):
 
     info_json["comment"] = {"METADATA": comment}
 
+    if modified_time:
+        info_json["comment"]["lastModified"] = modified_time
+
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
         json.dump(info_json, output_file, indent=4)
@@ -535,7 +501,7 @@ def assemble_server_py(parsed_question, location):
     """Assembles a string version of the server.py file from the YAML header of the md file.
 
     Args:
-        parsed_question (_type_): dictionary that is created upon reading of the md problem.
+        parsed_question (dict): dictionary that is created upon reading of the md problem.
         location (string): 'local' or 'prairielearn' ; the import statements are different depending on if it's local or on a PL server.
     """
 
@@ -547,24 +513,24 @@ def assemble_server_py(parsed_question, location):
             "import prairielearn as pl",
             "import problem_bank_scripts.prairielearn as pl",
         )
-    elif "import problem_bank_helpers as pbh" not in server_dict["imports"]:
-        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts"
 
-    server_py = f""""""
+    if "import problem_bank_helpers as pbh" not in server_dict["imports"]:
+        server_dict["imports"] += "\nimport problem_bank_helpers as pbh # Added in by problem bank scripts" 
+
+    server_py = ""
 
     server_py += server_dict.get("imports", "") + "\n"
 
-    try:
-        for function, code in server_dict.items():
-            indented_code = code.replace("\n", "\n    ")
-            # With the custom header, add functions to server.py as-is
-            if function == "custom":
-                continue
-            else:
-                if code:
-                    server_py += f"def {function}(data):\n    {indented_code}\n"
-            if location == "prairielearn" and function == "generate":
-                server_py += """\
+    for function, code in server_dict.items():
+        indented_code = code.replace("\n", "\n    ")
+        # With the custom header, add functions to server.py as-is
+        if function in {"custom", "imports"}:
+            continue
+        else:
+            if code:
+                server_py += f"def {function}(data):\n    {indented_code}\n"
+        if location == "prairielearn" and function == "generate":
+            server_py += """\
     # Start code added automatically by problem_bank_scripts
 
     # Convert backticks to code blocks/fences in answer choices.
@@ -576,10 +542,8 @@ def assemble_server_py(parsed_question, location):
     # End code added in by problem bank scripts
 
 """
-    except:
-        raise
 
-    if "custom" in server_dict.keys():
+    if "custom" in server_dict:
         server_py += f"{server_dict['custom']}"
 
     return server_py
@@ -605,249 +569,9 @@ def write_server_py(output_path, parsed_question):
     (output_path / "server.py").write_text(server_file, encoding="utf8")
 
 
-def BasicInputConverter(pl_tag: str, ans_name: bool=True):
-    """Creates a basic input type converter for a given PL tag, such as `pl-number-input` or `pl-string-input`.
-    
-    Basic is determined by the fact that the processor just needs to set the appropriate tag,
-    group the pl-customizations, and return the HTML including the markdown content for the question.
-
-    More complex processors will need to be created manually, or with a different factory function.
-
-    Args:
-        pl_tag (str): The tag to be used for the input type, such as `number-input` (for `pl-number-input`) or `string-input` (for `pl-string-input`).
-        ans_name (bool, optional): Wether the answers-name attribute should be autogenerated. Defaults to True.
-
-    Returns:
-        function: A function that processes markdown format of the given input type and returns PL HTML.
-    """
-
-    def closure(part_name: str, parsed_question: dict, data_dict: dict):
-        pl_customizations = " ".join(
-            [
-                f'{k} = "{v}"'
-                for k, v in parsed_question["header"][part_name][
-                    "pl-customizations"
-                ].items()
-            ]
-        )  # PL-customizations
-
-        html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-        if "answers-name" in pl_customizations or ans_name is False:
-            html += f"""<pl-{pl_tag} {pl_customizations} ></pl-{pl_tag}>\n"""
-        else:
-            html += f"""<pl-{pl_tag} answers-name="{part_name}_ans" {pl_customizations} ></pl-{pl_tag}>\n"""
-
-        return replace_tags(html)
-    
-    closure.__name__ = f"process_{pl_tag.replace('-', '_')}"
-    closure.__doc__ = f"""Processes markdown format of {pl_tag} questions and returns PL HTML\
-
-Args:
-    part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-    parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-    data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-Returns:
-    html: A string of HTML that is part of the final PL question.html file.
-"""
-
-    return closure
-
-
-def MCInputConverter(pl_tag: str):
-    """Creates a input type converter for a given multiple choice style tag, such as `pl-multiple-choice` or `pl-dropdown`.
-
-
-    Args:
-        pl_tag (str): The tag to be used for the input type, such as `multiple-choice` (for `pl-multiple-choice`) or `dropdown` (for `pl-dropdown`).
-
-    Returns:
-        function: A function that processes markdown format of the given input type and returns PL HTML.
-    """
-
-    def closure(part_name: str, parsed_question: dict, data_dict: dict):
-
-        if pl_tag == "multiple-choice":
-            validate_multiple_choice(part_name, parsed_question, data_dict)
-        
-        html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-        pl_customizations = " ".join(
-            [
-                f'{k} = "{v}"'
-                for k, v in parsed_question["header"][part_name][
-                    "pl-customizations"
-                ].items()
-            ]
-        )  # PL-customizations
-        html += f"""<pl-{pl_tag} answers-name="{part_name}_ans" {pl_customizations} >\n"""
-
-        ###### LOOKHERE
-        if (data_dict["params"][f"vars"]["units"]) and (
-            "units" in parsed_question["body_parts_split"][part_name]["answer"]
-        ):
-            units = f"|@ params.vars.units @|"
-        else:
-            units = ""
-
-        ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
-        for a in data_dict["params"][f"{part_name}"].keys():
-            if "ans" in a:
-                if data_dict["params"][f"{part_name}"][f"{a}"]["feedback"]:
-                    feedback = f"|@ params.{part_name}.{a}.feedback @|"
-                else:
-                    feedback = f"Feedback for this choice is not available yet."
-
-                correctness = f"|@ params.{part_name}.{a}.correct @|"
-                value = f"|@|@ params.{part_name}.{a}.value @|@|"
-
-                ## Hack to remove feedback for Dropdown questions
-                if parsed_question["header"][part_name]["type"] == "dropdown":
-                    html += f"\t<pl-answer correct= {correctness} > {value} {units} </pl-answer>\n"
-                else:
-                    html += f"\t<pl-answer correct= {correctness} feedback = '{feedback}' > {value} {units} </pl-answer>\n"
-
-        html += f"</pl-{pl_tag}>\n"
-
-        return replace_tags(html)
-    
-    closure.__name__ = f"process_{pl_tag.replace('-', '_')}"
-    closure.__doc__ = f"""Processes markdown format of {pl_tag} questions and returns PL HTML\
-
-Args:
-    part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-    parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-    data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-Returns:
-    html: A string of HTML that is part of the final PL question.html file.
-"""
-
-    return closure
-
-
-def process_matching(part_name, parsed_question, data_dict):
-    """Processes markdown format matching questions and returns PL HTML
-    Args:
-        output_path (Path): [description]
-        parsed_question (dict): [description]
-        data_dict (dict)
-
-    Returns:
-        str: Matching question is returned as a string with PL-compliant syntax.
-    """
-    print("Processing matching question...")
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-    html += (
-        f"""<pl-matching answers-name="{part_name}_matching" {pl_customizations} >\n"""
-    )
-
-    options = ""
-    statements = ""
-    ## Note: `|@`` gets converted into `{{` and `@|`` gets converted to `}}` by `replace_tags()`
-    for a in data_dict["params"][f"{part_name}"].keys():
-        if "option" in a:
-            value = f"|@|@ params.{part_name}.{a}.value @|@|"
-
-            if name := data_dict["params"][f"{part_name}"][a].get("name"):
-                options += f"\t<pl-option name='{name}' > {value} </pl-option>\n"
-            else:
-                options += f"\t<pl-option> {value} </pl-option>\n"
-
-        if "statement" in a:
-            matches_with = f"|@ params.{part_name}.{a}.matches @|"
-            value = f"|@|@ params.{part_name}.{a}.value @|@|"
-
-            statements += (
-                f"\t<pl-statement match= '{matches_with}' > {value} </pl-statement>\n"
-            )
-
-    html += statements
-    html += options
-
-    html += "</pl-matching>\n"
-
-    return replace_tags(html)
-
-
-def process_file_upload(part_name, parsed_question, data_dict):
-    """Processes markdown format of file-upload questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    pl_customizations = " ".join(
-        [
-            f'{k} = "{v}"'
-            for k, v in parsed_question["header"][part_name][
-                "pl-customizations"
-            ].items()
-        ]
-    )  # PL-customizations
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-file-upload { pl_customizations } > </pl-file-upload>"""
-
-    html += f"""<pl-submission-panel>\n\t<pl-file-preview></pl-file-preview>\n\t<pl-external-grader-results></pl-external-grader-results>"""
-
-    # TODO: remove this! because automatic feedback will be added
-    html += f"""\n\t|@ #feedback.manual @| \n\t<p>Feedback from course staff:</p>\n\t<markdown>|@|@ feedback.manual @|@|</markdown>\n\t|@ /feedback.manual @|\n</pl-submission-panel>"""
-
-    # TODO: Add better support for what students see when they upload a file where many are possible. Currently: Error: The following required files were missing: *.jpg, *.pdf, foo.py, bar.c, filename space.txt
-    # TODO: Add support for wildcard *.png
-    # TODO: Add better message telling students the question needs to be manually graded.
-
-    return replace_tags(html)
-
-
-def process_workspace(part_name, parsed_question, data_dict):
-    """Processes markdown format of workspace questions and returns PL HTML
-    Args:
-        part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
-        parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
-        data_dict (dict): Dictionary of the `data` dict created after running server.py using `exec()`
-
-    Returns:
-        html: A string of HTML that is part of the final PL question.html file.
-    """
-    if "pl-customizations" in parsed_question["header"][part_name]:
-        if len(parsed_question["header"][part_name]["pl-customizations"]) > 0:
-            raise ValueError("pl-customizations are not supported for workspace questions")
-
-
-    html = f"""<pl-question-panel>\n<markdown>{parsed_question['body_parts_split'][part_name]['content']}</markdown>\n</pl-question-panel>\n\n"""
-
-    html += f"""<pl-workspace></pl-workspace>"""
-
-    html += f"""\n<pl-submission-panel>"""
-
-    if parsed_question["header"][part_name].get("gradingMethod", None) == "External":
-        html += f"""\n<pl-external-grader-results></pl-external-grader-results>\n<pl-file-preview></pl-file-preview>"""
-    
-    html += f"""\n<ul>\n\t|@ #feedback.results @| \n\t<li>|@ . @|</li>\n\t|@ /feedback.results @|\n</ul>\n</pl-submission-panel>"""
-
-
-    return replace_tags(html)
-
-
 def validate_multiple_choice(part_name, parsed_question, data_dict):
     """Validates a markdown format multiple-choice question
+    
     Args:
         part_name (string): Name of the question part being processed (e.g., part1, part2, etc...)
         parsed_question (dict): Dictionary of the MD-parsed question (output of `read_md_problem`)
@@ -876,52 +600,12 @@ def validate_multiple_choice(part_name, parsed_question, data_dict):
         for key, ans in data_dict["params"][f"{part_name}"].items()
         if "ans" in key
     ):
-        return
+        return True
 
     none_of_the_above = parsed_question["header"][part_name]["pl-customizations"].get("none-of-the-above", "false")
 
-    if none_of_the_above in {"correct", "random"}:
-        return
+    return none_of_the_above in {"correct", "random"}
 
-    raise ValueError(
-        f"Multiple choice question {part_name} does not have a correct answer and "
-        "the pl-customization `none-of-the-above` was not set to `correct` or `random`."
-    )
-
-def replace_tags(string):
-    """Takes in a string with tags: |@ and @| and returns {{ and }} respectively. This is because Python strings can't have double curly braces.
-
-    Args:
-        string (str): String to be processed, can be multi-line.
-
-    Returns:
-        string (str): returns string with tags replaced with curly braces.
-    """
-    return (
-        string.replace("|@|@", "{{{")
-        .replace("@|@|", "}}}")
-        .replace("|@", "{{")
-        .replace("@|", "}}")
-    )
-
-_SUPPORTED_INPUTS: dict[str, tuple[Callable[[str, dict, dict], str], str]] = {
-    "number-input":           (BasicInputConverter("number-input"), "pl-number-input"),
-    "symbolic-input":         (BasicInputConverter("symbolic-input"), "pl-symbolic-input"),
-    "matrix-input":           (BasicInputConverter("matrix-input"), "pl-matrix-input"),
-    "matrix-component-input": (BasicInputConverter("matrix-component-input"), "pl-matrix-component-input"),
-    "string-input":           (BasicInputConverter("string-input", False), "pl-string-input"),
-    "longtext":               (BasicInputConverter("rich-text-editor", False), "pl-rich-text-editor"),
-    "file-editor":            (BasicInputConverter("file-editor", False), "pl-file-editor"),
-    "multiple-choice":        (MCInputConverter("multiple-choice"), "pl-multiple-choice"),
-    "checkbox":               (MCInputConverter("checkbox"), "pl-checkbox"),
-    "dropdown":               (MCInputConverter("dropdown"), "pl-dropdown"),
-    "file-upload":            (process_file_upload, "pl-file-upload"),
-    "matching":               (process_matching, "pl-matching"),
-    "workspace":              (process_workspace, "pl-workspace"),
-}
-
-INPUT_TYPE_PROCESSORS = {opb_name: func for opb_name, (func, _) in _SUPPORTED_INPUTS.items()}
-OPB_INPUT_TYPES = {tag: opb_name for opb_name, (_, tag) in _SUPPORTED_INPUTS.items()}
 
 def remove_correct_answers(data2_dict):
     """Magical recursive function that removes particular keys from a nested dictionary: https://stackoverflow.com/a/29652561/2217577
@@ -952,9 +636,8 @@ def remove_correct_answers(data2_dict):
     return data2_dict
 
 
-with importlib.resources.files(__package__).joinpath("attributions.json").open("rb") as file:
-    _ATTRIBUTIONS: dict[str, str] = json.load(file)
-    _KNOWN_ATTRIBUTIONS = list(_ATTRIBUTIONS.keys())
+_ATTRIBUTIONS: dict[str, str] = json.loads(importlib.resources.files("problem_bank_scripts").joinpath("attributions.json").read_bytes())
+KNOWN_ATTRIBUTIONS: list[str] = list(_ATTRIBUTIONS.keys())
 
 def process_attribution(attribution):
     """Takes in a string and returns the HTML for the attribution
@@ -971,30 +654,40 @@ def process_attribution(attribution):
 
     except KeyError:
         print(
-            f"`Attribution` value of {attribution} is not recognized. Currently, the only possible values are: {_KNOWN_ATTRIBUTIONS}. You need to update your md file and fix the `attribution` in the header"
+            f"`Attribution` value of {attribution} is not recognized.",
+            f"Currently, the only possible values are: {KNOWN_ATTRIBUTIONS}.",
+            "You need to update your md file and fix the `attribution` in the header",
         )
         raise
 
 
-def process_question_md(source_filepath, output_path=None, instructor=False):
+def process_question_md(
+    source_filepath: os.PathLike[str] | str,
+    output_path: os.PathLike[str] | str | None = None,
+    instructor: bool = False,
+    ) -> None:
+    """Processes an OPB markdown file and writes the output to a file.
+
+    Args:
+        source_filepath (os.PathLike[str] | str): Path to the markdown file to be processed.
+        output_path (os.PathLike[str] | str, optional): Path to the output file. Defaults to None.
+        instructor (bool, optional): Flag to determine if the output is for an instructor or not. Defaults to False.
+            This determines if the solutions are included in the output or not.
+    """
     try:
-        pathlib.Path(source_filepath)
+        source_filepath = pathlib.Path(source_filepath).resolve(strict=True)
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
 
     if output_path is None:
-        if instructor:
-            path_replace = "output/instructor"
-        else:
-            path_replace = "output/public"
+        path_replace = "output/instructor" if instructor else "output/public"
 
-        if "source" in source_filepath:
-            output_path = pathlib.Path(source_filepath.replace("source", path_replace))
+        if "source" in (_src := str(source_filepath)):
+            output_path = pathlib.Path(_src.replace("source", path_replace))
         else:
-            raise NotImplementedError(
-                "Check the source filepath; it does not have 'source' in it!! "
-            )
+            msg = f"Check the source filepath; it does not have 'source' in it: {source_filepath}"
+            raise ValueError(msg)
     else:
         ## TODO: Make this a bit more robust, perhaps by switching encodings!?
         output_path = pathlib.Path(output_path)
@@ -1006,7 +699,7 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         if len(data2.splitlines()) > 1:  # check for multiline string
             # data2 = re.sub('\\n[\s].*\\n','\n\n',data2) # THIS IS WRONG!!!
             data2 = re.sub(
-                "\\n\s+\\n", "\n\n", data2
+                r"\n\s+\n", "\n\n", data2
             )  # # Try \s{3,} for three or more spaces
             return dumper.represent_scalar("tag:yaml.org,2002:str", data2, style="|")
         return dumper.represent_scalar("tag:yaml.org,2002:str", data2)
@@ -1022,13 +715,20 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
     # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
 
     server_py = assemble_server_py(parsed_q, "local")
-
-    spec = importlib.util.spec_from_loader("server", loader=None)
-    server = importlib.util.module_from_spec(spec)
-    exec(server_py, server.__dict__)
-
+    server = {}
     data2 = pbh.create_data2()
-    server.generate(data2)
+
+    with tempfile.TemporaryDirectory(suffix=f"_{output_path.stem}", ignore_cleanup_errors=True) as dirpath:
+        file = pathlib.Path(dirpath).joinpath("server.py")
+        file.write_text(server_py, encoding="utf8")
+        try:
+            code = compile(server_py, file.as_posix(), "exec")
+            exec(code, server)        
+            server["generate"](data2)
+        except Exception as e:
+            msg = f"Error in running the server code, please review the below traceback: \n\n{traceback.format_exc()}"
+            raise type(e)(msg) from None
+
     #################################################################################
 
     # Remove the solutions from the server section
@@ -1040,33 +740,8 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
         data2_sanitized = defdict_to_dict(data2, {})
         data2_sanitized = defdict_to_dict(remove_correct_answers(data2_sanitized), {})
 
-        ####################################################
-        #### Start Temporary Fix for issue of myst no longer permitting nested dicts
-        #### GitHub issue: https://github.com/executablebooks/MyST-Parser/issues/761
-
-        df = pd.json_normalize(data2_sanitized, sep="_")
-        data2_sanitized_flattened = df.to_dict(orient="records")[0]
-
-        repl_keys = {
-            k.replace("_", "."): k for k in list(data2_sanitized_flattened.keys())
-        }
-
-        text = dict_to_md(
-            body_parts,
-            remove_keys=[
-                "Rubric",
-                "Solution",
-                "Comments",
-                "pl-submission-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
-                "pl-answer-panel",  # FIXME: This will not remove level 3 headings because it's all a string!
-            ],
-        )
-
-        for k, v in repl_keys.items():
-            text = text.replace(k, v)
-
         # Update the YAML header to add substitutions
-        header.update({"myst": {"substitutions": data2_sanitized_flattened}})
+        header.update({"myst": {"substitutions": data2_sanitized} })
 
         # Update the YAML header to add substitutions, unsort it, and process for file
         header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
@@ -1077,42 +752,20 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
             "---\n"
             + header_yml
             + "---\n"
-            + text
+            + dict_to_md(
+                body_parts,
+                remove_keys=[
+                    "Rubric",
+                    "Solution",
+                    "Comments",
+                    "pl-submission-panel",
+                    "pl-answer-panel",
+                ],
+            )
             + "\n## Attribution\n\n"
             + process_attribution(header.get("attribution")),
             encoding="utf8",
         )
-
-        ####################################################
-        #### End Temporary Fix for issue of myst no longer permitting nested dicts
-        #### Uncomment below when the fix is implemented to recover past behaviour
-
-        # # Update the YAML header to add substitutions
-        # header.update({"myst": {"substitutions": data2_sanitized} })
-
-        # # Update the YAML header to add substitutions, unsort it, and process for file
-        # header_yml = yaml.dump(header, sort_keys=False, allow_unicode=True)
-
-        # # Write the YAML to a file
-        # output_path.parent.mkdir(parents=True, exist_ok=True)
-        # output_path.write_text(
-        #     "---\n"
-        #     + header_yml
-        #     + "---\n"
-        #     + dict_to_md(
-        #         body_parts,
-        #         remove_keys=[
-        #             "Rubric",
-        #             "Solution",
-        #             "Comments",
-        #             "pl-submission-panel", #FIXME: This will not remove level 3 headings because it's all a string!
-        #             "pl-answer-panel",     #FIXME: This will not remove level 3 headings because it's all a string!
-        #         ],
-        #     )
-        #     + "\n## Attribution\n\n"
-        #     + process_attribution(header.get("attribution")),
-        #     encoding="utf8",
-        # )
 
     else:
         # Update the YAML header to add substitutions
@@ -1183,30 +836,53 @@ def process_question_md(source_filepath, output_path=None, instructor=False):
                 copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
             except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
                 os_errors.append(str(e))
+                    
+    # Move workspace files
+    files_to_copy = header.get("workspaceTemplates")
+    if files_to_copy:
+        pl_path = output_path.parent / "workspaceTemplates"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspaceTemplates" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(str(e))
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
-        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), f"Error(s) copying specified files:\n    {error_msg}")
 
 
-def process_question_pl(source_filepath, output_path=None, dev=False):
+def process_question_pl(
+    source_filepath: os.PathLike[str] | str,
+    output_path: os.PathLike[str] | str | None = None,
+    dev: bool = False,
+    ):
+    """Processes an OPB markdown file and converts it to a prairielearn compatible question.
+
+    Args:
+        source_filepath (os.PathLike[str] | str): Path to the markdown file to be processed.
+        output_path (os.PathLike[str] | str, optional): Path to the output file. Defaults to None.
+        dev (bool, optional): Flag to determine if the question is under development. Defaults to False.
+    """
     try:
-        pathlib.Path(source_filepath)
+        _path = pathlib.Path(source_filepath).resolve()
     except:
         print(f"{source_filepath} - File does not exist.")
         raise
 
-    path_replace = "output/prairielearn"
+    if not _path.exists():
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), source_filepath)
+    
+    if not _path.is_file():
+        raise IsADirectoryError(errno.EISDIR, os.strerror(errno.EISDIR), source_filepath)
 
     if output_path is None:
-        if "source" in source_filepath:
-            output_path = pathlib.Path(
-                source_filepath.replace("source", path_replace)
-            ).parent
+        if "source" in str(_path):
+            output_path = pathlib.Path(_path.as_posix().replace("source", "output/prairielearn")).parent
         else:
-            raise NotImplementedError(
-                "Check the source filepath; it does not have 'source' in it!! "
-            )
+            msg = f"Check the source filepath; it does not have 'source' in it: {source_filepath}"
+            raise ValueError(msg)
     else:
         ## TODO: It's annoying that here output_path.parent is used, but for md problems, it's just output_path
         output_path = pathlib.Path(output_path).parent
@@ -1224,14 +900,20 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Run the python code; this improved way was suggested by Phil Austin of UBC EOAS
 
     server_py = assemble_server_py(parsed_q, "local")
-
-    spec = importlib.util.spec_from_loader("server", loader=None)
-    server = importlib.util.module_from_spec(spec)
-    exec(server_py, server.__dict__)
-
+    server = {}
     data2 = pbh.create_data2()
 
-    server.generate(data2)
+    with tempfile.TemporaryDirectory(suffix=f"_{output_path.stem}", ignore_cleanup_errors=True) as dirpath:
+        file = pathlib.Path(dirpath).joinpath("server.py")
+        file.write_text(server_py, encoding="utf8")
+        try:
+            code = compile(server_py, file.as_posix(), "exec")
+            exec(code, server)        
+            server["generate"](data2)
+        except Exception as e:
+            msg = f"Error in running the server code, please review the below traceback: \n\n{traceback.format_exc()}"
+            raise type(e)(msg) from None
+
     #################################################################################
 
     if dev:
@@ -1239,8 +921,16 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         tags.append("DEV")
         parsed_q["header"]["tags"] = tags
 
+    try:
+        repo = git.Repo(_path.parent, search_parent_directories=True)
+        repo.working_dir
+        commit = next(repo.iter_commits(None, source_filepath, max_count=1))
+        modified_time = commit.committed_datetime
+    except:
+        modified_time = datetime.datetime.fromtimestamp(_path.stat().st_mtime, tz=datetime.timezone.utc)
+
     # Write info.json file
-    write_info_json(output_path, parsed_q)
+    write_info_json(output_path, parsed_q, modified_time.strftime("%Y-%m-%dT%H:%M:%S%z"))
 
     # Question Preamble
     preamble = parsed_q["body_parts"].get("preamble", None)
@@ -1250,26 +940,16 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     if preamble:
         question_html = f"<pl-question-panel>\n<markdown>\n{ preamble }\n</markdown>\n</pl-question-panel>\n\n"
     else:
-        question_html = f""
+        question_html = ""
 
     # Useful info panel
-    useful_info = parsed_q["body_parts"].get("Useful_info", None)
 
-    # TODO: When PrairieLearn updates to BootStrap5, update this box as described here: https://github.com/open-resources/problem_bank_scripts/issues/30#issuecomment-1177101211
-    # *** IMPORTANT: If you update how this works, make sure you update the `pl_to_md` function to be able to properly parse and understand the new implementation! ***
-    if useful_info:
-        question_html += f"""<p>
-   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-   <i class="fa fa-info-circle" aria-hidden="true"></i> Helpful Information
-   </button>
-</p>
-<div class="collapse" id="collapseExample">
-   <div class="card card-body">
-      <markdown>
-{parsed_q['body_parts']['Useful_info']}
-      </markdown>
-   </div>
-</div>"""
+    if (useful_info := parsed_q["body_parts"].get("Useful_info", None)):
+        useful_info = useful_info.replace("## Useful Info\n", "")
+        question_html += f"""<pl-hidden-hints>
+<pl-hint hint-name="Helpful Information"><markdown>{useful_info}</markdown></pl-hint>
+</pl-hidden-hints>
+"""
 
     # Single and Multi-part question construction
 
@@ -1280,31 +960,34 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
         question_html += f"\n<!-- ######## Start of Part {pnum} ######## -->\n\n"
 
         if parsed_q["num_parts"] > 1:
-            question_html += f"""<div class="card my-2">
-<div class="card-header">{parsed_q['body_parts_split'][part]['title']}</div>\n
-<div class="card-body">\n\n"""
+            question_html += f'<pl-card header="{parsed_q["body_parts_split"][part]["title"]}">\n'
+
+        if "multiple-choice" in q_type and not validate_multiple_choice(part,parsed_q,data2):
+                msg = (
+                    f"Multiple choice question {part} does not have a correct answer and "
+                    "the pl-customization `none-of-the-above` was not set to `correct` or `random`."
+                )
+                raise ValueError(msg)
         
-        converter = INPUT_TYPE_PROCESSORS.get(q_type, None)
+        converter = INPUT_TYPE_PROCESSORS.get(q_type)
         if converter is None:
-            raise NotImplementedError(f"The question type ({q_type}) is not yet implemented.")
+            msg = f"The question type ({q_type}) is not yet implemented."
+            raise NotImplementedError(msg)
         else:
             question_html += f"{converter(part,parsed_q,data2)}"
 
         if parsed_q["num_parts"] > 1:
-            question_html += "</div>\n</div>\n"
+            question_html += "</pl-card>\n"
 
         # Add pl-submission-panel and pl-answer-panel (if they exist)
         subm_panel = parsed_q["body_parts_split"][part].get("pl-submission-panel", None)
         q_panel = parsed_q["body_parts_split"][part].get("pl-answer-panel", None)
 
         if subm_panel:
-            question_html += (
-                f"\n<pl-submission-panel>{ subm_panel } </pl-submission-panel>\n"
-            )
+            question_html += f"\n<pl-submission-panel>{subm_panel}</pl-submission-panel>\n"
         if q_panel:
-            question_html += f"\n<pl-answer-panel>{ q_panel } </pl-answer-panel>\n"
+            question_html += f"\n<pl-answer-panel>{q_panel}</pl-answer-panel>\n"
 
-        # TODO: Add support for other panels here as well !
 
         question_html += f"\n<!-- ######## End of Part {pnum} ######## -->\n"
 
@@ -1316,11 +999,6 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
     # Also see https://github.com/open-resources/problem_bank_scripts/pull/92
     question_html = question_html.replace("\\_", "_").replace("\\[","[").replace("\\]","]")
     question_html = question_html.replace("\\*", "*").replace("\\<","<").replace("\\`","`")
-    # Fix empty <markdown> block
-    # See this issue: https://github.com/PrairieLearn/PrairieLearn/issues/8346
-    # TODO: this can be removed once issue 8346 is resolved
-    question_html = question_html.replace("<markdown></markdown>", 
-                                          "<markdown> </markdown>")
 
     # Final pre-processing
     question_html = pl_image_path(question_html)
@@ -1381,60 +1059,42 @@ def process_question_pl(source_filepath, output_path=None, dev=False):
                 copy2(pathlib.Path(source_filepath).parent / "workspace" / file, pl_path / file)
             except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
                 os_errors.append(str(e))
+    
+    # Move workspace files
+    files_to_copy = parsed_q["header"].get("workspaceTemplates")
+    if files_to_copy:
+        pl_path = output_path / "workspaceTemplates"
+        pl_path.mkdir(parents=True, exist_ok=True)
+        for file in files_to_copy:
+            try:
+                copy2(pathlib.Path(source_filepath).parent / "workspaceTemplates" / file, pl_path / file)
+            except (FileExistsError, FileNotFoundError, IsADirectoryError, PermissionError) as e:
+                os_errors.append(f"{e} {e.filename}")
 
     if os_errors:
         error_msg = "\n    ".join(os_errors)
-        raise FileNotFoundError(f"Error(s) copying specified files:\n    {error_msg}")
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), f"Error(s) copying specified files:\n    {error_msg}")
 
 
 def pl_image_path(html):
-    """Adds `{{options.client_files_question_url}}` directory before the path automatically"""
+    """Adds ``{{options.client_files_question_url}}`` directory before the path automatically"""
 
-    # TODO: Figure out the regex to make this into a single expression, maybe with |
+    ext_group = r"((?!http).*\.(?:png|gif|jpg|jpeg))"
+    base_repl = r"{{options.client_files_question_url}}/\1"
+
     # If image files are included as markdown format, add {{options.client_files_question_url}}
-    res = re.subn(
-        r"\(((?!http).*\.png)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.gif)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.jpeg)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
-    res = re.subn(
-        r"\(((?!http).*\.jpg)\)", "({{options.client_files_question_url}}/\\1)", html
-    )
+    res = re.sub(rf"\({ext_group}\)", rf"({base_repl})", html)
 
     # If image files are included as html format, add {{options.client_files_question_url}}
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.png)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.gif)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.jpeg)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-    res = re.subn(
-        r"src[\s,=]*\"(?!http)(.*\.jpg)",
-        'src="{{options.client_files_question_url}}/\\1',
-        res[0],
-    )  # works
-
-    return res[0]
+    return re.sub(rf"src[\s,=]*\"{ext_group}", f'src="{base_repl}', res)
 
 
 def validate_header(header_dict):
     # check if topic is valid (i.e. from the list of topics in the learning_outcomes repo for this subject)
 
     if topics.get(topic := header_dict["topic"], None) is None:
-        raise ValueError(f"topic '{topic}' is not listed in the learning outcomes")
+        msg = f"topic '{topic}' is not listed in the learning outcomes"
+        raise ValueError(msg)
 
 
 def _identify_button_html(tag: bs4.Tag) -> bool:
@@ -1448,9 +1108,8 @@ def _identify_button_html(tag: bs4.Tag) -> bool:
     """
     if tag.name == "p":
         button = tag.find("button", class_="btn btn-primary")
-        if button is not None:
-            if button.text.strip() == "Helpful Information":
-                return True
+        if button is not None and button.text.strip() == "Helpful Information":
+            return True
     elif tag.name == "div" and tag.attrs.get("id") == "collapseExample":
         return True
     return False
@@ -1502,16 +1161,19 @@ def pl_to_md(
     # Validate the inputs from the user
     path = pathlib.Path(question)
     if not path.exists():
-        raise FileNotFoundError(f"{question} does not exist")
+        msg = f"{question} does not exist"
+        raise FileNotFoundError(msg)
     if path.is_file():
+        msg = f"{question} is not a directory, passing a file as the question directory is not supported for converting PL to MD"
         raise NotADirectoryError(
-            f"{question} is not a directory, passing a file as the question directory is not supported for converting PL to MD"
+            msg
         )
 
     output_path = pathlib.Path(output)
     if output_path.is_file():
+        msg = f"{output} is not a directory, passing a file as the output directory is not supported for converting PL to MD"
         raise NotADirectoryError(
-            f"{output} is not a directory, passing a file as the output directory is not supported for converting PL to MD"
+            msg
         )
     if output_path.exists():
         warnings.warn(
@@ -1565,8 +1227,9 @@ def pl_to_md(
         if len(usefuL_info := soup.find_all(_identify_button_html)) > 0:
             info = usefuL_info[1]
             if not isinstance(info, bs4.Tag):
+                msg = f"Detected presence of useful info button components but could not parse it for question {path.name}"
                 raise ValueError(
-                    f"Detected presence of useful info button components but could not parse it for question {path.name}"
+                    msg
                 )
             md_result += f"## Useful Info\n\n{info.text.strip()}\n\n"
 
@@ -1574,8 +1237,9 @@ def pl_to_md(
     if end is not None:
         end_md = BeautifulSoup(end.group("Content"), "lxml").contents
         if not end_md:
+            msg = f"Could not find attribution at end of question for question {path.name}"
             raise ValueError(
-                f"Could not find attribution at end of question for question {path.name}"
+                msg
             )
         end_md = end_md[0].text.strip().replace("---\n", "").replace("\n", "<br>")
         attribution = None
@@ -1583,12 +1247,14 @@ def pl_to_md(
             if end_md.endswith(pl_attribution_text.replace("<br>", "")):
                 attribution = possible_attribution
         if attribution is None:
+            msg = f"Could not find attribution at end of question or the found attribution was not recognized for question {path.name}:\n\n{end_md!r}"
             raise ValueError(
-                f"Could not find attribution at end of question or the found attribution was not recognized for question {path.name}:\n\n{end_md!r}"
+                msg
             )
     else:
+        msg = f"Could not find attribution at end of question for question {path.name}"
         raise ValueError(
-            f"Could not find attribution at end of question for question {path.name}"
+            msg
         )
 
     auto_tags = {"multi_part", "DEV"} | set(OPB_INPUT_TYPES.values())
@@ -1615,15 +1281,18 @@ def pl_to_md(
         if pl_input is not None:
             pl_input = pl_input.extract()
         else:
-            raise ValueError(f"Could not find input tag for part {part}")
+            msg = f"Could not find input tag for part {part}"
+            raise ValueError(msg)
         if isinstance(pl_input, bs4.NavigableString):
-            raise ValueError(f"Could not find input tag for part {part}")
+            msg = f"Could not find input tag for part {part}"
+            raise ValueError(msg)  # noqa: TRY004
         pl_customizations = pl_input.attrs
         pl_input_type = pl_input.name
         opb_input_type = OPB_INPUT_TYPES.get(pl_input_type, None)
         if opb_input_type is None:
+            msg = f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
             raise NotImplementedError(
-                f"Input type {pl_input_type} is not currently supported or is missing from the input types mapping"
+                msg
             )
 
         # Extract the different panels and sections of the question part
@@ -1634,7 +1303,8 @@ def pl_to_md(
         if opb_input_type in {"multiple-choice", "checkbox", "dropdown"}:
             answers = pl_input.find_all("pl-answer")
             if len(answers) == 0:
-                raise ValueError(f"Could not find any answers for part {part} in question {path.name}:\n{pl_input.prettify()}")
+                msg = f"Could not find any answers for part {part} in question {path.name}:\n{pl_input.prettify()}"
+                raise ValueError(msg)
             answer_list = [replace_tags(answer.text.strip()) for answer in answers]
         else:
             answer_list = []
@@ -1689,20 +1359,20 @@ def pl_to_md(
     header_dict["source"] = metadata.get("source", "Unknown")
     header_dict["template_version"] = metadata.get("template_version", "Unknown")
     header_dict["attribution"] = attribution
-    header_dict["gradingMethod"] = info_json.get("gradingMethod", None)
-    header_dict["partialCredit"] = info_json.get("partialCredit", None)
-    header_dict["singleVariant"] = info_json.get("singleVariant", None)
-    header_dict["showCorrectAnswer"] = info_json.get("showCorrectAnswer", None)
-    header_dict["dependencies"] = info_json.get("dependencies", None)
-    header_dict["externalGradingOptions"] = info_json.get("externalGradingOptions", None)
-    header_dict["workspaceOptions"] = metadata.get("workspaceOptions", None)
+    header_dict["gradingMethod"] = info_json.get("gradingMethod")
+    header_dict["partialCredit"] = info_json.get("partialCredit")
+    header_dict["singleVariant"] = info_json.get("singleVariant")
+    header_dict["showCorrectAnswer"] = info_json.get("showCorrectAnswer")
+    header_dict["dependencies"] = info_json.get("dependencies")
+    header_dict["externalGradingOptions"] = info_json.get("externalGradingOptions")
+    header_dict["workspaceOptions"] = metadata.get("workspaceOptions")
     header_dict["outcomes"] = metadata.get("outcomes", ["unknown"])
     header_dict["difficulty"] = metadata.get("difficulty", "undefined")
     header_dict["randomization"] = metadata.get("randomization", ["undefined"])
     header_dict["taxonomy"] = metadata.get("taxonomy", ["undefined"])
     header_dict["span"] = metadata.get("span", ["undefined"])
     header_dict["length"] = metadata.get("length", ["undefined"])
-    header_dict["tags"] = sorted(list(set(info_json["tags"]) - auto_tags))  # Force deterministic order
+    header_dict["tags"] = sorted(set(info_json["tags"]) - auto_tags)  # Force deterministic order
     header_dict["assets"] = []  # Populated with _copy_assets(...) later
     header_dict["autogradeTestFiles"] = []  # Populated with _copy_assets(...) later
     header_dict["workspaceFiles"] = []  # Populated with _copy_assets(...) later
@@ -1717,11 +1387,13 @@ def pl_to_md(
     )
     # validate the file exists and a module spec was created for it
     if spec is None:
-        raise ModuleNotFoundError(f"Could not find server.py file for question {path.name}")
+        msg = f"Could not find server.py file for question {path.name}"
+        raise ModuleNotFoundError(msg)
     server = importlib.util.module_from_spec(spec) # create a module object from the spec
     loader = spec.loader # get the loader from the spec
     if loader is None: # validate the loader exists, since we need it to get the code objects for the functions
-        raise ModuleNotFoundError(f"Could not load server.py file for question {path.name}")
+        msg = f"Could not load server.py file for question {path.name}"
+        raise ModuleNotFoundError(msg)
     loader.exec_module( # load the code objects for the module into the module object by executing the module code with the loader
         server
     )  # execute the server.py file to get code objects for it that can be access with inspect
@@ -1737,24 +1409,28 @@ def pl_to_md(
             continue
         # We could use the builtin callable function here, but that would allow classes or callable objects (instances of classes that define __call__ somewhere in the chain)
         if not inspect.isfunction(func):
+            msg = f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
             raise ValueError(
-                f"Could not find a callable function {func_name} in server.py for question {path.name} (found non callable object instead)"
+                msg
             )
         signature = inspect.signature(func)
         parameters = signature.parameters
         if len(parameters) != 1:
+            msg = f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(parameters)}: {signature})"
             raise ValueError(
-                f"Function {func_name} in server.py for question {path.name} does not have the correct number of arguments (expected 1, got {len(parameters)}: {signature})"
+                msg
             )
         [parameter] = parameters.values()
         # the argument name should be named data, and we know there is only one argument here (if we wanted to be super precise we could check its the only posarg, but thats too pedantic)
         if parameter.name != "data":
+            msg = f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {parameter!r})"
             raise ValueError(
-                f"Function {func_name} in server.py for question {path.name} does not have the correct argument name (expected 'data', got {parameter!r})"
+                msg
             )
         if parameter.kind != inspect.Parameter.POSITIONAL_OR_KEYWORD:
+            msg = f"Function {func_name} in server.py for question {path.name} does not have the correct argument kind (expected 'POSITIONAL_OR_KEYWORD', got {parameter})"
             raise ValueError(
-                f"Function {func_name} in server.py for question {path.name} does not have the correct argument kind (expected 'POSITIONAL_OR_KEYWORD', got {parameter})"
+                msg
             )
         # get the source code for the function and the line number of the first line of the function
         lines, firstlineno = inspect.getsourcelines(func)

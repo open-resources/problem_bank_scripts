@@ -7,14 +7,14 @@
         "nothing"
     ],
     "type": "v3",
-    "partialCredit": true,
-    "gradingMethod": "External",
-    "showCorrectAnswer": false,
     "externalGradingOptions": {
         "enabled": true,
         "image": "prairielearn/grader-python",
         "entrypoint": "/python_autograder/run.sh"
     },
+    "showCorrectAnswer": false,
+    "partialCredit": true,
+    "gradingMethod": "External",
     "singleVariant": true,
     "comment": {
         "METADATA": {
@@ -43,6 +43,7 @@
             "Rubric": "This should be hidden from students until after the deadline.",
             "Solution": "This should never be revealed to students.",
             "Comments": "These are random comments associated with this question."
-        }
+        },
+        "lastModified": "2024-06-02T16:42:06-0700"
     }
 }

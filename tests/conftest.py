@@ -12,14 +12,13 @@ def paths():
     Returns:
         Nothing, it's a fixture that is run before every test.
     """
-    p = {
+    return {
         "inputDest": pathlib.Path("tests/test_question_templates/question_inputs/"),
         "outputDest": pathlib.Path("tests/test_question_templates/question_generated_outputs/"),
         "compareDest": pathlib.Path("tests/test_question_templates/question_expected_outputs/"),
         "returnCompareDest": pathlib.Path("tests/test_question_templates/question_return_expected_outputs/"),
         "returnOutputDest": pathlib.Path("tests/test_question_templates/question_return_generated_outputs/"),
     }
-    return p
 
 
 @pytest.fixture(scope="session")
@@ -30,13 +29,13 @@ def validate_info_json():
         Nothing, it's a fixture that is run before every test.
     """
     with open("tests/infoSchema.json") as file:
-        schema = fastjsonschema.compile(json.load(file))
-    return schema
+        return fastjsonschema.compile(json.load(file))
 
 @pytest.fixture(scope="session", autouse=True)
 def monkeypatch_prairielearn():
     """Monkeypatches the prairielearn module into sys.modules to make it accessible."""
 
     import sys
+
     from problem_bank_scripts import prairielearn
     sys.modules["prairielearn"] = prairielearn

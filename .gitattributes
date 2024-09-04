@@ -1,0 +1,12 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Binary data types
+*.jpg binary
+*.png binary
+
+[attr]generated linguist-generated=true diff=generated
+
+**/_vendored/*.py     generated
+tests/infoSchema.json generated
+**/known_questions/*.json generated binary

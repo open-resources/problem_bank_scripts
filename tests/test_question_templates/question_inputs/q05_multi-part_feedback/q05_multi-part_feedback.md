@@ -36,7 +36,7 @@ server:
 
         feedback_dict = {'vars': ['part1_ans'],
                          'stringData': ['E'],
-                         'units': ['$~\mathrm{N}/\mathrm{C}$']
+                         'units': [r'$~\mathrm{N}/\mathrm{C}$']
                          }
 
     generate: |

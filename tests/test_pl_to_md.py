@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import filecmp
 import pathlib
 import tempfile
@@ -6,6 +7,7 @@ import tempfile
 import pytest
 
 from problem_bank_scripts import pl_to_md
+
 
 # Generate a list of all problems in the test problems directory
 files = sorted(
@@ -19,10 +21,7 @@ files = sorted(
 )
 
 
-@pytest.mark.parametrize(
-    "question",
-    [file for file in files],
-)
+@pytest.mark.parametrize("question", files)
 def test_pl_to_md(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the ``pl_to_md()`` function
 
@@ -34,7 +33,8 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str, subtests):
     comparePath = paths["returnCompareDest"].joinpath(question)
     baseFile = paths["compareDest"].joinpath("prairielearn", f"{question}")
     folder = question
-    pl_to_md(baseFile, outputPath, f"{question}.md")
+    with pytest.warns(UserWarning):
+        pl_to_md(baseFile, outputPath, f"{question}.md")
 
     for file in sorted(comparePath.glob("**/*")):
         isFile = file.is_file()
@@ -43,8 +43,6 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str, subtests):
             (".png", ".jpg", ".jpeg", ".gif", ".html", ".DS_Store")
         )
         excludedFile = False  # Leave this as false for now, but we may want to add a way to exclude files from the comparison
-
-        print(hiddenFile, ~(hiddenFile))
 
         if isFile and hiddenFile and assetFile and not excludedFile:
             with subtests.test("Check Generated File Matches Expected", file=file.name):

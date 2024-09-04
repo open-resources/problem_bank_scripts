@@ -34,9 +34,11 @@ part1:
     source-file-name: sample.html
 myst:
   substitutions:
-    params_vars_title: Describe an Experiment
+    params:
+      vars:
+        title: Describe an Experiment
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
@@ -48,16 +50,6 @@ What factors would be unaccounted for in your velocity prediction?
 ### Answer Section
 
 Answer in 5-7 sentences, try and use full sentences.
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 

@@ -31,43 +31,42 @@ part1:
     blank: 'true'
 myst:
   substitutions:
-    params_vars_name: Maya
-    params_vars_vehicle: a unicycle
-    params_vars_title: Distance travelled
-    params_vars_units: m/s
-    params_v: 5
-    params_t: 6
-    params_part1_option1_value: true
-    params_part1_option1_name: 'True'
-    params_part1_option2_value: false
-    params_part1_option2_name: 'False'
-    params_part1_statement1_value: 42
-    params_part1_statement1_matches: 'False'
-    params_part1_statement2_value: 30
-    params_part1_statement2_matches: 'True'
-    params_part1_statement3_value: 11
-    params_part1_statement3_matches: 'False'
-    params_part1_statement4_value: 0.833
-    params_part1_statement4_matches: 'False'
+    params:
+      vars:
+        name: Maya
+        vehicle: a unicycle
+        title: Distance travelled
+        units: m/s
+      v: 5
+      t: 6
+      part1:
+        option1:
+          value: true
+          name: 'True'
+        option2:
+          value: false
+          name: 'False'
+        statement1:
+          value: 42
+          matches: 'False'
+        statement2:
+          value: 30
+          matches: 'True'
+        statement3:
+          value: 11
+          matches: 'False'
+        statement4:
+          value: 0.833
+          matches: 'False'
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
-{{ params_vars_name }} is traveling on {{ params_vars_vehicle }} at {{ params_v }} {{ params_vars_units }}.
-How far does {{ params_vars_name }} travel in {{ params_t }} seconds, assuming they continue at the same velocity?
+{{ params.vars.name }} is traveling on {{ params.vars.vehicle }} at {{ params.v }} {{ params.vars.units }}.
+How far does {{ params.vars.name }} travel in {{ params.t }} seconds, assuming they continue at the same velocity?
 
 ### Answer Section
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 

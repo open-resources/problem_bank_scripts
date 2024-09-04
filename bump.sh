@@ -14,14 +14,12 @@ echo $ret
 FROM=$(echo $ret | awk '{ print $4; }')
 TO=$(echo $ret | awk '{ print $6; }')
 
-# change any references to the old version in the project
-echo "Bumping version from $FROM to $TO in src/problem_bank_scripts/__init__.py"
-sed -i "s/__version__ = \"$FROM\"/__version__ = \"$TO\"/g" src/problem_bank_scripts/__init__.py
-echo "Bumping version from $FROM to $TO in tests/test_problem_bank_scripts.py"
-sed -i "s/__version__ == \"$FROM\"/__version__ == \"$TO\"/g" tests/test_problem_bank_scripts.py
+# Update "vendored" copy of PrairieLearn's python utilities
+curl --silent https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/master/apps/prairielearn/python/python_helper_sympy.py --output src/problem_bank_scripts/_vendored/python_helper_sympy.py
+sed -i "s/import prairielearn as pl/from . import prairielearn as pl/g" src/problem_bank_scripts/_vendored/python_helper_sympy.py
 
 # commit the changes
-git add src/problem_bank_scripts/__init__.py tests/test_problem_bank_scripts.py pyproject.toml
+git add pyproject.toml src/problem_bank_scripts/_vendored/python_helper_sympy.py
 git commit -m "Increment version from $FROM to $TO"
 
 # create a tag

@@ -48,7 +48,7 @@ server:
 
     feedback_dict = {'vars': ['part1_ans'],
                      'stringData': ['I'],
-                     'units': ['$~\mathrm{A}$']
+                     'units': [r'$~\mathrm{A}$']
                      }
   generate: |
     data2 = pbh.create_data2()
@@ -117,23 +117,7 @@ myst:
       v: '2.50'
       p: '4'
     correct_answers:
-      part1_ans: !!python/object/apply:numpy.core.multiarray.scalar
-      - !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        ZVy1Q2Xubj8=
+      part1_ans: 0.0037757852384561635
       part1_ans_str: '3.78e-03'
 
 ---

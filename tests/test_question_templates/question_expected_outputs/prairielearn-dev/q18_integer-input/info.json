@@ -1,0 +1,44 @@
+{
+    "uuid": "03d2fc31-cc01-3a77-9394-05da8968db50",
+    "title": "Median",
+    "topic": "000.Template",
+    "tags": [
+        "integer-input",
+        "easy",
+        "DEV"
+    ],
+    "type": "v3",
+    "partialCredit": true,
+    "showCorrectAnswer": false,
+    "singleVariant": false,
+    "comment": {
+        "METADATA": {
+            "author": "Gavin Kendal-Freedman",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "easy"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
+        "lastModified": "2024-08-10T12:49:01-0700"
+    }
+}

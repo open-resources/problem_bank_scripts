@@ -1,16 +1,13 @@
-import httpimport
 import sympy
 
-prairielearn_src = "https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/master/apps/prairielearn/python"
+from ._vendored import python_helper_sympy as phs
 
-with httpimport.remote_repo(prairielearn_src):
-    from python_helper_sympy import sympy_to_json
-
+__all__ = ["to_json"]
 
 # at question conversion time, the only needed metadata is via sympy_to_json
 def to_json(v, *args, **kwargs):
     if isinstance(v, sympy.Expr):
-        return sympy_to_json(v)
+        return phs.sympy_to_json(v)
     return None
 
 
@@ -20,7 +17,7 @@ def to_json(v, *args, **kwargs):
 
 
 def __getattr__(name: str):
-    if name in {"sympy_to_json", "to_json"}:
+    if name == "to_json":
         return globals()[name]
 
     def fake_function(*args, **kwargs):
@@ -30,4 +27,4 @@ def __getattr__(name: str):
 
 
 def __dir__():
-    return ["sympy_to_json", "to_json"]
+    return ["to_json"]

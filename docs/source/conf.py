@@ -6,9 +6,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u"Problem Bank Scripts"
-copyright = u"2021, Open Problem Bank Team"
-author = u"Open Problem Bank Team"
+project = "Problem Bank Scripts"
+copyright = "2021-Present, Open Problem Bank Team"
+author = "Open Problem Bank Team"
 
 # -- General configuration ---------------------------------------------------
 
@@ -17,19 +17,49 @@ author = u"Open Problem Bank Team"
 # ones.
 extensions = [
     "myst_nb",
-    "autoapi.extension",
     "sphinx.ext.napoleon",
+    "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+    "matplotlib.sphinxext.plot_directive",
 ]
-autoapi_type = "python"
-autoapi_dirs = ["../../src"]
-napoleon_numpy_docstring = True
 nbsphinx_execute = "always"
+autodoc_member_order = "bysource"
+
+# Napoleon settings
+napoleon_numpy_docstring = True
+napoleon_use_admonition_for_examples = True
+napoleon_use_admonition_for_notes = True
+napoleon_use_admonition_for_references = True
+
+plot_pre_code = """
+import numpy as np
+import matplotlib.pyplot as plt
+import problem_bank_helpers as pbh
+"""
+plot_formats = ["png"]
+plot_include_source = True
+plot_html_show_source_link = False
+plot_html_show_formats = False
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+
+# Links used for cross-referencing stuff in other documentation
+intersphinx_mapping = {
+    "py": ("https://docs.python.org/3", None),
+    "mpl": ("https://matplotlib.org/stable", None),
+}
+
+show_warning_types = True
+suppress_warnings = ["docutils"]
+
+nitpick_ignore = [
+    ("py:class", "optional"),
+    ("py:class", "number"),
+]
 
 # -- Options for HTML output -------------------------------------------------
 

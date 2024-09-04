@@ -8,9 +8,9 @@
         "number-input"
     ],
     "type": "v3",
-    "singleVariant": false,
     "partialCredit": true,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
         "METADATA": {
             "author": "Firas Moosvi",
@@ -38,6 +38,7 @@
             "Rubric": "This should be hidden from students until after the deadline.",
             "Solution": "This should never be revealed to students.",
             "Comments": "These are random comments associated with this question."
-        }
+        },
+        "lastModified": "2023-06-14T21:02:26-0700"
     }
 }

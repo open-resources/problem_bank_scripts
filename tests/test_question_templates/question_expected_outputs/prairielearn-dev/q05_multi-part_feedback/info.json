@@ -4,14 +4,14 @@
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "number-input",
         "dropdown",
+        "number-input",
         "DEV"
     ],
     "type": "v3",
-    "singleVariant": false,
     "partialCredit": true,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
         "METADATA": {
             "author": "Jake Bobowski",
@@ -38,6 +38,7 @@
             "Rubric": "This should be hidden from students until after the deadline.",
             "Solution": "This should never be revealed to students.",
             "Comments": "These are random comments associated with this question."
-        }
+        },
+        "lastModified": "2024-06-20T16:22:06-0700"
     }
 }

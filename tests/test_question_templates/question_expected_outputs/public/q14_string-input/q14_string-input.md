@@ -33,31 +33,24 @@ part1:
     ignore-case: true
 myst:
   substitutions:
-    params_vars_title: Code Output
-    params_vars_a: 2
-    params_vars_stringname: love
+    params:
+      vars:
+        title: Code Output
+        a: 2
+        stringname: love
+      part1: {}
 ---
-# {{ params_vars_title }}
+# {{ params.vars.title }}
 
 ## Question Text
 
 For the following python code snippet, enter below the resulting string:
 
 ```python
-a = "{{ params_vars_stringname }}" * {{ params_vars_a }}
+a = "{{ params.vars.stringname }}" * {{ params.vars.a }}
 ```
 
 ### Answer Section
-
-### pl-submission-panel
-
-Everything here will get inserted directly into the pl-submission-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
-
-### pl-answer-panel
-
-Everything here will get inserted directly into an pl-answer-panel element at the end of the `question.html`.
-Please remove this section if it is not application for this question.
 
 ## Attribution
 
