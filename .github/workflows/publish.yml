@@ -72,7 +72,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-generated-files-${{ github.event_name }}
-          path: tests/test_question_templates/question_generated_outputs/
+          path: |
+            tests/test_question_templates/question_generated_outputs/
+            tests/test_question_templates/question_return_generated_outputs/
           if-no-files-found: ignore
           retention-days: 5
 
@@ -130,7 +132,7 @@ jobs:
           echo "::notice::Installing ${{ matrix.dist.name }}: $path_to_file"
           python -m pip install --user "$path_to_file[tests]"
           python -m pip list
-      - name: Run tests against installed wheel
+      - name: Run tests against installed ${{ matrix.dist.name }}
         run: rm -rf src/ && pytest tests/
             
 

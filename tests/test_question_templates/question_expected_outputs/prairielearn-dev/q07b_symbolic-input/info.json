@@ -1,5 +1,5 @@
 {
-    "uuid": "ca717a26-cfb3-3e1f-8f56-6aee4b36cfc7",
+    "uuid": "0fae1dea-189d-3e68-8293-61f80942ad50",
     "title": "Symbolic Input 2 - Trig",
     "topic": "000.Template",
     "tags": [
@@ -8,9 +8,36 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Michael Kudla",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2023-06-14T21:02:26-0700"
     }
 }

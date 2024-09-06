@@ -1,18 +1,44 @@
 {
-    "uuid": "41f71885-4953-3293-81f5-641cb51ded1f",
+    "uuid": "6951ad1d-4f24-355c-a911-0738a6db8bd1",
     "title": "Electric Field and Direction",
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "number-input",
         "dropdown",
+        "number-input",
         "DEV"
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Jake Bobowski",
+            "source": "2.6.67",
+            "template_version": 1.4,
+            "outcomes": [
+                "undefined"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2024-06-20T16:22:06-0700"
     }
 }

@@ -1,5 +1,5 @@
 {
-    "uuid": "999970d4-630b-38de-a43b-dbba13af980e",
+    "uuid": "9880f3fb-8d29-3365-908c-d2a4eec045c7",
     "title": "Median",
     "topic": "000.Template",
     "tags": [
@@ -8,9 +8,36 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Gavin Kendal-Freedman",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "easy"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2024-08-10T12:49:01-0700"
     }
 }

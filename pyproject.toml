@@ -25,6 +25,8 @@ problem-bank-helpers = "^0.3.2"
 typing-extensions = "^4.12.2"
 black = "^24.8.0"
 gitpython = "^3.1.43"
+lxml = "^5.2.0,<5.3.0"
+beautifulsoup4 = {extras = ["lxml"], version = "^4.12.3"}
 exceptiongroup = {version = "^1.2.2", python = "<3.11"}
 questionary = {version = "^2.0.1", optional = true}
 nltk = {version = "^3.8.1", optional = true}
@@ -56,4 +58,4 @@ process_q = "problem_bank_scripts.scripts.process_q:main"
 checkq = "problem_bank_scripts.scripts.check_question:main"
 
 [tool.pytest.ini_options]
-filterwarnings = ["error", "ignore::DeprecationWarning:problem_bank_helpers"]
+filterwarnings = ["error", "ignore::DeprecationWarning:problem_bank_helpers", "ignore:The 'strip_cdata':DeprecationWarning"]

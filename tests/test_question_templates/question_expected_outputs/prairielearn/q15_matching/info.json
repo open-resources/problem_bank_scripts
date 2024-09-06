@@ -1,5 +1,5 @@
 {
-    "uuid": "abf75f6e-a1ba-3f40-8c56-9b19c6a02358",
+    "uuid": "00749b3e-7e36-31dd-837c-fd925a223b2e",
     "title": "Distance travelled",
     "topic": "000.Template",
     "tags": [
@@ -7,9 +7,36 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Christina Yang",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2023-07-19T19:01:42-0700"
     }
 }

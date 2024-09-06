@@ -1,5 +1,5 @@
 {
-    "uuid": "a9e3b0bd-c9e0-3272-9f42-d2acdbcc2423",
+    "uuid": "778cf007-9fda-3e65-8f54-0ffc823adc28",
     "title": "Distance travelled",
     "topic": "000.Template",
     "tags": [
@@ -7,9 +7,36 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Firas Moosvi",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2024-08-09T06:48:09-0700"
     }
 }

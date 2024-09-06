@@ -1,5 +1,5 @@
 {
-    "uuid": "adecb6d1-f7b4-31aa-aba2-222cbfd871fc",
+    "uuid": "6c851ec9-5d0f-3547-bff4-932aca5b30d4",
     "title": "Centripetal Motion",
     "topic": "000.Template",
     "tags": [
@@ -8,9 +8,36 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Michael Kudla",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2023-06-14T21:02:26-0700"
     }
 }

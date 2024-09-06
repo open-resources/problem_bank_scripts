@@ -1,5 +1,5 @@
 {
-    "uuid": "6f3f8820-507c-3b7e-968e-68958ca8ad80",
+    "uuid": "548ef32d-08d8-3448-81ee-2775b111c643",
     "title": "OSUPv2p12_55",
     "topic": "000.Template",
     "tags": [
@@ -16,9 +16,40 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Jake Bobowksi",
+            "source": "2.12.55",
+            "template_version": 1.4,
+            "outcomes": [
+                "19.2.3.0",
+                "19.2.3.1",
+                "19.3.2.0",
+                "19.3.2.1",
+                "19.6.1.0",
+                "19.6.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2024-06-20T16:22:06-0700"
     }
 }

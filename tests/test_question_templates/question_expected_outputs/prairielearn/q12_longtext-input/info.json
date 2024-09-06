@@ -1,5 +1,5 @@
 {
-    "uuid": "9a727c2c-11ab-3016-b0ce-21e55850e95c",
+    "uuid": "10374096-5e7e-3c7a-b965-6b94ef713c9c",
     "title": "Describe an Experiment",
     "topic": "000.Template",
     "tags": [
@@ -7,9 +7,33 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Michael Kudla",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": null,
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2023-06-14T21:02:26-0700"
     }
 }

@@ -1,5 +1,5 @@
 {
-    "uuid": "4720cb9b-5d0d-36db-ab5c-250eb7fbfec5",
+    "uuid": "1fd18541-cae8-3507-97ce-b4b29d342af9",
     "title": "Python Powers",
     "topic": "000.Template",
     "tags": [
@@ -8,16 +8,43 @@
         "DEV"
     ],
     "type": "v3",
-    "singleVariant": true,
     "externalGradingOptions": {
         "enabled": true,
         "image": "prairielearn/grader-python",
         "entrypoint": "/python_autograder/run.sh"
     },
-    "gradingMethod": "External",
-    "partialCredit": true,
     "showCorrectAnswer": false,
+    "partialCredit": true,
+    "gradingMethod": "External",
+    "singleVariant": true,
     "comment": {
-        "lastModified": "2023-06-14T21:02:26-0700"
+        "METADATA": {
+            "author": "Aidan Murphy",
+            "source": "original",
+            "template_version": 1.0,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
+        "lastModified": "2024-06-02T16:42:06-0700"
     }
 }

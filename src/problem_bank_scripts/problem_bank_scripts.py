@@ -86,7 +86,7 @@ def defdict_to_dict(defdict, finaldict):
 
         elif hasattr(v, "dtype"):
             try:
-                finaldict[k] = v.item()
+                finaldict[k] = v.item() # pyright: ignore[reportAttributeAccessIssue]
             except Exception:
                 finaldict[k] = v
         else:
@@ -397,8 +397,7 @@ def write_info_json(output_path, parsed_question, modified_time: str | None = No
         modified_time (str | None, optional): Last commit timestamp or modified timestamp of the file
     """
 
-    # Deal with optional tags in info.json
-    # optional = ""
+    ## *** IMPORTANT: If more auto-tags or optional keys are added, make sure to update the `pl_to_md` function to take them into account properly for the roundtrip ***
 
     optional_keys = {
         "gradingMethod",
@@ -456,8 +455,34 @@ def write_info_json(output_path, parsed_question, modified_time: str | None = No
             msg = f"workspaceOptions.port must be an integer, got {type(info_json['workspaceOptions']['port'])!r} instead"
             raise TypeError(msg)
 
+    comment_keys = (
+        "author",
+        "source",
+        "template_version",
+        "outcomes",
+        "difficulty",
+        "randomization",
+        "taxonomy",
+        "span",
+        "length",
+    )
+
+    comment = {key: parsed_question["header"][key] for key in comment_keys if key in parsed_question["header"]}
+
+    # Get keys that need to get added to the comment from the question body (Rubric, Solution, Comments)
+
+    comment |= {
+        key: parsed_question["body_parts"][key].split("\n\n", 1)[-1].strip()
+        for key in ("Rubric", "Solution", "Comments")
+        if key in parsed_question["body_parts"]
+    }
+
+    # Add the comment to the info_json, under a metadata key in the comment object of info_json
+
+    info_json["comment"] = {"METADATA": comment}
+
     if modified_time:
-        info_json["comment"] = {"lastModified": modified_time}
+        info_json["comment"]["lastModified"] = modified_time  # pyright: ignore[reportArgumentType]
 
     # End add tags
     with pathlib.Path(output_path / "info.json").open("w") as output_file:
@@ -491,9 +516,7 @@ def assemble_server_py(parsed_question, location):
     for function, code in server_dict.items():
         indented_code = code.replace("\n", "\n    ")
         # With the custom header, add functions to server.py as-is
-        if function == "custom":
-            server_py += f"{code}"
-        elif function == "imports":
+        if function in {"custom", "imports"}:
             continue
         else:
             if code:
@@ -511,6 +534,9 @@ def assemble_server_py(parsed_question, location):
     # End code added in by problem bank scripts
 
 """
+
+    if "custom" in server_dict:
+        server_py += f"{server_dict['custom']}"
 
     return server_py
 
@@ -1061,4 +1087,3 @@ def validate_header(header_dict):
     if topics.get(topic := header_dict["topic"], None) is None:
         msg = f"topic '{topic}' is not listed in the learning outcomes"
         raise ValueError(msg)
-

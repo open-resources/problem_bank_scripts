@@ -1,5 +1,5 @@
 {
-    "uuid": "b1a88033-b85a-3513-8f6d-b4a93e0949b6",
+    "uuid": "7bbc4b5f-77d4-36c7-9811-d051565acb4f",
     "title": "File Upload",
     "topic": "000.Template",
     "tags": [
@@ -7,10 +7,34 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
     "gradingMethod": "Manual",
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Michael Kudla",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": null,
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2023-06-14T19:23:57-0700"
     }
 }

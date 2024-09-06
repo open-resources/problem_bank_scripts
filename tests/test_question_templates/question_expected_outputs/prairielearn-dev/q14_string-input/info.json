@@ -1,5 +1,5 @@
 {
-    "uuid": "c314920c-1a39-3cc6-bbbd-b555de72f080",
+    "uuid": "d0d2c517-6ed7-3801-a6e7-ea72a0b7ded9",
     "title": "Code Output",
     "topic": "000.Template",
     "tags": [
@@ -8,9 +8,36 @@
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Gavin Kendal-Freedman",
+            "source": "original",
+            "template_version": 1.0,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question:\n\nThis example problem is adapted from PrairieLearn's Examples: https://github.com/PrairieLearn/PrairieLearn/tree/master/exampleCourse/questions/element/stringInput"
+        },
         "lastModified": "2023-07-10T17:16:32-0700"
     }
 }

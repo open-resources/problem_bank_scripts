@@ -1,17 +1,44 @@
 {
-    "uuid": "529b4404-5008-38aa-9171-c548665911c3",
+    "uuid": "fffa47ba-5620-31cc-885d-93ad48c0fa9e",
     "title": "Multi-part Question",
     "topic": "000.Template",
     "tags": [
         "multi_part",
-        "number-input",
-        "multiple-choice"
+        "multiple-choice",
+        "number-input"
     ],
     "type": "v3",
     "partialCredit": true,
-    "singleVariant": false,
     "showCorrectAnswer": false,
+    "singleVariant": false,
     "comment": {
+        "METADATA": {
+            "author": "Firas Moosvi",
+            "source": "original",
+            "template_version": 1.4,
+            "outcomes": [
+                "6.1.1.0",
+                "6.1.1.1"
+            ],
+            "difficulty": [
+                "undefined"
+            ],
+            "randomization": [
+                "undefined"
+            ],
+            "taxonomy": [
+                "undefined"
+            ],
+            "span": [
+                "undefined"
+            ],
+            "length": [
+                "undefined"
+            ],
+            "Rubric": "This should be hidden from students until after the deadline.",
+            "Solution": "This should never be revealed to students.",
+            "Comments": "These are random comments associated with this question."
+        },
         "lastModified": "2023-06-14T21:02:26-0700"
     }
 }
