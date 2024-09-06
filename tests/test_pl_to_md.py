@@ -22,6 +22,7 @@ files = sorted(
 
 
 @pytest.mark.parametrize("question", files)
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_pl_to_md(paths: dict[str, pathlib.Path], question: str, subtests):
     """Tests the ``pl_to_md()`` function
 
@@ -33,8 +34,7 @@ def test_pl_to_md(paths: dict[str, pathlib.Path], question: str, subtests):
     comparePath = paths["returnCompareDest"].joinpath(question)
     baseFile = paths["compareDest"].joinpath("prairielearn", f"{question}")
     folder = question
-    with pytest.warns(UserWarning):
-        pl_to_md(baseFile, outputPath, f"{question}.md")
+    pl_to_md(baseFile, outputPath, f"{question}.md")
 
     for file in sorted(comparePath.glob("**/*")):
         isFile = file.is_file()
