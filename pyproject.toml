@@ -15,13 +15,16 @@ repository = "https://github.com/open-resources/problem_bank_scripts"
 
 [tool.poetry.dependencies]
 python = ">=3.10"
-pandas = "^2.2.2"
+pandas = "^2.3.3"
 PyYAML = "^6.0.2"
-numpy = "^1.26.4"
+numpy = [
+    { version = "^1.26.4", markers = "python_version <= '3.11'"},
+    { version = "^2.4.0", markers = "python_version >= '3.12'"},
+]
 markdown-it-py = "^3.0.0"
 mdformat = "^0.7.14"
 sympy = "^1.13.2"
-problem-bank-helpers = "^0.3.2"
+problem-bank-helpers = "^0.4.0"
 typing-extensions = "^4.12.2"
 black = "^24.8.0"
 gitpython = "^3.1.43"
