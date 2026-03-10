@@ -107,11 +107,11 @@ If the {{ params.vars.vehicle }} starts moving, what is the maximum acceleration
 
 Note that it may not be necessary to use every variable. Use the following table as a reference for using each variable:
 
-| For  | Use   |
+| For | Use |
 |----------|-------|
-| $\mu_s$  | mu_s  |
-| $\mu_k$  | mu_k  |
-| $g$      | g     |
+| $\mu_s$ | mu_s |
+| $\mu_k$ | mu_k |
+| $g$ | g |
 | $\theta$ | theta |
 
 ### Answer Section
