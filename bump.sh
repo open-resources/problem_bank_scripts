@@ -15,11 +15,14 @@ FROM=$(echo $ret | awk '{ print $4; }')
 TO=$(echo $ret | awk '{ print $6; }')
 
 # Update "vendored" copy of PrairieLearn's python utilities
-curl --silent https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/master/apps/prairielearn/python/python_helper_sympy.py --output src/problem_bank_scripts/_vendored/python_helper_sympy.py
-sed -i "s/import prairielearn as pl/from . import prairielearn as pl/g" src/problem_bank_scripts/_vendored/python_helper_sympy.py
+curl --silent https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/refs/heads/master/apps/prairielearn/python/prairielearn/sympy_utils.py --output src/problem_bank_scripts/_vendored/sympy_utils.py
+sed -i "s/from prairielearn.misc_utils import full_unidecode/from .misc_utils import full_unidecode/g" src/problem_bank_scripts/_vendored/sympy_utils.py
+curl --silent https://raw.githubusercontent.com/PrairieLearn/PrairieLearn/refs/heads/master/apps/prairielearn/python/prairielearn/misc_utils.py --output src/problem_bank_scripts/_vendored/misc_utils.py
+sed -i "s/from pint import UnitRegistry/UnitRegistry = None/g" src/problem_bank_scripts/_vendored/misc_utils.py
+sed -i "s/from text_unidecode import unidecode/unidecode = None/g" src/problem_bank_scripts/_vendored/misc_utils.py
 
 # commit the changes
-git add pyproject.toml src/problem_bank_scripts/_vendored/python_helper_sympy.py
+git add pyproject.toml src/problem_bank_scripts/_vendored/sympy_utils.py src/problem_bank_scripts/_vendored/misc_utils.py
 git commit -m "Increment version from $FROM to $TO"
 
 # create a tag

@@ -1,6 +1,6 @@
 import sympy
 
-from ._vendored import python_helper_sympy as phs
+from ._vendored import sympy_utils as phs
 
 __all__ = ["to_json"]
 
