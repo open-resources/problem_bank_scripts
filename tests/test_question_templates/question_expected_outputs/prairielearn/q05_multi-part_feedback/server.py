@@ -1,4 +1,4 @@
-import random as rd; rd.seed(111)
+import random as rd
 import numpy as np
 import pandas as pd
 import problem_bank_helpers as pbh

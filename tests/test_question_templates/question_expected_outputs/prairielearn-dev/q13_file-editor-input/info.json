@@ -8,16 +8,16 @@
         "DEV"
     ],
     "type": "v3",
+    "showCorrectAnswer": false,
+    "gradingMethod": "External",
     "singleVariant": true,
+    "partialCredit": true,
     "externalGradingOptions": {
         "enabled": true,
         "image": "prairielearn/grader-python",
         "entrypoint": "/python_autograder/run.sh"
     },
-    "gradingMethod": "External",
-    "partialCredit": true,
-    "showCorrectAnswer": false,
     "comment": {
-        "lastModified": "2023-06-14T21:02:26-0700"
+        "lastModified": "2024-08-29T11:22:51-0700"
     }
 }
