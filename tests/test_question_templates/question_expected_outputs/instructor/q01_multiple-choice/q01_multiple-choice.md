@@ -28,7 +28,7 @@ assets:
 - test2.png
 server:
   imports: |
-    import random as rd; rd.seed(111)
+    import random as rd
     import pandas as pd
     import problem_bank_helpers as pbh
   generate: |

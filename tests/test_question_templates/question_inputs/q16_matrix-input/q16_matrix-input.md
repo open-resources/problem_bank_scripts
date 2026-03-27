@@ -26,7 +26,7 @@ tags:
 assets:
 server:
     imports: |
-        import numpy as np; np.random.seed(111)
+        import numpy as np
         import problem_bank_helpers as pbh
         import prairielearn as pl
     generate: |
